@@ -2,7 +2,9 @@ package com.example.jorgegil.closegamealert;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
@@ -19,8 +21,13 @@ public class GCMMessageHandler extends GcmListenerService {
     private void createNotification(String title, String body) {
         Context context = getBaseContext();
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(title)
+                .setSmallIcon(R.mipmap.nba)
+                .setContentTitle(title)
                 .setContentText(body);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
