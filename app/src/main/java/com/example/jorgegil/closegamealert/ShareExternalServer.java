@@ -47,6 +47,7 @@ public class ShareExternalServer {
 			byte[] bytes = body.getBytes();
 			HttpURLConnection httpCon = null;
 			try {
+
 				httpCon = (HttpURLConnection) serverUrl.openConnection();
 				httpCon.setDoOutput(true);
 				httpCon.setUseCaches(false);
@@ -58,13 +59,18 @@ public class ShareExternalServer {
 				out.write(bytes);
 				out.close();
 
+
 				int status = httpCon.getResponseCode();
 				if (status == 200) {
 					result = "RegId shared with Application Server. RegId: "
 							+ regId;
+					System.out.println("RESULT - >" + result);
 				} else {
 					result = "Post Failure." + " Status: " + status;
+					System.out.println("RESULTTTT - >" + result);
 				}
+
+				System.out.println("RESULTTTT2 - >" + result);
 			} finally {
 				if (httpCon != null) {
 					httpCon.disconnect();
@@ -75,6 +81,7 @@ public class ShareExternalServer {
 			result = "Post Failure. Error in sharing with App Server.";
 			Log.e("AppUtil", "Error in sharing with App Server: " + e);
 		}
+		System.out.println("RESULTTTT23 - >" + result);
 		return result;
 	}
 }

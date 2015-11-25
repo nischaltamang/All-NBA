@@ -21,39 +21,52 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    ShareExternalServer appUtil;
-    String regId;
-    AsyncTask<Void, Void, String> shareRegidTask;
+    private GCMClientManager pushClientManager;
+    String PROJECT_NUMBER = "532852092546";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        appUtil = new ShareExternalServer();
+        pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
+        pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
 
-        regId = getIntent().getStringExtra("regId");
-        Log.d("MainActivity", "regId: " + regId);
-
-        final Context context = this;
-        shareRegidTask = new AsyncTask<Void, Void, String>() {
             @Override
-            protected String doInBackground(Void... params) {
-                String result = appUtil.shareRegIdWithAppServer(context, regId);
-                return result;
+            public void onSuccess(String registrationId, boolean isNewRegistration) {
+
+
+                if (isNewRegistration) {
+
+                    Toast.makeText(MainActivity.this, registrationId,
+                            Toast.LENGTH_SHORT).show();
+
+                    StringRequest sendRegId = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/gcm.php?shareRegId=1&regId=" + registrationId, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println("Error " + error);
+                        }
+                    });
+
+                    RequestQueue sendQueue = Volley.newRequestQueue(getApplicationContext());
+                    sendQueue.add(sendRegId);
+                }
+
             }
 
             @Override
-            protected void onPostExecute(String result) {
-                shareRegidTask = null;
-                Toast.makeText(getApplicationContext(), result,
-                        Toast.LENGTH_LONG).show();
+            public void onFailure(String ex) {
+                super.onFailure(ex);
+                // If there is an error registering, don't just keep trying to register.
+                // Require the user to click a button again, or perform
+                // exponential back-off when retrying.
             }
-
-        };
-        shareRegidTask.execute(null, null, null);
-
-        String url = "http://phpstack-4722-10615-67130.cloudwaysapps.com/nbcsports.php";
+        });
 
         StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/nbcsports.php", new Response.Listener<String>() {
             @Override
@@ -70,9 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
-
-
-        //String jsonString = "[{\"homeTeam\":\"CHI\",\"awayTeam\":\"OKC\",\"homeScore\":\"50\",\"awayScore\":\"\",\"clock\":\"8:00 PM\",\"period\":\"\"},{\"homeTeam\":\"MIN\",\"awayTeam\":\"MIA\",\"homeScore\":\"\",\"awayScore\":\"\",\"clock\":\"8:00 PM\",\"period\":\"\"},{\"homeTeam\":\"DAL\",\"awayTeam\":\"CHA\",\"homeScore\":\"\",\"awayScore\":\"\",\"clock\":\"8:30 PM\",\"period\":\"\"},{\"homeTeam\":\"DEN\",\"awayTeam\":\"UTA\",\"homeScore\":\"\",\"awayScore\":\"\",\"clock\":\"9:00 PM\",\"period\":\"\"},{\"homeTeam\":\"POR\",\"awayTeam\":\"MEM\",\"homeScore\":\"\",\"awayScore\":\"\",\"clock\":\"10:30 PM\",\"period\":\"\"}]";
 
 
     }
