@@ -1,0 +1,1 @@
+Android app that shows real-time scores and sends push notifications when an NBA game is close in score and almost finished.
