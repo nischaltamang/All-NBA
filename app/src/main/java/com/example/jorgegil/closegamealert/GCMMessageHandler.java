@@ -21,9 +21,10 @@ public class GCMMessageHandler extends GcmListenerService {
     private void createNotification(String title, String body) {
         Context context = getBaseContext();
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.nba)
+                .setSmallIcon(R.mipmap.bball_filled)
                 .setContentTitle(title)
-                .setContentText(body);
+                .setContentText(body)
+                .setColor(getResources().getColor(R.color.red));
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
