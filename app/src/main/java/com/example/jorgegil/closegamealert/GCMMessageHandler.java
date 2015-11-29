@@ -24,7 +24,7 @@ public class GCMMessageHandler extends GcmListenerService {
                 .setSmallIcon(R.mipmap.bball_filled)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setColor(getResources().getColor(R.color.red));
+                .setColor(getResources().getColor(R.color.colorPrimary));
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
