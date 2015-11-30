@@ -23,9 +23,25 @@ import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
+    public final static String GAME_THREAD_ID = "com.example.jorgegil.closegamealert.GAME_THREAD_ID";
+    public final static String GAME_THREAD_HOME = "com.example.jorgegil.closegamealert.GAME_THREAD_HOME";
+    public final static String GAME_THREAD_AWAY = "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
 
     private GCMClientManager pushClientManager;
     String PROJECT_NUMBER = "532852092546";
+    String url = "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread";
+
+    String[] gameThreadId;
+    String[] gameThreadTitle;
+
+    String[] homeTeam;
+    String[] awayTeam;
+    String[] homeScore;
+    String[] awayScore;
+    String[] clock;
+    String[] period;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,17 +106,79 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void getGameThreads(final int numOfEvents) {
+        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseGameThreads(response, numOfEvents);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse (VolleyError error) {
+                Log.d("AUTOGT", "getGTErr: " + error);
+            }
+        });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+
+    }
+
+    public void parseGameThreads(String response, int numOfEvents) {
+
+        try {
+            gameThreadId = new String[numOfEvents];
+            for (int i = 0; i < numOfEvents; i++){
+                gameThreadId[i] = "No Game Thread found...";
+            }
+
+            TeamNames tn = new TeamNames();
+            JSONArray r = new JSONObject(response).getJSONObject("data").getJSONArray("children");
+
+            for (int i = 0; i < numOfEvents; i++) {
+                JSONObject data = r.getJSONObject(i).getJSONObject("data");
+                for (int j = 0; j < numOfEvents; j++) {
+                    if (data.getString("title").contains("GAME THREAD")
+                            && data.getString("title").contains(tn.getName(homeTeam[j]))
+                            && data.getString("title").contains(tn.getName(awayTeam[j]))) {
+                        gameThreadId[j] = data.getString("id");
+                    }
+                }
+            }
+
+            ListView listView = (ListView) findViewById(R.id.listView);
+            listView.setAdapter(new CustomAdapter(this, homeTeam, awayTeam, homeScore,
+                    awayScore, clock, period));
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent intent = new Intent(MainActivity.this, CommentsActivity.class);
+                    Log.d("POS", "I=> " + i);
+                    intent.putExtra(GAME_THREAD_ID, gameThreadId[i]);
+                    intent.putExtra(GAME_THREAD_HOME, homeTeam[i]);
+                    intent.putExtra(GAME_THREAD_AWAY, awayTeam[i]);
+                    startActivity(intent);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.d("AUTOGT", "Error: " + e.getMessage());
+        }
+
+    }
+
     public void parseData(String response) {
         try {
             JSONArray jsonArray = new JSONArray(response);
             int numOfEvents = jsonArray.length();
 
-            String[] homeTeam = new String[numOfEvents];
-            String[] awayTeam = new String[numOfEvents];
-            String[] homeScore = new String[numOfEvents];
-            String[] awayScore = new String[numOfEvents];
-            String[] clock = new String[numOfEvents];
-            String[] period = new String[numOfEvents];
+            homeTeam = new String[numOfEvents];
+            awayTeam = new String[numOfEvents];
+            homeScore = new String[numOfEvents];
+            awayScore = new String[numOfEvents];
+            clock = new String[numOfEvents];
+            period = new String[numOfEvents];
 
             for(int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -122,20 +200,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            ListView listView = (ListView) findViewById(R.id.listView);
-            listView.setAdapter(new CustomAdapter(this, homeTeam, awayTeam, homeScore,
-                    awayScore, clock, period));
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Intent intent = new Intent(MainActivity.this, CommentsActivity.class);
-                    startActivity(intent);
-                }
-            });
+            getGameThreads(numOfEvents);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
+
 }

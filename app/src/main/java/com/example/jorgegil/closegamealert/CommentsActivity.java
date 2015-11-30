@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 public class CommentsActivity extends AppCompatActivity {
 
-    String url = "https://www.reddit.com/r/nba/comments/3urm4v/.json";
+    String url = "https://www.reddit.com/r/nba/comments/GTID/.json";
 
 
     @Override
@@ -34,7 +34,13 @@ public class CommentsActivity extends AppCompatActivity {
         setContentView(R.layout.comments_activity);
 
         Intent intent = getIntent();
+        String gameThreadId = intent.getStringExtra(MainActivity.GAME_THREAD_ID);
+        String homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
+        String awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
 
+        setTitle("GAME THREAD: " + awayTeam + " @ " + homeTeam);
+
+        url = url.replace("GTID", gameThreadId);
 
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
