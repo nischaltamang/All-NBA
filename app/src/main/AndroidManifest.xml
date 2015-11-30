@@ -33,6 +33,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".CommentsActivity"
+            android:label="Comments"
+            android:screenOrientation="portrait" >
+
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"></category>
+            </intent-filter>
+        </activity>
+
+
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
