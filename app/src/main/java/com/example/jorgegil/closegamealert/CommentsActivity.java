@@ -3,7 +3,10 @@ package com.example.jorgegil.closegamealert;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -34,12 +37,16 @@ public class CommentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments_activity);
 
+        setUpToolbar();
+
         Intent intent = getIntent();
         String gameThreadId = intent.getStringExtra(MainActivity.GAME_THREAD_ID);
         String homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
         String awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
 
         setTitle("GAME THREAD: " + awayTeam + " @ " + homeTeam);
+        Log.d("GAME ID", "ID = " + gameThreadId);
+        Log.d("GAME ID", "ID = ");
         if (gameThreadId.equals("No Game Thread found...")) {
             TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
             noThread.setText(gameThreadId);
@@ -61,6 +68,26 @@ public class CommentsActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setUpToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        setSupportActionBar(toolbar);
+        // Show menu icon
+        final ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
     }
 

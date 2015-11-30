@@ -34,7 +34,8 @@
         <activity
             android:name=".CommentsActivity"
             android:label="Comments"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

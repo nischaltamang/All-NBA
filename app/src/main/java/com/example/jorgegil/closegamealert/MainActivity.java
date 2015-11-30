@@ -1,11 +1,13 @@
 package com.example.jorgegil.closegamealert;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setUpToolbar();
 
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
         pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
@@ -106,6 +110,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setUpToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Show menu icon
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.mipmap.ic_menu_white);
+        ab.setDisplayHomeAsUpEnabled(true);
+
+    }
+
     public void getGameThreads(final int numOfEvents) {
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -130,6 +144,8 @@ public class MainActivity extends AppCompatActivity {
             gameThreadId = new String[numOfEvents];
             for (int i = 0; i < numOfEvents; i++){
                 gameThreadId[i] = "No Game Thread found...";
+                gameThreadId[i] = "3uniys";
+
             }
 
             TeamNames tn = new TeamNames();
@@ -141,7 +157,8 @@ public class MainActivity extends AppCompatActivity {
                     if (data.getString("title").contains("GAME THREAD")
                             && data.getString("title").contains(tn.getName(homeTeam[j]))
                             && data.getString("title").contains(tn.getName(awayTeam[j]))) {
-                        gameThreadId[j] = data.getString("id");
+                            gameThreadId[j] = data.getString("id");
+                        Log.d("GAME ID", "for " + gameThreadId[j]);
                     }
                 }
             }

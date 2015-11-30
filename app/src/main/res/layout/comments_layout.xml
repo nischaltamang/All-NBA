@@ -4,12 +4,14 @@
     android:layout_height="wrap_content"
     android:paddingLeft="0dp"
     android:paddingRight="10dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:paddingTop="0dp"
+    android:paddingBottom="0dp">
 
-    <View
+    <TextView
         android:id="@+id/borderView"
-        android:layout_width="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="5dp"
         android:layout_height="fill_parent"
         android:background="@color/blue"/>
 
@@ -29,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/authorTextView"
-        android:paddingLeft="1dp"
+        android:paddingLeft="2dp"
         android:text="1000 points"
         android:textColor="@color/secondaryText"
         android:textSize="10dp"/>
@@ -39,19 +41,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/scoreTextView"
-        android:paddingLeft="1dp"
+        android:paddingLeft="2dp"
         android:text="10 hours ago"
         android:textColor="@color/secondaryText"
         android:textSize="10dp"/>
 
     <TextView
         android:id="@+id/bodyTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/authorTextView"
         android:layout_toRightOf="@+id/borderView"
         android:paddingLeft="10dp"
-        android:paddingTop="3dp"
+        android:paddingTop="2dp"
         android:text="This is a comment"
         android:textColor="@color/primaryText"
         android:textSize="12dp"/>
