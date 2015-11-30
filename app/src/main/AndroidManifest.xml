@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <permission
         android:name="com.example.jorgegil.closegamealert.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -14,14 +15,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -32,40 +31,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".CommentsActivity"
             android:label="Comments"
-            android:screenOrientation="portrait" >
-
+            android:screenOrientation="portrait">
             <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER"></category>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
                 <category android:name="com.example.jorgegil.closegamealert" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name="com.example.jorgegil.closegamealert.GCMMessageHandler"
-            android:exported="false" >
+            android:name=".GCMMessageHandler"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
 
     </application>
-
-
 
 </manifest>

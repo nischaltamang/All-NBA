@@ -2,27 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
+    android:paddingLeft="0dp"
     android:paddingRight="10dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
+
+    <View
+        android:id="@+id/borderView"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:background="@color/blue"/>
+
+    <TextView
+        android:id="@+id/authorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/borderView"
+        android:paddingLeft="10dp"
+        android:text="Author"
+        android:textColor="@color/secondaryText"
+        android:textStyle="bold"
+        android:textSize="10dp"/>
+
+    <TextView
+        android:id="@+id/scoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/authorTextView"
+        android:paddingLeft="1dp"
+        android:text="1000 points"
+        android:textColor="@color/secondaryText"
+        android:textSize="10dp"/>
+
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/scoreTextView"
+        android:paddingLeft="1dp"
+        android:text="10 hours ago"
+        android:textColor="@color/secondaryText"
+        android:textSize="10dp"/>
 
     <TextView
         android:id="@+id/bodyTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/authorTextView"
+        android:layout_toRightOf="@+id/borderView"
+        android:paddingLeft="10dp"
+        android:paddingTop="3dp"
         android:text="This is a comment"
         android:textColor="@color/primaryText"
-        android:textSize="15dp"/>
+        android:textSize="12dp"/>
 
-    <TextView
-        android:id="@+id/authorTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bodyTextView"
-        android:text="Author"
-        android:textColor="@color/secondaryText"
-        android:textSize="15dp"/>
 
 
 </RelativeLayout>

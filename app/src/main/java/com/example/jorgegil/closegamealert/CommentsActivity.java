@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -39,6 +40,10 @@ public class CommentsActivity extends AppCompatActivity {
         String awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
 
         setTitle("GAME THREAD: " + awayTeam + " @ " + homeTeam);
+        if (gameThreadId.equals("No Game Thread found...")) {
+            TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
+            noThread.setText(gameThreadId);
+        }
 
         url = url.replace("GTID", gameThreadId);
 
@@ -50,6 +55,7 @@ public class CommentsActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", "No game thread found");
             }
         });
 
