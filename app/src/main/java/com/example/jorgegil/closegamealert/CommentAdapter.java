@@ -1,11 +1,15 @@
 package com.example.jorgegil.closegamealert;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
@@ -47,46 +51,42 @@ public class CommentAdapter extends BaseAdapter{
         TextView authorView = (TextView) rowView.findViewById(R.id.authorTextView);
         TextView scoreView = (TextView) rowView.findViewById(R.id.scoreTextView);
         TextView postedOnView = (TextView) rowView.findViewById(R.id.timeTextView);
-        TextView borderView = (TextView) rowView.findViewById(R.id.borderView);
+        RelativeLayout relativeLayout = (RelativeLayout) rowView.findViewById(R.id.relativeLayout);
 
         int padding_in_dp = 10;
         final float scale = context.getResources().getDisplayMetrics().density;
         int padding_in_px = (int) (padding_in_dp * scale + 0.5F);
 
         int level = commentsList.get(position).level + 1;
-        Log.d("BORDER", "LVL - " + level);
-
 
         if (level - 1 > 0) {
             int res = (level - 1) % 6;
             switch (res) {
                 case 0:
-                    borderView.setBackgroundColor(context.getResources().getColor(R.color.red));
-                    Log.d("BORDER", "color - 0");
                     break;
-                case 1:  borderView.setBackgroundColor(context.getResources().getColor(R.color.orange));
-                    Log.d("BORDER", "color - 1");
+                case 1:
+                    relativeLayout.setBackgroundResource(R.drawable.borderblue);
                     break;
-                case 2:  borderView.setBackgroundColor(context.getResources().getColor(R.color.brown));
-                    Log.d("BORDER", "color - 2");
+                case 2:
+                    relativeLayout.setBackgroundResource(R.drawable.bordergreen);
                     break;
-                case 3:  borderView.setBackgroundColor(context.getResources().getColor(R.color.blue));
-                    Log.d("BORDER", "color - 3");
+                case 3:
+                    relativeLayout.setBackgroundResource(R.drawable.borderbrown);
                     break;
-                case 4:  borderView.setBackgroundColor(context.getResources().getColor(R.color.green));
-                    Log.d("BORDER", "color - 4");
+                case 4:
+                    relativeLayout.setBackgroundResource(R.drawable.borderorange);
                     break;
-                case 5:  borderView.setBackgroundColor(context.getResources().getColor(R.color.yellow));
-                    Log.d("BORDER", "color - 5");
+                case 5:
+                    relativeLayout.setBackgroundResource(R.drawable.borderred);
                     break;
             }
         }
         rowView.setPadding(padding_in_px * (level - 1), 0, 0, 0);
 
-        commentView.setText(commentsList.get(position).text);
         authorView.setText(commentsList.get(position).author);
-        scoreView.setText(commentsList.get(position).points);
+        scoreView.setText(commentsList.get(position).points + " points");
         postedOnView.setText(commentsList.get(position).postedOn);
+        commentView.setText(commentsList.get(position).text);
 
         return rowView;
     }

@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     String url = "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread";
 
     String[] gameThreadId;
-    String[] gameThreadTitle;
-
     String[] homeTeam;
     String[] awayTeam;
     String[] homeScore;
@@ -144,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
             gameThreadId = new String[numOfEvents];
             for (int i = 0; i < numOfEvents; i++){
                 gameThreadId[i] = "No Game Thread found...";
-
             }
 
             TeamNames tn = new TeamNames();
@@ -152,21 +149,17 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i = 0; i < numOfEvents; i++) {
                 JSONObject data = r.getJSONObject(i).getJSONObject("data");
-                Log.d("GAMEID", "title = " + data.getString("title"));
                 for (int j = 0; j < numOfEvents; j++) {
                     if (data.getString("title").contains("GAME THREAD")
                             && data.getString("title").contains(tn.getName(homeTeam[j]))
                             && data.getString("title").contains(tn.getName(awayTeam[j]))) {
                         gameThreadId[j] = data.getString("id");
-                        Log.d("GAMEID", "home = " + tn.getName(homeTeam[j]));
-                        Log.d("GAMEID", "away = " + tn.getName(awayTeam[j]));
                     }
                 }
             }
 
             for (int i = 0; i < gameThreadId.length; i++){
                 Log.d("GAMEID", i + " -> " + gameThreadId[i]);
-
             }
 
             ListView listView = (ListView) findViewById(R.id.listView);
@@ -177,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Intent intent = new Intent(MainActivity.this, CommentsActivity.class);
-                    Log.d("POS", "I=> " + i);
                     intent.putExtra(GAME_THREAD_ID, gameThreadId[i]);
                     intent.putExtra(GAME_THREAD_HOME, homeTeam[i]);
                     intent.putExtra(GAME_THREAD_AWAY, awayTeam[i]);
