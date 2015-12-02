@@ -30,6 +30,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
     public final static String GAME_THREAD_ID = "com.example.jorgegil.closegamealert.GAME_THREAD_ID";
@@ -40,13 +42,20 @@ public class MainActivity extends AppCompatActivity {
     String PROJECT_NUMBER = "532852092546";
     String url = "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread";
 
-    String[] gameThreadId;
-    String[] homeTeam;
-    String[] awayTeam;
-    String[] homeScore;
-    String[] awayScore;
-    String[] clock;
-    String[] period;
+    //String[] gameThreadId;
+    ArrayList<String> gameThreadId;
+    //String[] homeTeam;
+    ArrayList<String> homeTeam;
+    //String[] awayTeam;
+    ArrayList<String> awayTeam;
+    //String[] homeScore;
+    ArrayList<String> homeScore;
+    //String[] awayScore;
+    ArrayList<String> awayScore;
+    //String[] clock;
+    ArrayList<String> clock;
+    //String[] period;
+    ArrayList<String> period;
 
     ListView listView;
     LinearLayout linlaHeaderProgress;
@@ -63,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setUpToolbar();
-
 
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
         pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
@@ -105,10 +113,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         listView = (ListView) findViewById(R.id.listView);
+        gameThreadId = new ArrayList<>();
+        homeTeam = new ArrayList<>();
+        awayTeam = new ArrayList<>();
+        homeScore = new ArrayList<>();
+        awayScore = new ArrayList<>();
+        clock = new ArrayList<>();
+        period = new ArrayList<>();
+
         loadGameData();
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("game-data"));
-
 
     }
 
@@ -117,15 +132,16 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("message");
             Log.d("recevier", "Got message: " + message);
+
             parseData(message);
         }
     };
 
     public void loadGameData() {
+        gameThreadId.clear();
 
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
-
         listView.setVisibility(View.INVISIBLE);
 
         StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt", new Response.Listener<String>() {
@@ -145,17 +161,54 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void setUpToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Show menu icon
-        final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.mipmap.ic_menu_white);
-        ab.setDisplayHomeAsUpEnabled(true);
+    public void parseData(String response) {
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            int numOfEvents = jsonArray.length();
 
+            homeTeam.clear();
+            awayTeam.clear();
+            homeScore.clear();
+            awayScore.clear();
+            clock.clear();
+            period.clear();
+
+            for(int i = 0; i < numOfEvents; i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                homeTeam.add(jsonObject.getString("homeTeam"));
+                awayTeam.add(jsonObject.getString("awayTeam"));
+                homeScore.add(jsonObject.getString("homeScore"));
+                awayScore.add(jsonObject.getString("awayScore"));
+                clock.add(jsonObject.getString("clock"));
+                period.add(jsonObject.getString("period"));
+
+                if (homeScore.get(i).equals("")) {
+                    homeScore.set(i, "0");
+                }
+
+                if (awayScore.get(i).equals("")) {
+                    awayScore.set(i, "0");
+                }
+
+            }
+
+            Log.d("gameThreadId", "size: " + gameThreadId.size());
+            if (gameThreadId.size() == 0) {
+                getGameThreads(numOfEvents);
+            } else {
+                ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
+                Log.d("adapter", "notified of change");
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getGameThreads(final int numOfEvents) {
+
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -175,29 +228,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void parseGameThreads(String response, int numOfEvents) {
 
-
         try {
-            gameThreadId = new String[numOfEvents];
             for (int i = 0; i < numOfEvents; i++){
-                gameThreadId[i] = "No Game Thread found...";
+                gameThreadId.add("No Game Thread found...");
             }
 
             TeamNames tn = new TeamNames();
             JSONArray r = new JSONObject(response).getJSONObject("data").getJSONArray("children");
 
             for (int i = 0; i < numOfEvents; i++) {
-                JSONObject data = r.getJSONObject(i).getJSONObject("data");
-                for (int j = 0; j < numOfEvents; j++) {
-                    if (data.getString("title").contains("GAME THREAD")
-                            && data.getString("title").contains(tn.getName(homeTeam[j]))
-                            && data.getString("title").contains(tn.getName(awayTeam[j]))) {
-                        gameThreadId[j] = data.getString("id");
+                if (!gameThreadId.get(i).equals("No Game Thread found...")) {
+                    JSONObject data = r.getJSONObject(i).getJSONObject("data");
+                    for (int j = 0; j < numOfEvents; j++) {
+                        if (data.getString("title").contains("GAME THREAD")
+                                && data.getString("title").contains(tn.getName(homeTeam.get(j)))
+                                && data.getString("title").contains(tn.getName(awayTeam.get(j)))) {
+                            gameThreadId.set(j, data.getString("id"));
+                        }
                     }
                 }
             }
 
-            for (int i = 0; i < gameThreadId.length; i++){
-                Log.d("GAMEID", i + " -> " + gameThreadId[i]);
+            for (int i = 0; i < numOfEvents; i++){
+                Log.d("GAMEID", i + " -> " + gameThreadId.get(i));
             }
 
 
@@ -208,9 +261,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Intent intent = new Intent(MainActivity.this, CommentsActivity.class);
-                    intent.putExtra(GAME_THREAD_ID, gameThreadId[i]);
-                    intent.putExtra(GAME_THREAD_HOME, homeTeam[i]);
-                    intent.putExtra(GAME_THREAD_AWAY, awayTeam[i]);
+                    intent.putExtra(GAME_THREAD_ID, gameThreadId.get(i));
+                    intent.putExtra(GAME_THREAD_HOME, homeTeam.get(i));
+                    intent.putExtra(GAME_THREAD_AWAY, awayTeam.get(i));
                     startActivity(intent);
                 }
             });
@@ -219,6 +272,8 @@ public class MainActivity extends AppCompatActivity {
             linlaHeaderProgress.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
 
+            Log.d("gameThreadId", "sizeafter: " + gameThreadId.size());
+
 
         } catch (Exception e) {
             Log.d("AUTOGT", "Error: " + e.getMessage());
@@ -226,50 +281,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void parseData(String response) {
-        try {
-            JSONArray jsonArray = new JSONArray(response);
-            int numOfEvents = jsonArray.length();
+    private void setUpToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Show menu icon
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.mipmap.ic_menu_white);
+        ab.setDisplayHomeAsUpEnabled(true);
 
-            homeTeam = new String[numOfEvents];
-            awayTeam = new String[numOfEvents];
-            homeScore = new String[numOfEvents];
-            awayScore = new String[numOfEvents];
-            clock = new String[numOfEvents];
-            period = new String[numOfEvents];
-
-            for(int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                homeTeam[i] = jsonObject.getString("homeTeam");
-                awayTeam[i] = "" + jsonObject.getString("awayTeam");
-                homeScore[i] = jsonObject.getString("homeScore");
-                awayScore[i] = jsonObject.getString("awayScore");
-                clock[i] = jsonObject.getString("clock");
-                period[i] = jsonObject.getString("period");
-
-                if (homeScore[i].equals("")) {
-                    homeScore[i] = "0";
-                }
-
-                if (awayScore[i].equals("")) {
-                    awayScore[i] = "0";
-                }
-
-            }
-
-            getGameThreads(numOfEvents);
-
-            /*
-            if (parseGameThread)
-                getGameThreads(numOfEvents);
-            else
-                ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
-            */
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -293,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
-        loadGameData();
+        //loadGameData();
     }
 
     @Override

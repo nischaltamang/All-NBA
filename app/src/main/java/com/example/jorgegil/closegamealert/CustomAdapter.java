@@ -8,16 +8,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by jorgegil on 11/5/15.
  */
 public class CustomAdapter extends BaseAdapter {
     private final Context context;
-    private final String[] homeTeam, awayTeam, homeScore, awayScore, clock, period;
+    private final ArrayList<String> homeTeam, awayTeam, homeScore, awayScore, clock, period;
     private static LayoutInflater inflater = null;
 
-    public CustomAdapter(Context context, String[] homeTeam, String[] awayTeam, String[] homeScore,
-                          String[] awayScore, String[] clock, String[] period) {
+    public CustomAdapter(Context context, ArrayList<String> homeTeam, ArrayList<String> awayTeam,
+                         ArrayList<String> homeScore, ArrayList<String> awayScore,
+                         ArrayList<String> clock, ArrayList<String> period) {
         this.context = context;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -30,7 +33,7 @@ public class CustomAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return homeTeam.length;
+        return homeTeam.size();
     }
 
     @Override
@@ -54,24 +57,24 @@ public class CustomAdapter extends BaseAdapter {
         TextView clockLabel = (TextView) rowView.findViewById(R.id.clock);
         TextView periodLabel = (TextView) rowView.findViewById(R.id.period);
 
-        int resKeyHome = context.getResources().getIdentifier(homeTeam[position].toLowerCase(), "drawable", context.getPackageName());
-        int resKeyAway = context.getResources().getIdentifier(awayTeam[position].toLowerCase(), "drawable", context.getPackageName());
+        int resKeyHome = context.getResources().getIdentifier(homeTeam.get(position).toLowerCase(), "drawable", context.getPackageName());
+        int resKeyAway = context.getResources().getIdentifier(awayTeam.get(position).toLowerCase(), "drawable", context.getPackageName());
 
-        homeTeamLabel.setText(homeTeam[position]);
-        awayTeamLabel.setText(awayTeam[position]);
+        homeTeamLabel.setText(homeTeam.get(position));
+        awayTeamLabel.setText(awayTeam.get(position));
         homeLogo.setImageResource(resKeyHome);
         awayLogo.setImageResource(resKeyAway);
-        homeScoreLabel.setText(homeScore[position]);
-        awayScoreLabel.setText(awayScore[position]);
-        clockLabel.setText(clock[position]);
-        periodLabel.setText(period[position]);
+        homeScoreLabel.setText(homeScore.get(position));
+        awayScoreLabel.setText(awayScore.get(position));
+        clockLabel.setText(clock.get(position));
+        periodLabel.setText(period.get(position));
 
         return rowView;
     }
 
     public void clearData() {
         for (int i = 0; i < getCount(); i++) {
-            homeTeam[i] = "";
+            homeTeam.set(i, "");
         }
     }
 }

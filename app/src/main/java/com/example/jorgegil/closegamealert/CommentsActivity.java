@@ -46,7 +46,6 @@ public class CommentsActivity extends AppCompatActivity {
 
         setTitle("GAME THREAD: " + awayTeam + " @ " + homeTeam);
         Log.d("GAME ID", "ID = " + gameThreadId);
-        Log.d("GAME ID", "ID = ");
 
 
         if (gameThreadId.equals("No Game Thread found...")) {
