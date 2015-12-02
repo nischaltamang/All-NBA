@@ -10,7 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -42,14 +44,22 @@ public class MainActivity extends AppCompatActivity {
     String[] clock;
     String[] period;
 
+    ListView listView;
+    LinearLayout linlaHeaderProgress;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setProgressBarIndeterminateVisibility(true);
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         setUpToolbar();
+
 
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
         pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
@@ -90,13 +100,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        listView = (ListView) findViewById(R.id.listView);
         loadGameData();
 
 
     }
 
     public void loadGameData() {
+
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
+
+        listView.setVisibility(View.INVISIBLE);
+
         StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -144,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void parseGameThreads(String response, int numOfEvents) {
 
+
         try {
             gameThreadId = new String[numOfEvents];
             for (int i = 0; i < numOfEvents; i++){
@@ -168,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("GAMEID", i + " -> " + gameThreadId[i]);
             }
 
-            ListView listView = (ListView) findViewById(R.id.listView);
+
             listView.setAdapter(new CustomAdapter(this, homeTeam, awayTeam, homeScore,
                     awayScore, clock, period));
 
@@ -182,6 +199,11 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
+            setProgressBarIndeterminateVisibility(false);
+            linlaHeaderProgress.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+
 
         } catch (Exception e) {
             Log.d("AUTOGT", "Error: " + e.getMessage());
@@ -240,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 loadGameData();
-                Toast.makeText(this, "Refreshing...", Toast.LENGTH_LONG).show();
                 break;
         }
         return super.onOptionsItemSelected(item);

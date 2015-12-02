@@ -68,4 +68,10 @@ public class CustomAdapter extends BaseAdapter {
 
         return rowView;
     }
+
+    public void clearData() {
+        for (int i = 0; i < getCount(); i++) {
+            homeTeam[i] = "";
+        }
+    }
 }
