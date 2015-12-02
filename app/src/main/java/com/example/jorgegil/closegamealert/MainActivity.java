@@ -1,12 +1,13 @@
 package com.example.jorgegil.closegamealert;
 
 import android.content.Intent;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -89,7 +90,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/nbcsports.php", new Response.Listener<String>() {
+
+        loadGameData();
+
+
+    }
+
+    public void loadGameData() {
+        StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 parseData(response);
@@ -98,14 +106,12 @@ public class MainActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse (VolleyError error) {
-                System.out.println("JSON ERROR");
+                Log.e("VOLLEY", error.toString());
             }
         });
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request);
-
-
     }
 
     private void setUpToolbar(){
@@ -222,5 +228,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                loadGameData();
+                Toast.makeText(this, "Refreshing...", Toast.LENGTH_LONG).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        loadGameData();
+    }
 
 }

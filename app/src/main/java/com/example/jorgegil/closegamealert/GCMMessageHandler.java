@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 public class GCMMessageHandler extends GcmListenerService {
     public static final int MESSAGE_NOTIFICATION_ID = 435345;
@@ -14,7 +15,14 @@ public class GCMMessageHandler extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
-        createNotification(message, "Touch to view more!");
+
+        if (message.charAt(0) == '[') {
+            Log.d("GCMListener", "received JSON: " + data.getString("message"));
+
+        } else {
+            Log.d("GCMListener", "received notification: " + data.getString("message"));
+            createNotification(message, "Touch to view more!");
+        }
     }
 
     // Creates notification based on title and body received

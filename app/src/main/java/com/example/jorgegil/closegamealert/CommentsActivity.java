@@ -47,27 +47,31 @@ public class CommentsActivity extends AppCompatActivity {
         setTitle("GAME THREAD: " + awayTeam + " @ " + homeTeam);
         Log.d("GAME ID", "ID = " + gameThreadId);
         Log.d("GAME ID", "ID = ");
+
+
         if (gameThreadId.equals("No Game Thread found...")) {
             TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
             noThread.setText(gameThreadId);
+        } else {
+
+            url = url.replace("GTID", gameThreadId);
+
+            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    loadComments(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Volley", "No game thread found");
+                }
+            });
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+            queue.add(request);
+
         }
-
-        url = url.replace("GTID", gameThreadId);
-
-        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                loadComments(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", "No game thread found");
-            }
-        });
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(request);
 
     }
 
@@ -76,7 +80,7 @@ public class CommentsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
