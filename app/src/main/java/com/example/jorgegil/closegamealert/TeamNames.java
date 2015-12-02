@@ -35,7 +35,7 @@ public class TeamNames {
         names.put("ORL", "Orlando Magic");
         names.put("PHI", "Philadelphia 76ers");
         names.put("PHO", "Phoenix Suns");
-        names.put("POR", "Portland Trailblazers");
+        names.put("POR", "Portland Trail Blazers");
         names.put("SA", "San Antonio Spurs");
         names.put("SAC", "Sacramento Kings");
         names.put("TOR", "Toronto Raptors");
