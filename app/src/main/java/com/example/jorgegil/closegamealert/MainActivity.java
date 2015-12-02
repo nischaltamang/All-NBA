@@ -1,6 +1,10 @@
 package com.example.jorgegil.closegamealert;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -103,8 +107,19 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
         loadGameData();
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("game-data"));
+
 
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+            Log.d("recevier", "Got message: " + message);
+            parseData(message);
+        }
+    };
 
     public void loadGameData() {
 
@@ -245,6 +260,13 @@ public class MainActivity extends AppCompatActivity {
 
             getGameThreads(numOfEvents);
 
+            /*
+            if (parseGameThread)
+                getGameThreads(numOfEvents);
+            else
+                ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
+            */
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -272,6 +294,13 @@ public class MainActivity extends AppCompatActivity {
     {  // After a pause OR at startup
         super.onResume();
         loadGameData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
 
 }

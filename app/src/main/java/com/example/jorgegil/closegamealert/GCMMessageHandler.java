@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class GCMMessageHandler extends GcmListenerService {
@@ -18,7 +19,7 @@ public class GCMMessageHandler extends GcmListenerService {
 
         if (message.charAt(0) == '[') {
             Log.d("GCMListener", "received JSON: " + data.getString("message"));
-
+            sendGameData(data.getString("message"));
         } else {
             Log.d("GCMListener", "received notification: " + data.getString("message"));
             createNotification(message, "Touch to view more!");
@@ -41,6 +42,13 @@ public class GCMMessageHandler extends GcmListenerService {
         NotificationManager mNotificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());
+    }
+
+    private void sendGameData(String message) {
+        Log.d("sender", "Broadcasting message");
+        Intent intent = new Intent("game-data");
+        intent.putExtra("message", message);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
 }

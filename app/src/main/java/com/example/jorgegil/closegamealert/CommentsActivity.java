@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class CommentsActivity extends AppCompatActivity {
 
     String url = "https://www.reddit.com/r/nba/comments/GTID/.json";
-
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +99,10 @@ public class CommentsActivity extends AppCompatActivity {
         CommentsLoader commentsLoader = new CommentsLoader(response);
         ArrayList<Comment> commentList = commentsLoader.fetchComments();
 
-        ListView listView = (ListView) findViewById(R.id.commentsListView);
+        listView = (ListView) findViewById(R.id.commentsListView);
         listView.setAdapter(new CommentAdapter(getApplicationContext(), commentList));
-        System.out.println("COUNT: " + listView.getCount());
-    }
 
+        ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
+    }
 
 }
