@@ -6,8 +6,11 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jorgegil on 11/29/15.
@@ -29,9 +32,29 @@ public class CommentsLoader {
             comment.points = (data.getInt("ups")
                     - data.getInt("downs"))
                     + "";
-            comment.postedOn = new Date((long)data
-                    .getDouble("created_utc"))
-                    .toString();
+
+            Date date = new Date((long)data.getDouble("created_utc") * 1000);
+
+            String format = "EEE MMM dd hh:mm:ss zzz yyyy";
+            Date past = new SimpleDateFormat(format, Locale.ENGLISH).parse(date.toString());
+            Date now = new Date();
+
+            long minutesAgo = (TimeUnit.MILLISECONDS.toMinutes(now.getTime() - past.getTime()));
+            long hoursAgo = (TimeUnit.MILLISECONDS.toHours(now.getTime() - past.getTime()));
+            long daysAgo = (TimeUnit.MILLISECONDS.toDays(now.getTime() - past.getTime()));
+
+            if (minutesAgo == 0) {
+                comment.postedOn = " just now ";
+            } else if (minutesAgo < 60) {
+                comment.postedOn = minutesAgo + " minutes ago";
+            } else {
+                if (hoursAgo < 49) {
+                    comment.postedOn = hoursAgo + " hours ago";
+                } else {
+                    comment.postedOn = daysAgo + " days ago";
+                }
+            }
+
             comment.level=level;
         }catch(Exception e){
             Log.d("ERROR", "Unable to parse comment : " + e);
