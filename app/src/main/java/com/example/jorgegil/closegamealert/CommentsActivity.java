@@ -22,6 +22,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -29,7 +32,11 @@ import java.util.ArrayList;
  */
 public class CommentsActivity extends AppCompatActivity {
 
-    String url = "https://www.reddit.com/r/nba/comments/GTID/.json";
+    String gameThreadsUrl = "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread";
+    String commentsUrl = "https://www.reddit.com/r/nba/comments/GTID/.json";
+    String gameThreadId = "No Game Thread found...";
+    String homeTeam = "";
+    String awayTeam="";
     ListView listView;
 
     @Override
@@ -39,38 +46,28 @@ public class CommentsActivity extends AppCompatActivity {
 
         setUpToolbar();
 
+        // Get teams abbrev from MainActivity
         Intent intent = getIntent();
-        String gameThreadId = intent.getStringExtra(MainActivity.GAME_THREAD_ID);
-        String homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
-        String awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
-
+        homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
+        awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
         setTitle("GAME THREAD: " + awayTeam + " @ " + homeTeam);
-        Log.d("GAME ID", "ID = " + gameThreadId);
 
-
-        if (gameThreadId.equals("No Game Thread found...")) {
-            TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
-            noThread.setText(gameThreadId);
-        } else {
-
-            url = url.replace("GTID", gameThreadId);
-
-            StringRequest request = new StringRequest(url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    loadComments(response);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("Volley", "No game thread found");
-                }
-            });
-
-            RequestQueue queue = Volley.newRequestQueue(this);
-            queue.add(request);
-
-        }
+        // Request new reddit game threads
+        StringRequest request = new StringRequest(gameThreadsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseGameThreads(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse (VolleyError error) {
+                Log.d("Volley", "gameThreadsUrl error: " + error);
+                TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
+                noThread.setText("Error loading reddit threads...");
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
 
     }
 
@@ -94,14 +91,68 @@ public class CommentsActivity extends AppCompatActivity {
 
     }
 
+    public void parseGameThreads(String response) {
+
+        try {
+
+            TeamNames tn = new TeamNames();
+            JSONArray r = new JSONObject(response).getJSONObject("data").getJSONArray("children");
+
+            // Finds Game Thread for this match-up
+            for (int i = 0; i < 15; i++) {
+                if (gameThreadId.equals("No Game Thread found...")) {
+                    JSONObject data = r.getJSONObject(i).getJSONObject("data");
+                    if (data.getString("title").contains("GAME THREAD")
+                            && data.getString("title").contains(tn.getName(homeTeam))
+                            && data.getString("title").contains(tn.getName(awayTeam))) {
+                        gameThreadId = data.getString("id");
+                        break;
+                    }
+                }
+            }
+
+            Log.d("GAMEID", awayTeam + "@" + homeTeam + " id -> " + gameThreadId);
+
+            if (gameThreadId.equals("No Game Thread found...")) {
+                TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
+                noThread.setText(gameThreadId);
+            } else {
+                commentsUrl = commentsUrl.replace("GTID", gameThreadId);
+
+                // Requests Game Thread with found id and loads comments
+                StringRequest request = new StringRequest(commentsUrl, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loadComments(response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", "No game thread found");
+                        TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
+                        noThread.setText(gameThreadId);
+                    }
+                });
+                RequestQueue queue = Volley.newRequestQueue(this);
+                queue.add(request);
+            }
+
+        } catch (Exception e) {
+            Log.d("JSON", "Error: " + e.getMessage());
+        }
+
+    }
+
     public void loadComments(String response) {
+
+        // Loads comments into list view adapter
         CommentsLoader commentsLoader = new CommentsLoader(response);
         ArrayList<Comment> commentList = commentsLoader.fetchComments();
 
         listView = (ListView) findViewById(R.id.commentsListView);
         listView.setAdapter(new CommentAdapter(getApplicationContext(), commentList));
 
-        ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
+        //((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
     }
 
 }

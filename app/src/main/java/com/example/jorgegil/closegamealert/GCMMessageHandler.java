@@ -44,6 +44,7 @@ public class GCMMessageHandler extends GcmListenerService {
         mNotificationManager.notify(MESSAGE_NOTIFICATION_ID, mBuilder.build());
     }
 
+    // Sends new game data to the Main Activity
     private void sendGameData(String message) {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent("game-data");

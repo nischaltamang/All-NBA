@@ -34,45 +34,35 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
-    public final static String GAME_THREAD_ID = "com.example.jorgegil.closegamealert.GAME_THREAD_ID";
     public final static String GAME_THREAD_HOME = "com.example.jorgegil.closegamealert.GAME_THREAD_HOME";
     public final static String GAME_THREAD_AWAY = "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
 
     private GCMClientManager pushClientManager;
     String PROJECT_NUMBER = "532852092546";
-    String url = "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread";
 
-    //String[] gameThreadId;
-    ArrayList<String> gameThreadId;
-    //String[] homeTeam;
     ArrayList<String> homeTeam;
-    //String[] awayTeam;
     ArrayList<String> awayTeam;
-    //String[] homeScore;
     ArrayList<String> homeScore;
-    //String[] awayScore;
     ArrayList<String> awayScore;
-    //String[] clock;
     ArrayList<String> clock;
-    //String[] period;
     ArrayList<String> period;
 
     ListView listView;
     LinearLayout linlaHeaderProgress;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Show loading icon
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setProgressBarIndeterminateVisibility(true);
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-
         setUpToolbar();
 
+        // Register client to GCM
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
         pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
 
@@ -112,33 +102,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Game data
         listView = (ListView) findViewById(R.id.listView);
-        gameThreadId = new ArrayList<>();
         homeTeam = new ArrayList<>();
         awayTeam = new ArrayList<>();
         homeScore = new ArrayList<>();
         awayScore = new ArrayList<>();
         clock = new ArrayList<>();
         period = new ArrayList<>();
-
         loadGameData();
 
+        // Register Broadcast manager to update scores automatically
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("game-data"));
 
     }
 
+    // When new data is received, the JSON is parsed and the listview is notified of change
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("message");
             Log.d("recevier", "Got message: " + message);
 
-            parseData(message);
+            parseData(message, false);
         }
     };
 
+    // Called on full refreshing, adapter is reloaded (not refreshed)
     public void loadGameData() {
-        gameThreadId.clear();
 
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
@@ -147,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseData(response);
+                parseData(response, true);
                 System.out.println("JSON:" + response);
             }
         }, new Response.ErrorListener() {
@@ -161,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    public void parseData(String response) {
+    public void parseData(String response, boolean reload) {
         try {
             JSONArray jsonArray = new JSONArray(response);
             int numOfEvents = jsonArray.length();
@@ -183,102 +174,41 @@ public class MainActivity extends AppCompatActivity {
                 clock.add(jsonObject.getString("clock"));
                 period.add(jsonObject.getString("period"));
 
-                if (homeScore.get(i).equals("")) {
+                if (homeScore.get(i).equals(""))
                     homeScore.set(i, "0");
-                }
 
-                if (awayScore.get(i).equals("")) {
+                if (awayScore.get(i).equals(""))
                     awayScore.set(i, "0");
-                }
 
             }
 
-            Log.d("gameThreadId", "size: " + gameThreadId.size());
-            if (gameThreadId.size() == 0) {
-                getGameThreads(numOfEvents);
-            } else {
+            if (reload) { // when full reload is requested
+                // Set list view adapter for game events
+                listView.setAdapter(new CustomAdapter(this, homeTeam, awayTeam, homeScore,
+                        awayScore, clock, period));
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Intent intent = new Intent(MainActivity.this, CommentsActivity.class);
+                        intent.putExtra(GAME_THREAD_HOME, homeTeam.get(i));
+                        intent.putExtra(GAME_THREAD_AWAY, awayTeam.get(i));
+                        startActivity(intent);
+                    }
+                });
+
+                // Hide reload icon and show list view
+                setProgressBarIndeterminateVisibility(false);
+                linlaHeaderProgress.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
+
+            } else { // when refresh is requested
                 ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
                 Log.d("adapter", "notified of change");
             }
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public void getGameThreads(final int numOfEvents) {
-
-        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                parseGameThreads(response, numOfEvents);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse (VolleyError error) {
-                Log.d("AUTOGT", "getGTErr: " + error);
-            }
-        });
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(request);
-
-    }
-
-    public void parseGameThreads(String response, int numOfEvents) {
-
-        try {
-            for (int i = 0; i < numOfEvents; i++){
-                gameThreadId.add("No Game Thread found...");
-            }
-
-            TeamNames tn = new TeamNames();
-            JSONArray r = new JSONObject(response).getJSONObject("data").getJSONArray("children");
-
-            for (int i = 0; i < numOfEvents; i++) {
-                if (!gameThreadId.get(i).equals("No Game Thread found...")) {
-                    JSONObject data = r.getJSONObject(i).getJSONObject("data");
-                    for (int j = 0; j < numOfEvents; j++) {
-                        if (data.getString("title").contains("GAME THREAD")
-                                && data.getString("title").contains(tn.getName(homeTeam.get(j)))
-                                && data.getString("title").contains(tn.getName(awayTeam.get(j)))) {
-                            gameThreadId.set(j, data.getString("id"));
-                        }
-                    }
-                }
-            }
-
-            for (int i = 0; i < numOfEvents; i++){
-                Log.d("GAMEID", i + " -> " + gameThreadId.get(i));
-            }
-
-
-            listView.setAdapter(new CustomAdapter(this, homeTeam, awayTeam, homeScore,
-                    awayScore, clock, period));
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Intent intent = new Intent(MainActivity.this, CommentsActivity.class);
-                    intent.putExtra(GAME_THREAD_ID, gameThreadId.get(i));
-                    intent.putExtra(GAME_THREAD_HOME, homeTeam.get(i));
-                    intent.putExtra(GAME_THREAD_AWAY, awayTeam.get(i));
-                    startActivity(intent);
-                }
-            });
-
-            setProgressBarIndeterminateVisibility(false);
-            linlaHeaderProgress.setVisibility(View.GONE);
-            listView.setVisibility(View.VISIBLE);
-
-            Log.d("gameThreadId", "sizeafter: " + gameThreadId.size());
-
-
-        } catch (Exception e) {
-            Log.d("AUTOGT", "Error: " + e.getMessage());
-        }
-
     }
 
     private void setUpToolbar(){
@@ -312,7 +242,6 @@ public class MainActivity extends AppCompatActivity {
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
-        //loadGameData();
     }
 
     @Override
