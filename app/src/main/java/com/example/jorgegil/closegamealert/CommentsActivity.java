@@ -1,14 +1,20 @@
 package com.example.jorgegil.closegamealert;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,49 +47,45 @@ public class CommentsActivity extends AppCompatActivity {
     String awayTeam="";
     ListView listView;
     LinearLayout linlaHeaderProgress;
+    TextView noThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Show loading icon
+        // Set up loading icon
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setProgressBarIndeterminateVisibility(true);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments_activity);
 
+        // Show loading icon and hide list view
         listView = (ListView) findViewById(R.id.commentsListView);
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         listView.setVisibility(View.INVISIBLE);
 
-
         setUpToolbar();
+        noThread = (TextView) findViewById(R.id.notFoundTextView);
 
         // Get teams abbrev from MainActivity
         Intent intent = getIntent();
         homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
         awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
-        setTitle("GAME THREAD: " + awayTeam + " @ " + homeTeam);
+        setTitle(awayTeam + " @ " + homeTeam);
 
-        // Request new reddit game threads
-        StringRequest request = new StringRequest(gameThreadsUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                parseGameThreads(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse (VolleyError error) {
-                Log.d("Volley", "gameThreadsUrl error: " + error);
-                TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
-                noThread.setText("Error loading reddit threads...");
-            }
-        });
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(request);
+
+        getGameThreads();
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -92,6 +94,13 @@ public class CommentsActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_refresh:
+                Log.d("Comments", "refreshed clicked");
+                if (commentsUrl.contains("GTID"))
+                    getGameThreads();
+                else
+                    parseComments();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -103,6 +112,24 @@ public class CommentsActivity extends AppCompatActivity {
         final ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
+    }
+
+    private void getGameThreads() {
+        // Request new reddit game threads
+        StringRequest request = new StringRequest(gameThreadsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                parseGameThreads(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse (VolleyError error) {
+                Log.d("Volley", "gameThreadsUrl error: " + error);
+                noThread.setText("Error loading reddit threads...");
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
     }
 
     public void parseGameThreads(String response) {
@@ -128,33 +155,40 @@ public class CommentsActivity extends AppCompatActivity {
             Log.d("GAMEID", awayTeam + "@" + homeTeam + " id -> " + gameThreadId);
 
             if (gameThreadId.equals("No Game Thread found...")) {
-                TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
                 noThread.setText(gameThreadId);
             } else {
                 commentsUrl = commentsUrl.replace("GTID", gameThreadId);
-
-                // Requests Game Thread with found id and loads comments
-                StringRequest request = new StringRequest(commentsUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        loadComments(response);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley", "No game thread found");
-                        TextView noThread = (TextView) findViewById(R.id.notFoundTextView);
-                        noThread.setText(gameThreadId);
-                    }
-                });
-                RequestQueue queue = Volley.newRequestQueue(this);
-                queue.add(request);
+                parseComments();
             }
 
         } catch (Exception e) {
             Log.d("JSON", "Error: " + e.getMessage());
+            noThread.setText("Error parsing game threads...");
         }
 
+    }
+
+    public void parseComments() {
+
+        // Show loading icon and hide list view
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
+        listView.setVisibility(View.INVISIBLE);
+
+        // Requests Game Thread with found id and loads comments
+        StringRequest request = new StringRequest(commentsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                loadComments(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", "No game thread found");
+                noThread.setText(gameThreadId);
+            }
+        });
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
     }
 
     public void loadComments(String response) {
