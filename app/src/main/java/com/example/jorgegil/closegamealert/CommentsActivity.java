@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,11 +40,23 @@ public class CommentsActivity extends AppCompatActivity {
     String homeTeam = "";
     String awayTeam="";
     ListView listView;
+    LinearLayout linlaHeaderProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Show loading icon
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setProgressBarIndeterminateVisibility(true);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments_activity);
+
+        listView = (ListView) findViewById(R.id.commentsListView);
+        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
+        listView.setVisibility(View.INVISIBLE);
+
 
         setUpToolbar();
 
@@ -149,10 +163,12 @@ public class CommentsActivity extends AppCompatActivity {
         CommentsLoader commentsLoader = new CommentsLoader(response);
         ArrayList<Comment> commentList = commentsLoader.fetchComments();
 
-        listView = (ListView) findViewById(R.id.commentsListView);
         listView.setAdapter(new CommentAdapter(getApplicationContext(), commentList));
 
-        //((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
+        // Hide reload icon and show list view
+        setProgressBarIndeterminateVisibility(false);
+        linlaHeaderProgress.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
     }
 
 }
