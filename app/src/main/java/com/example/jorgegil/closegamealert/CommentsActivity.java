@@ -179,6 +179,7 @@ public class CommentsActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 loadComments(response);
+                Log.e("Comments", "json c: " + response);
             }
         }, new Response.ErrorListener() {
             @Override
