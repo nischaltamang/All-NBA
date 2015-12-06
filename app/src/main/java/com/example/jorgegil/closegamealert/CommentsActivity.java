@@ -60,23 +60,40 @@ public class CommentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         // Set up loading icon
+        /*
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setProgressBarIndeterminateVisibility(true);
+        */
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments_activity);
 
+        /*
         // Show loading icon and hide list view
         listView = (ListView) findViewById(R.id.commentsListView);
         linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         listView.setVisibility(View.INVISIBLE);
+        */
 
         setUpToolbar();
         setUpTabLayout();
 
+        //noThread = (TextView) findViewById(R.id.notFoundTextView);
+
+        // Get teams abbrev from MainActivity
+        Intent intent = getIntent();
+        homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
+        awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
+        setTitle(awayTeam + " @ " + homeTeam);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("homeTeam", homeTeam);
+        bundle.putString("awayTeam", awayTeam);
+
+
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        final PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), bundle);
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -97,18 +114,9 @@ public class CommentsActivity extends AppCompatActivity {
         });
 
 
+        //getGameThreads();
 
-        noThread = (TextView) findViewById(R.id.notFoundTextView);
-
-        // Get teams abbrev from MainActivity
-        Intent intent = getIntent();
-        homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
-        awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
-        setTitle(awayTeam + " @ " + homeTeam);
-
-
-        getGameThreads();
-
+        /*
         Button button = (Button) findViewById(R.id.button2);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +124,7 @@ public class CommentsActivity extends AppCompatActivity {
                 addComment();
             }
         });
+        */
 
     }
 

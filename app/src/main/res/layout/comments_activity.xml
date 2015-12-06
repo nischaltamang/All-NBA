@@ -28,6 +28,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tabLayout"/>
 
+    <!--
+
     <LinearLayout
         android:id="@+id/linlaHeaderProgress"
         android:layout_width="fill_parent"
@@ -71,5 +73,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp" />
+
+        -->
 
 </RelativeLayout>
