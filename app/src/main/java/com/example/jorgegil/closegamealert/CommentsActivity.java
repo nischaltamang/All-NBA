@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
@@ -47,7 +48,8 @@ public class CommentsActivity extends AppCompatActivity {
     String commentsUrl = "https://www.reddit.com/r/nba/comments/GTID/.json";
     String gameThreadId = "No Game Thread found...";
     String homeTeam = "";
-    String awayTeam="";
+    String awayTeam= "";
+    String gameId = "";
     TabLayout tabLayout;
     ListView listView;
     LinearLayout linlaHeaderProgress;
@@ -85,11 +87,14 @@ public class CommentsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
         awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
+        gameId = intent.getStringExtra(MainActivity.GAME_ID);
+
         setTitle(awayTeam + " @ " + homeTeam);
 
         Bundle bundle = new Bundle();
         bundle.putString("homeTeam", homeTeam);
         bundle.putString("awayTeam", awayTeam);
+        bundle.putString("gameId", gameId);
 
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);

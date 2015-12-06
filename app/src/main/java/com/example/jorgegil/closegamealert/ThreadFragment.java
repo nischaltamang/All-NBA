@@ -85,7 +85,7 @@ public class ThreadFragment extends Fragment {
         return view;
     }
 
-    private void getGameThreads() {
+    public void getGameThreads() {
         // Request new reddit game threads
         StringRequest request = new StringRequest(gameThreadsUrl, new Response.Listener<String>() {
             @Override

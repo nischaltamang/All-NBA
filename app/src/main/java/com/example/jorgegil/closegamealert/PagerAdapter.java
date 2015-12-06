@@ -27,6 +27,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 return tab1;
             case 1:
                 BoxScoreFragment tab2 = new BoxScoreFragment();
+                tab2.setArguments(bundle);
                 return tab2;
             case 2:
                 StatsFragment tab3 = new StatsFragment();

@@ -12,14 +12,6 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BoxScoreFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BoxScoreFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BoxScoreFragment extends Fragment {
 
     public BoxScoreFragment() {
@@ -39,6 +31,8 @@ public class BoxScoreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_box_score, container, false);
 
+        String gameId = getArguments().getString("gameId");
+
         WebView webView = (WebView) view.findViewById(R.id.webView1);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
@@ -48,7 +42,9 @@ public class BoxScoreFragment extends Fragment {
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
         });
-        webView.loadUrl("http://espn.go.com/nba/gamecast?gameId=400828174&version=mobile&gcSection=boxscore");
+
+
+        webView.loadUrl("http://espn.go.com/nba/gamecast?gameId=" + gameId + "&version=mobile&gcSection=boxscore");
 
 
         return view;

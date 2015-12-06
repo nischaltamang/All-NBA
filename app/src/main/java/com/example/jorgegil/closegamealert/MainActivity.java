@@ -37,6 +37,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     public final static String GAME_THREAD_HOME = "com.example.jorgegil.closegamealert.GAME_THREAD_HOME";
     public final static String GAME_THREAD_AWAY = "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
+    public final static String GAME_ID = "com.example.jorgegil.closegamealert.GAME_ID";
 
     private GCMClientManager pushClientManager;
     String PROJECT_NUMBER = "532852092546";
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> awayScore;
     ArrayList<String> clock;
     ArrayList<String> period;
+    ArrayList<String> gameId;
 
     ListView listView;
     LinearLayout linlaHeaderProgress;
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         awayScore = new ArrayList<>();
         clock = new ArrayList<>();
         period = new ArrayList<>();
+        gameId = new ArrayList<>();
         loadGameData();
 
         // Register Broadcast manager to update scores automatically
@@ -175,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
             awayScore.clear();
             clock.clear();
             period.clear();
+            gameId.clear();
 
             for(int i = 0; i < numOfEvents; i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -185,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
                 awayScore.add(jsonObject.getString("awayScore"));
                 clock.add(jsonObject.getString("clock"));
                 period.add(jsonObject.getString("period"));
+                gameId.add(jsonObject.getString("id"));
+
 
                 if (homeScore.get(i).equals(""))
                     homeScore.set(i, "0");
@@ -205,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(MainActivity.this, CommentsActivity.class);
                         intent.putExtra(GAME_THREAD_HOME, homeTeam.get(i));
                         intent.putExtra(GAME_THREAD_AWAY, awayTeam.get(i));
+                        intent.putExtra(GAME_ID, gameId.get(i));
                         startActivity(intent);
                     }
                 });
