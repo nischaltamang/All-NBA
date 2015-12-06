@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,9 +47,13 @@ public class CommentsActivity extends AppCompatActivity {
     String gameThreadId = "No Game Thread found...";
     String homeTeam = "";
     String awayTeam="";
+    TabLayout tabLayout;
     ListView listView;
     LinearLayout linlaHeaderProgress;
     TextView noThread;
+    boolean foundThread = false;
+
+    ArrayList<Comment> commentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,7 @@ public class CommentsActivity extends AppCompatActivity {
         listView.setVisibility(View.INVISIBLE);
 
         setUpToolbar();
+        setUpTabLayout();
         noThread = (TextView) findViewById(R.id.notFoundTextView);
 
         // Get teams abbrev from MainActivity
@@ -76,6 +83,14 @@ public class CommentsActivity extends AppCompatActivity {
 
 
         getGameThreads();
+
+        Button button = (Button) findViewById(R.id.button2);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addComment();
+            }
+        });
 
     }
 
@@ -96,6 +111,7 @@ public class CommentsActivity extends AppCompatActivity {
                 return true;
             case R.id.action_refresh:
                 Log.d("Comments", "refreshed clicked");
+                noThread.setText("");
                 if (commentsUrl.contains("GTID"))
                     getGameThreads();
                 else
@@ -114,6 +130,14 @@ public class CommentsActivity extends AppCompatActivity {
 
     }
 
+    private void setUpTabLayout() {
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.addTab(tabLayout.newTab().setText("Thread"));
+        tabLayout.addTab(tabLayout.newTab().setText("Boxscore"));
+        tabLayout.addTab(tabLayout.newTab().setText("Stats"));
+    }
+
     private void getGameThreads() {
         // Request new reddit game threads
         StringRequest request = new StringRequest(gameThreadsUrl, new Response.Listener<String>() {
@@ -126,6 +150,7 @@ public class CommentsActivity extends AppCompatActivity {
             public void onErrorResponse (VolleyError error) {
                 Log.d("Volley", "gameThreadsUrl error: " + error);
                 noThread.setText("Error loading reddit threads...");
+                hideLoadingIcon();
             }
         });
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -141,12 +166,13 @@ public class CommentsActivity extends AppCompatActivity {
 
             // Finds Game Thread for this match-up
             for (int i = 0; i < 15; i++) {
-                if (gameThreadId.equals("No Game Thread found...")) {
+                if (!foundThread) {
                     JSONObject data = r.getJSONObject(i).getJSONObject("data");
                     if (data.getString("title").contains("GAME THREAD")
                             && data.getString("title").contains(tn.getName(homeTeam))
                             && data.getString("title").contains(tn.getName(awayTeam))) {
                         gameThreadId = data.getString("id");
+                        foundThread = true;
                         break;
                     }
                 }
@@ -156,6 +182,7 @@ public class CommentsActivity extends AppCompatActivity {
 
             if (gameThreadId.equals("No Game Thread found...")) {
                 noThread.setText(gameThreadId);
+                hideLoadingIcon();
             } else {
                 commentsUrl = commentsUrl.replace("GTID", gameThreadId);
                 parseComments();
@@ -164,6 +191,7 @@ public class CommentsActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("JSON", "Error: " + e.getMessage());
             noThread.setText("Error parsing game threads...");
+            hideLoadingIcon();
         }
 
     }
@@ -186,6 +214,7 @@ public class CommentsActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.e("Volley", "No game thread found");
                 noThread.setText(gameThreadId);
+                hideLoadingIcon();
             }
         });
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -196,11 +225,36 @@ public class CommentsActivity extends AppCompatActivity {
 
         // Loads comments into list view adapter
         CommentsLoader commentsLoader = new CommentsLoader(response);
-        ArrayList<Comment> commentList = commentsLoader.fetchComments();
+        commentList = commentsLoader.fetchComments();
 
         listView.setAdapter(new CommentAdapter(getApplicationContext(), commentList));
 
         // Hide reload icon and show list view
+        setProgressBarIndeterminateVisibility(false);
+        linlaHeaderProgress.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
+    }
+
+
+    public void addComment() {
+        Comment comment = new Comment();
+        comment.text = "Nuevo comentario";
+        comment.author = "jorgegil96";
+        comment.points = "5";
+        comment.postedOn = "just now";
+        comment.level = 0;
+
+        commentList.add(0, comment);
+
+        int lastViewedPosition = listView.getFirstVisiblePosition();
+
+        ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+        listView.setSelection(lastViewedPosition + 1);
+        Log.d("adapter", "added new comment");
+    }
+
+    private void hideLoadingIcon() {
         setProgressBarIndeterminateVisibility(false);
         linlaHeaderProgress.setVisibility(View.GONE);
         listView.setVisibility(View.VISIBLE);
