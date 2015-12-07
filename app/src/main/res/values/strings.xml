@@ -1,9 +1,7 @@
 <resources>
-    <string name="app_name">Close Game Alert</string>
+    <string name="app_name">NBA Reddit</string>
     <string name="title_activity_thread">ThreadActivity</string>
 
     <string name="action_refresh">Refresh</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -40,7 +40,7 @@ public class TeamNames {
         names.put("SA", "San Antonio Spurs");
         names.put("SAC", "Sacramento Kings");
         names.put("TOR", "Toronto Raptors");
-        names.put("UTA", "Utah Jazz");
+        names.put("UTAH", "Utah Jazz");
         names.put("WAS", "Washington Wizards");
         names.put("WSH", "Washington Wizards"); //ESPN
     }

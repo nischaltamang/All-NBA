@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -119,17 +118,6 @@ public class MainActivity extends AppCompatActivity {
         // Register Broadcast manager to update scores automatically
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("game-data"));
 
-
-        Button button = (Button) findViewById(R.id.button1);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BoxScoreActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
     }
 
     // When new data is received, the JSON is parsed and the listview is notified of change
@@ -191,12 +179,12 @@ public class MainActivity extends AppCompatActivity {
                 period.add(jsonObject.getString("period"));
                 gameId.add(jsonObject.getString("id"));
 
-
-                if (homeScore.get(i).equals(""))
-                    homeScore.set(i, "0");
-
-                if (awayScore.get(i).equals(""))
-                    awayScore.set(i, "0");
+                if (period.get(i).equals("0")) {
+                    clock.set(i, "PRE");
+                    period.set(i, "GAME");
+                } else {
+                    period.set(i, period.get(i) + " Qtr");
+                }
 
             }
 
