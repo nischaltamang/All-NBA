@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
     ListView listView;
     LinearLayout linlaHeaderProgress;
+    Toolbar toolbar;
+    ActionBar ab;
+
+    DrawerLayout drawerLayout;
 
 
     @Override
@@ -63,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpToolbar();
+        setUpNavigationView();
+
 
         // Register client to GCM
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
@@ -118,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
         // Register Broadcast manager to update scores automatically
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("game-data"));
 
+    }
+
+    private void setUpNavigationView(){
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
     // When new data is received, the JSON is parsed and the listview is notified of change
@@ -219,10 +232,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Show menu icon
-        final ActionBar ab = getSupportActionBar();
+        ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.mipmap.ic_menu_white);
         ab.setDisplayHomeAsUpEnabled(true);
 
@@ -238,9 +251,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
             case R.id.action_refresh:
                 loadGameData();
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
