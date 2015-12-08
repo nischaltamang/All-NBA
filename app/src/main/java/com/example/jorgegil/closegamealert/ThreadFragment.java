@@ -3,6 +3,7 @@ package com.example.jorgegil.closegamealert;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -73,8 +74,8 @@ public class ThreadFragment extends Fragment {
 
         getGameThreads();
 
-        Button button = (Button) view.findViewById(R.id.button2);
-        button.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addComment();

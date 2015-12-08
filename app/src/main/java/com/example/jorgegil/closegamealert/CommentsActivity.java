@@ -61,27 +61,14 @@ public class CommentsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Set up loading icon
-        /*
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setProgressBarIndeterminateVisibility(true);
-        */
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments_activity);
 
-        /*
-        // Show loading icon and hide list view
-        listView = (ListView) findViewById(R.id.commentsListView);
-        linlaHeaderProgress = (LinearLayout) findViewById(R.id.linlaHeaderProgress);
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
-        listView.setVisibility(View.INVISIBLE);
-        */
 
         setUpToolbar();
         setUpTabLayout();
 
-        //noThread = (TextView) findViewById(R.id.notFoundTextView);
 
         // Get teams abbrev from MainActivity
         Intent intent = getIntent();
@@ -118,18 +105,6 @@ public class CommentsActivity extends AppCompatActivity {
             }
         });
 
-
-        //getGameThreads();
-
-        /*
-        Button button = (Button) findViewById(R.id.button2);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addComment();
-            }
-        });
-        */
 
     }
 
@@ -172,9 +147,9 @@ public class CommentsActivity extends AppCompatActivity {
     private void setUpTabLayout() {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.addTab(tabLayout.newTab().setText("Thread"));
+        tabLayout.addTab(tabLayout.newTab().setText("Game Thread"));
         tabLayout.addTab(tabLayout.newTab().setText("Box Score"));
-        tabLayout.addTab(tabLayout.newTab().setText("Stats"));
+        tabLayout.addTab(tabLayout.newTab().setText("Post Game Thread"));
     }
 
     private void getGameThreads() {
