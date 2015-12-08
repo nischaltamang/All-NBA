@@ -1,1 +1,2 @@
-Android app that shows real-time scores and sends push notifications when an NBA game is close in score and almost finished.
+Android app for /r/NBA in reddit. 
+Shows real-time scores, gamethreads, box scores, stats and reddit's threads and highlights.
