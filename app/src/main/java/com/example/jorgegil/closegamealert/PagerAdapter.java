@@ -22,6 +22,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
+                bundle.putString("threadUrl", "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread");
+                bundle.putString("threadType", "LIVE");
                 ThreadFragment tab1 = new ThreadFragment();
                 tab1.setArguments(bundle);
                 return tab1;
@@ -30,7 +32,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 tab2.setArguments(bundle);
                 return tab2;
             case 2:
-                StatsFragment tab3 = new StatsFragment();
+                bundle.putString("threadUrl", "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3ASpoilers");
+                bundle.putString("threadType", "POST");
+                ThreadFragment tab3 = new ThreadFragment();
+                tab3.setArguments(bundle);
                 return tab3;
             default:
                 return null;

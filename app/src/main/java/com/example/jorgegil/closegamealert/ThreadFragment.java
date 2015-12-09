@@ -30,16 +30,18 @@ import java.util.ArrayList;
 
 public class ThreadFragment extends Fragment {
 
-    String gameThreadsUrl = "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread";
+    String threadUrl;
     String commentsUrl = "https://www.reddit.com/r/nba/comments/GTID/.json";
-    String gameThreadId = "No Game Thread found...";
-    String homeTeam = "";
-    String awayTeam="";
+    String threadId = "No Thread found...";
+    String homeTeam;
+    String awayTeam;
+    String threadType;
     ListView listView;
     LinearLayout linlaHeaderProgress;
     TextView noThread;
     boolean foundThread = false;
 
+    FloatingActionButton fab;
     ArrayList<Comment> commentList;
 
     public ThreadFragment() {
@@ -69,18 +71,21 @@ public class ThreadFragment extends Fragment {
 
         homeTeam = getArguments().getString("homeTeam");
         awayTeam = getArguments().getString("awayTeam");
+        threadUrl = getArguments().getString("threadUrl");
+        threadType = getArguments().getString("threadType");
 
         noThread = (TextView) view.findViewById(R.id.notFoundTextView);
 
         getGameThreads();
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addComment();
             }
         });
+        fab.setVisibility(View.INVISIBLE);
 
 
         return view;
@@ -88,7 +93,7 @@ public class ThreadFragment extends Fragment {
 
     public void getGameThreads() {
         // Request new reddit game threads
-        StringRequest request = new StringRequest(gameThreadsUrl, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(threadUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 parseGameThreads(response);
@@ -96,7 +101,7 @@ public class ThreadFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse (VolleyError error) {
-                Log.d("Volley", "gameThreadsUrl error: " + error);
+                Log.d("Volley", "threadUrl error: " + error);
                 noThread.setText("Error loading reddit threads...");
                 hideLoadingIcon();
             }
@@ -112,27 +117,42 @@ public class ThreadFragment extends Fragment {
             TeamNames tn = new TeamNames();
             JSONArray r = new JSONObject(response).getJSONObject("data").getJSONArray("children");
 
-            // Finds Game Thread for this match-up
+            // Finds Thread for this match-up
             for (int i = 0; i < 15; i++) {
                 if (!foundThread) {
                     JSONObject data = r.getJSONObject(i).getJSONObject("data");
-                    if (data.getString("title").contains("GAME THREAD")
-                            && data.getString("title").contains(tn.getName(homeTeam))
-                            && data.getString("title").contains(tn.getName(awayTeam))) {
-                        gameThreadId = data.getString("id");
-                        foundThread = true;
-                        break;
+
+                    String title = data.getString("title").toUpperCase();
+                    String nameH = tn.getName(homeTeam).toUpperCase();
+                    String nameA = tn.getName(awayTeam).toUpperCase();
+
+                    if (threadType.equals("LIVE")) {
+                        if (title.contains("GAME THREAD")
+                                && title.contains(nameH)
+                                && title.contains(nameA)) {
+                            threadId = data.getString("id");
+                            foundThread = true;
+                            break;
+                        }
+                    } else {
+                        if (title.contains("POST") && title.contains("GAME") && title.contains("THREAD")
+                                && title.contains(nameH.substring(nameH.lastIndexOf(' ') + 1))
+                                && title.contains(nameA.substring(nameA.lastIndexOf(' ') + 1))) {
+                            threadId = data.getString("id");
+                            foundThread = true;
+                            break;
+                        }
                     }
                 }
             }
 
-            Log.d("GAMEID", awayTeam + "@" + homeTeam + " id -> " + gameThreadId);
+            Log.d("GAMEID", awayTeam + "@" + homeTeam + " id -> " + threadId);
 
-            if (gameThreadId.equals("No Game Thread found...")) {
-                noThread.setText(gameThreadId);
+            if (!foundThread) {
+                noThread.setText(threadId);
                 hideLoadingIcon();
             } else {
-                commentsUrl = commentsUrl.replace("GTID", gameThreadId);
+                commentsUrl = commentsUrl.replace("GTID", threadId);
                 parseComments();
             }
 
@@ -155,13 +175,12 @@ public class ThreadFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 loadComments(response);
-                Log.e("Comments", "json c: " + response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", "No game thread found");
-                noThread.setText(gameThreadId);
+                Log.e("Volley", "No thread found");
+                noThread.setText(threadId);
                 hideLoadingIcon();
             }
         });
@@ -181,6 +200,8 @@ public class ThreadFragment extends Fragment {
         getActivity().setProgressBarIndeterminateVisibility(false);
         linlaHeaderProgress.setVisibility(View.GONE);
         listView.setVisibility(View.VISIBLE);
+
+        fab.setVisibility(View.VISIBLE);
     }
 
 

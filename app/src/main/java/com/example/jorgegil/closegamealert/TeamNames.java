@@ -34,14 +34,12 @@ public class TeamNames {
         names.put("OKC", "Oklahoma City Thunder");
         names.put("ORL", "Orlando Magic");
         names.put("PHI", "Philadelphia 76ers");
-        names.put("PHO", "Phoenix Suns");
         names.put("PHX", "Phoenix Suns"); //ESPN
         names.put("POR", "Portland Trail Blazers");
         names.put("SA", "San Antonio Spurs");
         names.put("SAC", "Sacramento Kings");
         names.put("TOR", "Toronto Raptors");
         names.put("UTAH", "Utah Jazz");
-        names.put("WAS", "Washington Wizards");
         names.put("WSH", "Washington Wizards"); //ESPN
     }
 
