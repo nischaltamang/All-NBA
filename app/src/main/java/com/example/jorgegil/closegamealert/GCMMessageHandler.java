@@ -15,14 +15,20 @@ public class GCMMessageHandler extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
 
-        if (message.charAt(0) == '[') {
-            Log.d("GCMListener", "received JSON: " + data.getString("message"));
-            sendGameData(data.getString("message"));
-        } else {
-            Log.d("GCMListener", "received notification: " + data.getString("message"));
-            createNotification(message, "Touch to view more!");
+        if (data.getString("comment") != null) {
+            sendNewComment(data.getString("comment"));
+        }
+
+        if (data.getString("message") != null) {
+            String message = data.getString("message");
+            if (message.charAt(0) == '[') {
+                Log.d("GCMListener", "received JSON: " + data.getString("message"));
+                sendGameData(data.getString("message"));
+            } else {
+                Log.d("GCMListener", "received notification: " + data.getString("message"));
+                createNotification(message, "Touch to view more!");
+            }
         }
     }
 
@@ -49,6 +55,13 @@ public class GCMMessageHandler extends GcmListenerService {
         Log.d("sender", "Broadcasting message");
         Intent intent = new Intent("game-data");
         intent.putExtra("message", message);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void sendNewComment(String comment) {
+        Log.d("JSON", "received comment: " + comment);
+        Intent intent = new Intent("comment-data");
+        intent.putExtra("comment", comment);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

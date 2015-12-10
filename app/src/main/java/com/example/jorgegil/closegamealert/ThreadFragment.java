@@ -1,17 +1,17 @@
 package com.example.jorgegil.closegamealert;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -82,14 +82,30 @@ public class ThreadFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addComment();
+                //addComment();
             }
         });
         fab.setVisibility(View.INVISIBLE);
 
+        if (getActivity() != null) {
+            // Register Broadcast manager to update scores automatically
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("comment-data"));
+        }
+
 
         return view;
     }
+
+    // When new data is received, the JSON is parsed and the listview is notified of change
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String comment = intent.getStringExtra("comment");
+            Log.d("recevier", "Got comment: " + comment);
+
+            addComment(comment);
+        }
+    };
 
     public void getGameThreads() {
         // Request new reddit game threads
@@ -208,22 +224,31 @@ public class ThreadFragment extends Fragment {
     }
 
 
-    public void addComment() {
-        Comment comment = new Comment();
-        comment.text = "Nuevo comentario";
-        comment.author = "jorgegil96";
-        comment.points = "5";
-        comment.postedOn = "just now";
-        comment.level = 0;
+    public void addComment(String jsonComment) {
 
-        commentList.add(0, comment);
+        try {
+            JSONObject jsonObject = new JSONObject(jsonComment);
 
-        int lastViewedPosition = listView.getFirstVisiblePosition();
+            Comment comment = new Comment();
+            comment.text = jsonObject.getString("text");
+            comment.author = jsonObject.getString("author");
+            comment.points = jsonObject.getString("points");
+            comment.postedOn = jsonObject.getString("postedOn");
+            comment.level = Integer.parseInt(jsonObject.getString("level"));
 
-        ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
+            commentList.add(0, comment);
 
-        listView.setSelection(lastViewedPosition + 1);
-        Log.d("adapter", "added new comment");
+            int lastViewedPosition = listView.getFirstVisiblePosition();
+
+            ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
+
+            listView.setSelection(lastViewedPosition + 1);
+            Log.d("adapter", "added new comment");
+
+        } catch (Exception e) {
+            Log.e("JSON", "add comment e: " + e.toString());
+        }
+
     }
 
     private void hideLoadingIcon() {
