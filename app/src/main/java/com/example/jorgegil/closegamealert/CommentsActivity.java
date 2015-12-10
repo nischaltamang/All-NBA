@@ -66,10 +66,6 @@ public class CommentsActivity extends AppCompatActivity {
         setContentView(R.layout.comments_activity);
 
 
-        setUpToolbar();
-        setUpTabLayout();
-
-
         // Get teams abbrev from MainActivity
         Intent intent = getIntent();
         homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
@@ -83,6 +79,8 @@ public class CommentsActivity extends AppCompatActivity {
         bundle.putString("awayTeam", awayTeam);
         bundle.putString("gameId", gameId);
 
+        setUpToolbar();
+        setUpTabLayout();
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), bundle);
@@ -104,7 +102,6 @@ public class CommentsActivity extends AppCompatActivity {
 
             }
         });
-
 
     }
 

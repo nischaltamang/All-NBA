@@ -190,18 +190,21 @@ public class ThreadFragment extends Fragment {
 
     public void loadComments(String response) {
 
-        // Loads comments into list view adapter
-        CommentsLoader commentsLoader = new CommentsLoader(response);
-        commentList = commentsLoader.fetchComments();
+        if (getActivity() != null) {
+            // Loads comments into list view adapter
+            CommentsLoader commentsLoader = new CommentsLoader(response);
+            commentList = commentsLoader.fetchComments();
 
-        listView.setAdapter(new CommentAdapter(getActivity(), commentList));
 
-        // Hide reload icon and show list view
-        getActivity().setProgressBarIndeterminateVisibility(false);
-        linlaHeaderProgress.setVisibility(View.GONE);
-        listView.setVisibility(View.VISIBLE);
+            listView.setAdapter(new CommentAdapter(getActivity(), commentList));
 
-        fab.setVisibility(View.VISIBLE);
+            // Hide reload icon and show list view
+            getActivity().setProgressBarIndeterminateVisibility(false);
+            linlaHeaderProgress.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+
+            fab.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -224,8 +227,10 @@ public class ThreadFragment extends Fragment {
     }
 
     private void hideLoadingIcon() {
-        getActivity().setProgressBarIndeterminateVisibility(false);
-        linlaHeaderProgress.setVisibility(View.GONE);
-        listView.setVisibility(View.VISIBLE);
+        if(getActivity() != null) {
+            getActivity().setProgressBarIndeterminateVisibility(false);
+            linlaHeaderProgress.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
     }
 }
