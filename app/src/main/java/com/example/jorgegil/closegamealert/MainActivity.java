@@ -8,7 +8,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> clock;
     ArrayList<String> period;
     ArrayList<String> gameId;
+    ArrayList<String> status;
 
     ListView listView;
     LinearLayout linlaHeaderProgress;
@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         clock = new ArrayList<>();
         period = new ArrayList<>();
         gameId = new ArrayList<>();
+        status = new ArrayList<>();
+
         loadGameData();
 
         // Register Broadcast manager to update scores automatically
@@ -180,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             clock.clear();
             period.clear();
             gameId.clear();
+            status.clear();
 
             for(int i = 0; i < numOfEvents; i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -191,12 +194,20 @@ public class MainActivity extends AppCompatActivity {
                 clock.add(jsonObject.getString("clock"));
                 period.add(jsonObject.getString("period"));
                 gameId.add(jsonObject.getString("id"));
+                status.add(jsonObject.getString("status"));
 
-                if (period.get(i).equals("0")) {
-                    clock.set(i, "PRE");
-                    period.set(i, "GAME");
-                } else {
-                    period.set(i, period.get(i) + " Qtr");
+                switch (status.get(i)) {
+                    case "pre":
+                        clock.set(i, "PRE");
+                        period.set(i, "GAME");
+                        break;
+                    case "in":
+                        period.set(i, period.get(i) + " Qtr");
+                        break;
+                    case "post":
+                        clock.set(i, "FINAL");
+                        period.set(i, "");
+                        break;
                 }
 
             }
