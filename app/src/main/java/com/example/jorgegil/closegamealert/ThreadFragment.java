@@ -25,7 +25,11 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 
 public class ThreadFragment extends Fragment {
@@ -233,8 +237,9 @@ public class ThreadFragment extends Fragment {
             comment.text = jsonObject.getString("text");
             comment.author = jsonObject.getString("author");
             comment.points = jsonObject.getString("points");
-            comment.postedOn = jsonObject.getString("postedOn");
             comment.level = Integer.parseInt(jsonObject.getString("level"));
+            comment.postedOn = getDate(jsonObject.getString("postedOn"));
+
 
             commentList.add(0, comment);
 
@@ -242,7 +247,10 @@ public class ThreadFragment extends Fragment {
 
             ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
 
-            listView.setSelection(lastViewedPosition + 1);
+            if (lastViewedPosition != 0) {
+                listView.setSelection(lastViewedPosition + 1);
+            }
+
             Log.d("adapter", "added new comment");
 
         } catch (Exception e) {
@@ -257,5 +265,34 @@ public class ThreadFragment extends Fragment {
             linlaHeaderProgress.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private String getDate(String s) {
+        String postedOn = "";
+        try {
+            Date date = new Date(Integer.parseInt(s) * 1000);
+            String format = "EEE MMM dd hh:mm:ss zzz yyyy";
+            Date past = new SimpleDateFormat(format, Locale.ENGLISH).parse(date.toString());
+            Date now = new Date();
+
+            long minutesAgo = (TimeUnit.MILLISECONDS.toMinutes(now.getTime() - past.getTime()));
+            long hoursAgo = (TimeUnit.MILLISECONDS.toHours(now.getTime() - past.getTime()));
+            long daysAgo = (TimeUnit.MILLISECONDS.toDays(now.getTime() - past.getTime()));
+
+            if (minutesAgo == 0) {
+                postedOn = " just now ";
+            } else if (minutesAgo < 60) {
+                postedOn = minutesAgo + " minutes ago";
+            } else {
+                if (hoursAgo < 49) {
+                    postedOn = hoursAgo + " hours ago";
+                } else {
+                    postedOn = daysAgo + " days ago";
+                }
+            }
+        } catch (Exception e) {
+            Log.e("ThreadFragment", "date exception: " + e.toString());
+        }
+        return postedOn;
     }
 }

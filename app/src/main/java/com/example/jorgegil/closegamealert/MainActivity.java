@@ -202,7 +202,10 @@ public class MainActivity extends AppCompatActivity {
                         period.set(i, "GAME");
                         break;
                     case "in":
-                        period.set(i, period.get(i) + " Qtr");
+                        if (Integer.parseInt(period.get(i)) < 5)
+                            period.set(i, period.get(i) + " Qtr");
+                        else
+                            period.set(i, "OT" + (Integer.parseInt(period.get(i)) - 4));
                         break;
                     case "post":
                         clock.set(i, "FINAL");
