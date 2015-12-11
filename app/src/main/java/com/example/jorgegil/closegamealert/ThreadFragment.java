@@ -76,6 +76,7 @@ public class ThreadFragment extends Fragment {
         homeTeam = getArguments().getString("homeTeam");
         awayTeam = getArguments().getString("awayTeam");
         threadUrl = getArguments().getString("threadUrl");
+        Log.d("THREAD", "ThreadURL: " + threadUrl);
         threadType = getArguments().getString("threadType");
 
         noThread = (TextView) view.findViewById(R.id.notFoundTextView);
@@ -104,10 +105,27 @@ public class ThreadFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String comment = intent.getStringExtra("comment");
-            Log.d("recevier", "Got comment: " + comment);
+            String JSONcomment = intent.getStringExtra("comment");
+            Log.d("recevier", "Got comment: " + JSONcomment);
 
-            addComment(comment);
+            try {
+                JSONObject jsonObject = new JSONObject(JSONcomment);
+
+                Comment comment = new Comment();
+                comment.text = jsonObject.getString("text");
+                comment.author = jsonObject.getString("author");
+                comment.points = jsonObject.getString("points");
+                comment.level = Integer.parseInt(jsonObject.getString("level"));
+                comment.postedOn = getDate(jsonObject.getString("postedOn"));
+                String commentThreadId = jsonObject.getString("threadId");
+
+                if (commentThreadId.equals(threadId)) {
+                    addComment(comment);
+                }
+
+            } catch (Exception e) {
+                Log.e("JSON", "add comment e: " + e.toString());
+            }
         }
     };
 
@@ -155,6 +173,7 @@ public class ThreadFragment extends Fragment {
                             break;
                         }
                     } else {
+                        Log.d("THREAD", "TITLE: " + title);
                         if (title.contains("POST") && title.contains("GAME") && title.contains("THREAD")
                                 && title.contains(nameH.substring(nameH.lastIndexOf(' ') + 1))
                                 && title.contains(nameA.substring(nameA.lastIndexOf(' ') + 1))) {
@@ -228,34 +247,15 @@ public class ThreadFragment extends Fragment {
     }
 
 
-    public void addComment(String jsonComment) {
+    public void addComment(Comment comment) {
 
-        try {
-            JSONObject jsonObject = new JSONObject(jsonComment);
-
-            Comment comment = new Comment();
-            comment.text = jsonObject.getString("text");
-            comment.author = jsonObject.getString("author");
-            comment.points = jsonObject.getString("points");
-            comment.level = Integer.parseInt(jsonObject.getString("level"));
-            comment.postedOn = getDate(jsonObject.getString("postedOn"));
-
-
-            commentList.add(0, comment);
-
-            int lastViewedPosition = listView.getFirstVisiblePosition();
-
-            ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
-
-            if (lastViewedPosition != 0) {
-                listView.setSelection(lastViewedPosition + 1);
-            }
-
-            Log.d("adapter", "added new comment");
-
-        } catch (Exception e) {
-            Log.e("JSON", "add comment e: " + e.toString());
+        commentList.add(0, comment);
+        int lastViewedPosition = listView.getFirstVisiblePosition();
+        ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
+        if (lastViewedPosition != 0) {
+            listView.setSelection(lastViewedPosition + 1);
         }
+        Log.d("adapter", "added new comment");
 
     }
 
