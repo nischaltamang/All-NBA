@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.jorgegil.closegamealert.MainActivity">
 
-    <group android:checkableBehavior="all">
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_1"
             android:icon="@drawable/ic_person_black_24dp"
@@ -21,20 +21,25 @@
 
         <item
             android:id="@+id/navigation_item_4"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Games" />
+
+        <item
+            android:id="@+id/navigation_item_5"
             android:icon="@drawable/ic_equalizer_black_24dp"
             android:title="Standings"/>
 
         <item
-            android:id="@+id/navigation_item_5"
+            android:id="@+id/navigation_item_6"
             android:icon="@drawable/ic_date_range_black_24dp"
             android:title="Schedule"/>
 
         <item
-            android:id="@+id/navigation_item_6"
+            android:id="@+id/navigation_item_7"
             android:icon="@drawable/ic_view_list_black_24dp"
             android:title="/r/NBA"/>
         <item
-            android:id="@+id/navigation_item_7"
+            android:id="@+id/navigation_item_8"
             android:icon="@drawable/ic_star_black_24dp"
             android:title="Highlights"/>
 

@@ -1,9 +1,13 @@
 package com.example.jorgegil.closegamealert;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.jorgegil.closegamealert.View.Fragments.StandingsFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBar ab;
 
     DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
 
     @Override
@@ -71,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setUpToolbar();
         setUpNavigationView();
+        setUpDrawerContent();
+
+
 
 
         // Register client to GCM
@@ -131,8 +140,55 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setUpToolbar(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            // Show menu icon
+            ab = getSupportActionBar();
+            ab.setHomeAsUpIndicator(R.mipmap.ic_menu_white);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
     private void setUpNavigationView(){
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (toolbar != null) {
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            navigationView = (NavigationView) findViewById(R.id.navigation);
+        }
+    }
+
+    private void setUpDrawerContent() {
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                setTitle(menuItem.getTitle());
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_item_5:
+                        menuItem.setChecked(true);
+                        setFragment(4);
+                        listView.setVisibility(View.INVISIBLE);
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+                }
+                return true;
+            }
+        });
+    }
+
+    public void setFragment(int position) {
+        android.support.v4.app.FragmentManager fragmentManager;
+        FragmentTransaction fragmentTransaction;
+        switch (position) {
+            case 4:
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                StandingsFragment standingsFragment = new StandingsFragment();
+                fragmentTransaction.replace(R.id.fragment, standingsFragment);
+                fragmentTransaction.commit();
+                break;
+        }
     }
 
     // When new data is received, the JSON is parsed and the listview is notified of change
@@ -243,16 +299,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private void setUpToolbar(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Show menu icon
-        ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.mipmap.ic_menu_white);
-        ab.setDisplayHomeAsUpEnabled(true);
-
     }
 
     @Override

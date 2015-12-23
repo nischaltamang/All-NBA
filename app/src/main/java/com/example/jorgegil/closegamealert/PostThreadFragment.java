@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 
 public class PostThreadFragment extends Fragment {
 
-
-
     public PostThreadFragment() {
         // Required empty public constructor
     }
