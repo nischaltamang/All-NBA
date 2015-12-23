@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert;
+package com.example.jorgegil.closegamealert.View.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +21,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.jorgegil.closegamealert.General.Comment;
+import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.General.TeamNames;
+import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
+import com.example.jorgegil.closegamealert.Utils.CommentsLoader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

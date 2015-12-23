@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert;
+package com.example.jorgegil.closegamealert.General;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.jorgegil.closegamealert.MainActivity">
+    tools:context=".View.Activities.MainActivity">
 
     <group android:checkableBehavior="single">
         <item
@@ -21,7 +21,7 @@
 
         <item
             android:id="@+id/navigation_item_4"
-            android:icon="@drawable/ic_settings_black_24dp"
+            android:icon="@drawable/ic_ball"
             android:title="Games" />
 
         <item
@@ -42,6 +42,11 @@
             android:id="@+id/navigation_item_8"
             android:icon="@drawable/ic_star_black_24dp"
             android:title="Highlights"/>
+
+        <item
+            android:id="@+id/navigation_item_9"
+            android:icon="@drawable/ic_twitter_black"
+            android:title="Twitter feed" />
 
     </group>
 

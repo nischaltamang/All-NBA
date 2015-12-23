@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert;
+package com.example.jorgegil.closegamealert.View.Fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.example.jorgegil.closegamealert.R;
 
 
 public class BoxScoreFragment extends Fragment {

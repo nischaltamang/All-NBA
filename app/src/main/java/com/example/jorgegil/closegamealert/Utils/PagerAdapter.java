@@ -1,9 +1,12 @@
-package com.example.jorgegil.closegamealert;
+package com.example.jorgegil.closegamealert.Utils;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.example.jorgegil.closegamealert.View.Fragments.BoxScoreFragment;
+import com.example.jorgegil.closegamealert.View.Fragments.ThreadFragment;
 
 /**
  * Created by jorgegil on 12/6/15.

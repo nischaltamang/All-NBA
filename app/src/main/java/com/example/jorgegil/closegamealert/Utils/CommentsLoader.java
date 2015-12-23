@@ -1,7 +1,8 @@
-package com.example.jorgegil.closegamealert;
+package com.example.jorgegil.closegamealert.Utils;
 
-import android.content.Context;
 import android.util.Log;
+
+import com.example.jorgegil.closegamealert.General.Comment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,7 +20,7 @@ public class CommentsLoader {
 
     private String raw;
 
-    CommentsLoader(String raw){
+    public CommentsLoader(String raw){
         this.raw = raw;
     }
 
@@ -100,7 +101,7 @@ public class CommentsLoader {
 
     // Load the comments as an ArrayList, so that it can be
     // easily passed to the ArrayAdapter
-    ArrayList<Comment> fetchComments(){
+    public ArrayList<Comment> fetchComments(){
         ArrayList<Comment> comments = new ArrayList<Comment>();
         try{
 

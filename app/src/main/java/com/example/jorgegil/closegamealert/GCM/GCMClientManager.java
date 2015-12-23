@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert;
+package com.example.jorgegil.closegamealert.GCM;
 
 import java.io.IOException;
 import android.app.Activity;

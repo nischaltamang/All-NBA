@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert;
+package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
