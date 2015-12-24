@@ -27,6 +27,7 @@ import com.example.jorgegil.closegamealert.Utils.CommentsLoader;
 import com.example.jorgegil.closegamealert.Utils.PagerAdapter;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.General.TeamNames;
+import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,9 +63,9 @@ public class CommentsActivity extends AppCompatActivity {
 
         // Get teams abbrev from MainActivity
         Intent intent = getIntent();
-        homeTeam = intent.getStringExtra(MainActivity.GAME_THREAD_HOME);
-        awayTeam = intent.getStringExtra(MainActivity.GAME_THREAD_AWAY);
-        gameId = intent.getStringExtra(MainActivity.GAME_ID);
+        homeTeam = intent.getStringExtra(GamesFragment.GAME_THREAD_HOME);
+        awayTeam = intent.getStringExtra(GamesFragment.GAME_THREAD_AWAY);
+        gameId = intent.getStringExtra(GamesFragment.GAME_ID);
 
         setTitle(awayTeam + " @ " + homeTeam);
 

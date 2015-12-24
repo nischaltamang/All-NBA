@@ -28,38 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <LinearLayout
-            android:id="@+id/linlaHeaderProgress"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone" >
-
-            <ProgressBar
-                android:id="@+id/pbHeaderProgress"
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-            </ProgressBar>
-
-        </LinearLayout>
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"
-            android:id="@+id/listView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:clipToPadding="false"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10dp"
-            android:scrollbars="none"/>
-
 
     </RelativeLayout>
 
