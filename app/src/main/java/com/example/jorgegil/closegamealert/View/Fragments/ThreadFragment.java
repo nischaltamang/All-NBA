@@ -161,7 +161,7 @@ public class ThreadFragment extends Fragment {
             JSONArray r = new JSONObject(response).getJSONObject("data").getJSONArray("children");
 
             // Finds Thread for this match-up
-            for (int i = 0; i < 15; i++) {
+            for (int i = 0; i < r.length(); i++) {
                 if (!foundThread) {
                     JSONObject data = r.getJSONObject(i).getJSONObject("data");
 
@@ -170,6 +170,7 @@ public class ThreadFragment extends Fragment {
                     String nameA = tn.getName(awayTeam).toUpperCase();
 
                     if (threadType.equals("LIVE")) {
+                        Log.d("THREAD", "TITLE: " + title);
                         if (title.contains("GAME THREAD")
                                 && title.contains(nameH)
                                 && title.contains(nameA)) {

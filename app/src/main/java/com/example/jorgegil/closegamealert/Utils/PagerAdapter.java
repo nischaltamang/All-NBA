@@ -25,7 +25,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                bundle.putString("threadUrl", "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread");
+                //bundle.putString("threadUrl", "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread");
+                bundle.putString("threadUrl", "https://gt.reddit.com/r/nba/.json?limit=100#gt");
                 bundle.putString("threadType", "LIVE");
                 ThreadFragment tab1 = new ThreadFragment();
                 tab1.setArguments(bundle);
