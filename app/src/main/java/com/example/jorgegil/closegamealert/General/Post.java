@@ -12,12 +12,28 @@ public class Post {
     public String domain;
     public String id;
     public String permalink;
-    public int points;
-    public int numComments;
+    public int score;
+    public int numOfComments;
+    public String thumbnail;
+    public double created;
+    public boolean isSelf;
 
+    public Post(String subreddit, String title, String author, String url, String id, int score,
+                 int numOfComments, String thumbnail, double created, boolean isSelf) {
+        this.subreddit = subreddit;
+        this.title = title;
+        this.author = author;
+        this.url = url;
+        this.id = id;
+        this.score = score;
+        this.numOfComments = numOfComments;
+        this.thumbnail = thumbnail;
+        this.created = created;
+        this.isSelf = isSelf;
+    }
 
     public String getDetails() {
-        return author + " posted this and got " + numComments + " replies.";
+        return author + " posted this and got " + numOfComments + " replies.";
     }
 
     public String getSubreddit() {
@@ -29,6 +45,10 @@ public class Post {
     }
 
     public String getScore() {
-        return Integer.toString(points);
+        return Integer.toString(score);
+    }
+
+    public String getAuthor() {
+        return author;
     }
 }
