@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -56,6 +57,8 @@ public class GamesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
+        setHasOptionsMenu(true);
+        
         // Game data
         homeTeam = new ArrayList<>();
         awayTeam = new ArrayList<>();
@@ -79,6 +82,7 @@ public class GamesFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_games, container, false);
         listView = (ListView) rootView.findViewById(R.id.listView);
+        linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
 
         loadGameData();
 
@@ -89,19 +93,20 @@ public class GamesFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message");
-            Log.d("recevier", "Got message: " + message);
+            if (isAdded()) {
+                String message = intent.getStringExtra("message");
+                Log.d("recevier", "Got message: " + message);
 
-            parseData(message, false);
+                parseData(message, false);
+            }
         }
     };
 
     // Called on full refreshing, adapter is reloaded (not refreshed)
     public void loadGameData() {
 
-        linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
-        listView.setVisibility(View.INVISIBLE);
+        listView.setVisibility(View.GONE);
 
         StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt", new Response.Listener<String>() {
             @Override
@@ -200,5 +205,16 @@ public class GamesFragment extends Fragment {
         // Unregister since the fragment is about to be closed.
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                loadGameData();
+                Log.d("Games", "reloaded games");
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

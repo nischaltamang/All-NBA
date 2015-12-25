@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
@@ -160,12 +161,12 @@ public class MainActivity extends AppCompatActivity {
         switch (position) {
             case 1:
                 GamesFragment gamesFragment = new GamesFragment();
-                fragmentTransaction.replace(R.id.fragment, gamesFragment);
+                fragmentTransaction.replace(R.id.fragment, gamesFragment, "STANDINGS_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
             case 2:
                 StandingsFragment standingsFragment = new StandingsFragment();
-                fragmentTransaction.replace(R.id.fragment, standingsFragment);
+                fragmentTransaction.replace(R.id.fragment, standingsFragment, "GAMES_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
         }
@@ -187,9 +188,6 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            case R.id.action_refresh:
-                //loadGameData();
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -204,5 +202,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
 
 }

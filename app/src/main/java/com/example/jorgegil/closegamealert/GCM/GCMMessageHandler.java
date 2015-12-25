@@ -2,6 +2,7 @@ package com.example.jorgegil.closegamealert.GCM;
 
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
+import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 import com.google.android.gms.gcm.GcmListenerService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

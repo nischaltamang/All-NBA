@@ -171,7 +171,7 @@ public class ThreadFragment extends Fragment {
 
                     if (threadType.equals("LIVE")) {
                         Log.d("THREAD", "TITLE: " + title);
-                        if (title.contains("GAME THREAD")
+                        if (title.contains("[GAME THREAD]")
                                 && title.contains(nameH)
                                 && title.contains(nameA)) {
                             threadId = data.getString("id");
