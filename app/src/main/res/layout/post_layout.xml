@@ -1,6 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@color/colorWhite">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/scoreView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4580"
+        android:textColor="@color/secondaryText"
+        android:textSize="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/authorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="jorgegil96"
+        android:textColor="@color/blue"
+        android:textSize="13dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="2dp"
+        android:layout_above="@+id/titleView"
+        android:layout_toRightOf="@+id/scoreView" />
+
+    <TextView
+        android:id="@+id/createdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="• 4 hrs ago"
+        android:textColor="@color/secondaryText"
+        android:textSize="10dp"
+        android:paddingBottom="4dp"
+        android:paddingRight="5dp"
+        android:layout_above="@+id/titleView"
+        android:layout_toRightOf="@+id/authorView" />
+
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dirk Nowitzki's favorite trash talk line is so imple and ruthless"
+        android:textColor="@color/primaryText"
+        android:textSize="17dp"
+        android:paddingTop="5dp"
+        android:layout_below="@+id/scoreView"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/thumbnail"
+        android:layout_toStartOf="@+id/thumbnail" />
+
+    <TextView
+        android:id="@+id/numCommentsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="382 Comments"
+        android:textColor="@color/secondaryText"
+        android:textSize="10dp"
+        android:paddingTop="5dp"
+        android:layout_below="@+id/titleView"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/linkView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="• self"
+        android:textColor="@color/secondaryText"
+        android:textSize="10dp"
+        android:padding="5dp"
+        android:layout_below="@+id/titleView"
+        android:layout_toRightOf="@id/numCommentsView" />
+
+    <TextView
+        android:id="@+id/subredditView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="• nba"
+        android:textColor="@color/secondaryText"
+        android:textSize="10dp"
+        android:padding="5dp"
+        android:layout_below="@+id/titleView"
+        android:layout_toRightOf="@id/linkView" />
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
