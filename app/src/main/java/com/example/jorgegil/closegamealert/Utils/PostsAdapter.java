@@ -1,14 +1,22 @@
 package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.jorgegil.closegamealert.General.Post;
 import com.example.jorgegil.closegamealert.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -44,6 +52,36 @@ public class PostsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = inflater.inflate(R.layout.post_layout, parent, false);
 
+        TextView scoreView = (TextView) rowView.findViewById(R.id.scoreView);
+        TextView authorView = (TextView) rowView.findViewById(R.id.authorView);
+        TextView createdView = (TextView) rowView.findViewById(R.id.createdView);
+        TextView titleView = (TextView) rowView.findViewById(R.id.titleView);
+        TextView numOfCommentsView = (TextView) rowView.findViewById(R.id.numCommentsView);
+        TextView linkView = (TextView) rowView.findViewById(R.id.linkView);
+        TextView subredditView = (TextView) rowView.findViewById(R.id.subredditView);
+
+        ImageView thumbnail = (ImageView) rowView.findViewById(R.id.thumbnail);
+
+        scoreView.setText(String.valueOf(postsList.get(position).score));
+        authorView.setText(postsList.get(position).author);
+        createdView.setText(String.valueOf(postsList.get(position).created));
+        titleView.setText(postsList.get(position).title);
+        numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
+
+        String url = postsList.get(position).thumbnail;
+        if (postsList.get(position).isSelf || url.equals("")) {
+            linkView.setText("• self");
+            thumbnail.setVisibility(View.GONE);
+        } else {
+            linkView.setText("• link");
+            Picasso.with(context).load(url).into(thumbnail);
+        }
+        subredditView.setText("• " + postsList.get(position).subreddit);
+
+
+
+
         return rowView;
     }
+
 }

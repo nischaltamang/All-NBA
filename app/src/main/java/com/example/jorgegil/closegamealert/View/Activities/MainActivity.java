@@ -34,7 +34,9 @@ import com.example.jorgegil.closegamealert.GCM.GCMClientManager;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.CustomAdapter;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
+import com.example.jorgegil.closegamealert.View.Fragments.PostsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.StandingsFragment;
+import com.example.jorgegil.closegamealert.View.Fragments.ThreadFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -146,6 +148,10 @@ public class MainActivity extends AppCompatActivity {
                         setFragment(2);
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
+                    case R.id.navigation_item_4:
+                        setFragment(4);
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
                 }
                 return true;
             }
@@ -167,6 +173,11 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 StandingsFragment standingsFragment = new StandingsFragment();
                 fragmentTransaction.replace(R.id.fragment, standingsFragment, "GAMES_FRAGMENT");
+                fragmentTransaction.commit();
+                break;
+            case 4:
+                PostsFragment postsFragment = new PostsFragment();
+                fragmentTransaction.replace(R.id.fragment, postsFragment, "POSTS_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
         }

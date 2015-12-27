@@ -93,7 +93,7 @@ public class GamesFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (isAdded()) {
+            if (isVisible()) {
                 String message = intent.getStringExtra("message");
                 Log.d("recevier", "Got message: " + message);
 

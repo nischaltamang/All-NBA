@@ -164,12 +164,13 @@ public class ThreadFragment extends Fragment {
                     JSONObject data = r.getJSONObject(i).getJSONObject("data");
 
                     String title = data.getString("title").toUpperCase();
+                    String flair = data.getString("link_flair_text");
                     String nameH = tn.getName(homeTeam).toUpperCase();
                     String nameA = tn.getName(awayTeam).toUpperCase();
 
                     if (threadType.equals("LIVE")) {
                         Log.d("THREAD", "TITLE: " + title);
-                        if (title.contains("[GAME THREAD]")
+                        if (flair.equals("Game Thread")
                                 && title.contains(nameH)
                                 && title.contains(nameA)) {
                             threadId = data.getString("id");

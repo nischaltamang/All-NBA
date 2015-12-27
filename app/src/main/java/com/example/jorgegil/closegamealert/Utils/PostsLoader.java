@@ -22,12 +22,11 @@ public class PostsLoader {
 
     public ArrayList<Post> fetchPosts() {
         ArrayList<Post> posts = new ArrayList<>();
-
-        String title, author, subreddit, id, thumbnail, url;
-        int score, numOfComments;
-        double created;
-        boolean isSelf;
         try {
+            String title, author, subreddit, id, thumbnail = "test", url;
+            int score, numOfComments;
+            double created;
+            boolean isSelf;
             JSONArray arr = new JSONObject(raw).getJSONObject("data").getJSONArray("children");
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject data = arr.getJSONObject(i).getJSONObject("data");
@@ -35,8 +34,8 @@ public class PostsLoader {
                 author = data.getString("author");
                 subreddit = data.getString("subreddit");
                 id = data.getString("id");
-                score = data.getInt("score");
                 thumbnail = data.getString("thumbnail");
+                score = data.getInt("score");
                 url = data.getString("url");
                 created = data.getDouble("created");
                 isSelf = data.getBoolean("is_self");

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class PostsFragment extends Fragment {
     Context context;
     View rootView;
-    String url = "http://www.reddit.com/r/nba/.json";
+    String url = "http://www.reddit.com/r/all/.json";
     ListView postsListView;
 
     ArrayList<Post> postsList;
