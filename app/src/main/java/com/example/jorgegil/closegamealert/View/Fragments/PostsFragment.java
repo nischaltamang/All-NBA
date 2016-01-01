@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class PostsFragment extends Fragment {
     Context context;
     View rootView;
-    String url = "http://www.reddit.com/r/all/.json";
+    String url = "http://www.reddit.com/r/nba/.json";
     String type;
     ListView postsListView;
 
@@ -54,6 +54,19 @@ public class PostsFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_posts, container, false);
         postsListView = (ListView) rootView.findViewById(R.id.postsListView);
+
+        float scale = getResources().getDisplayMetrics().density;
+        int dpAsPixels;
+        switch (type) {
+            case "small":
+                dpAsPixels = (int) (5 * scale + 0.5f);
+                postsListView.setDividerHeight(dpAsPixels);
+                break;
+            case "large":
+                dpAsPixels = (int) (10 * scale + 0.5f);
+                postsListView.setDividerHeight(dpAsPixels);
+                break;
+        }
 
         getPosts();
 

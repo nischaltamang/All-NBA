@@ -77,7 +77,7 @@
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:padding="3dp"
+            android:layout_marginTop="3dp"
             android:src="@mipmap/ic_launcher"
             android:layout_below="@id/authorView"
             android:background="@color/black" />
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="4580"
-            android:paddingTop="3dp"
+            android:padding="3dp"
             android:textColor="@color/secondaryText"
             android:textSize="18dp"
             android:layout_below="@id/thumbnail"
