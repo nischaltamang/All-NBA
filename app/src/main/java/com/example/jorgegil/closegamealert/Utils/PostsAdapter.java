@@ -1,6 +1,7 @@
 package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,13 @@ public class PostsAdapter extends BaseAdapter {
         titleView.setText(postsList.get(position).title);
         //numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
 
-        String url = postsList.get(position).thumbnail;
+        String url;
+        if (type.equals("large") && !postsList.get(position).ext_thumbnail.equals("")) {
+            url = postsList.get(position).ext_thumbnail;
+        } else {
+            url = postsList.get(position).thumbnail;
+        }
+
         if (postsList.get(position).isSelf || url.equals("")) {
             linkView.setText("• self");
             thumbnail.setVisibility(View.GONE);
