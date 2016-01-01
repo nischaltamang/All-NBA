@@ -60,6 +60,12 @@ public class ThreadFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            homeTeam = getArguments().getString("homeTeam");
+            awayTeam = getArguments().getString("awayTeam");
+            threadUrl = getArguments().getString("threadUrl");
+            threadType = getArguments().getString("threadType");
+        }
     }
 
     @Override
@@ -75,12 +81,6 @@ public class ThreadFragment extends Fragment {
         linlaHeaderProgress = (LinearLayout) view.findViewById(R.id.linlaHeaderProgress);
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         listView.setVisibility(View.INVISIBLE);
-
-        homeTeam = getArguments().getString("homeTeam");
-        awayTeam = getArguments().getString("awayTeam");
-        threadUrl = getArguments().getString("threadUrl");
-        Log.d("THREAD", "ThreadURL: " + threadUrl);
-        threadType = getArguments().getString("threadType");
 
         noThread = (TextView) view.findViewById(R.id.notFoundTextView);
 
@@ -300,4 +300,11 @@ public class ThreadFragment extends Fragment {
         }
         return postedOn;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("DESTROY", "View of ThreadFragment destroyed");
+    }
 }
+

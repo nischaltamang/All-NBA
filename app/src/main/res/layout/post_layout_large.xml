@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:orientation="vertical"
+    android:background="@drawable/my_drop_shadow"
+    android:elevation="2dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite">
+
+        <TextView
+            android:id="@+id/titleView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Dirk Nowitzki's favorite trash talk "
+            android:textColor="@color/primaryText"
+            android:textSize="15dp"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/authorView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="jorgegil96"
+            android:textColor="@color/blue"
+            android:textSize="12dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2dp"
+            android:layout_below="@+id/titleView" />
+
+        <TextView
+            android:id="@+id/createdView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• 4 hrs ago"
+            android:textColor="@color/secondaryText"
+            android:textSize="10dp"
+            android:padding="1dp"
+            android:layout_marginRight="2dp"
+            android:layout_below="@+id/titleView"
+            android:layout_above="@id/thumbnail"
+            android:layout_toRightOf="@+id/authorView" />
+
+        <TextView
+            android:id="@+id/linkView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• self"
+            android:textColor="@color/secondaryText"
+            android:textSize="10dp"
+            android:padding="1dp"
+            android:layout_marginRight="2dp"
+            android:layout_below="@+id/titleView"
+            android:layout_above="@id/thumbnail"
+            android:layout_toRightOf="@id/createdView" />
+
+        <TextView
+            android:id="@+id/subredditView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• nba"
+            android:textColor="@color/secondaryText"
+            android:textSize="10dp"
+            android:padding="1dp"
+            android:layout_below="@+id/titleView"
+            android:layout_toRightOf="@id/linkView" />
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:padding="3dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_below="@id/authorView"
+            android:background="@color/black" />
+
+        <TextView
+            android:id="@+id/scoreView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4580"
+            android:paddingTop="3dp"
+            android:textColor="@color/secondaryText"
+            android:textSize="18dp"
+            android:layout_below="@id/thumbnail"
+            android:layout_alignParentLeft="true"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

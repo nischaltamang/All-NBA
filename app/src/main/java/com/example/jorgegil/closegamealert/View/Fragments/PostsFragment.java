@@ -30,6 +30,7 @@ public class PostsFragment extends Fragment {
     Context context;
     View rootView;
     String url = "http://www.reddit.com/r/all/.json";
+    String type;
     ListView postsListView;
 
     ArrayList<Post> postsList;
@@ -42,6 +43,9 @@ public class PostsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         context = getActivity();
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            type = getArguments().getString("TYPE");
+        }
     }
 
     @Override
@@ -81,7 +85,7 @@ public class PostsFragment extends Fragment {
             PostsLoader postsLoader = new PostsLoader(response);
             postsList = postsLoader.fetchPosts();
 
-            postsListView.setAdapter(new PostsAdapter(context, postsList));
+            postsListView.setAdapter(new PostsAdapter(context, postsList, type));
         }
     }
 

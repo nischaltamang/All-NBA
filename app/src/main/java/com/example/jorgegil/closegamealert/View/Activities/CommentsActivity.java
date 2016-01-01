@@ -1,6 +1,7 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -52,6 +53,7 @@ public class CommentsActivity extends AppCompatActivity {
     boolean foundThread = false;
 
     ArrayList<Comment> commentList;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,12 @@ public class CommentsActivity extends AppCompatActivity {
 
         setUpToolbar();
         setUpTabLayout();
+
+        //Set Colors
+        toolbar.setBackgroundColor(getResources().getColor(R.color.indigo));
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.indigoDark));
+        }
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), bundle);
@@ -128,7 +136,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        toolbar = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         // Show menu icon
         final ActionBar ab = getSupportActionBar();
@@ -139,6 +147,7 @@ public class CommentsActivity extends AppCompatActivity {
     private void setUpTabLayout() {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setBackgroundColor(getResources().getColor(R.color.indigo));
         tabLayout.addTab(tabLayout.newTab().setText("Game Thread"));
         tabLayout.addTab(tabLayout.newTab().setText("Box Score"));
         tabLayout.addTab(tabLayout.newTab().setText("Post Game Thread"));

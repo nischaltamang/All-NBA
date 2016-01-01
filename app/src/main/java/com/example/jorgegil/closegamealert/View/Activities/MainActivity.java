@@ -1,28 +1,18 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.os.Build;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -32,17 +22,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.GCM.GCMClientManager;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.CustomAdapter;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.PostsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.StandingsFragment;
-import com.example.jorgegil.closegamealert.View.Fragments.ThreadFragment;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -71,7 +53,12 @@ public class MainActivity extends AppCompatActivity {
         setUpDrawerContent();
 
         // Select Games Fragment as default
+        setTitle("Games");
         setFragment(1);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.tricornBlack));
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.tricornBlackDark));
+        }
 
         // Register client to GCM
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
@@ -152,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
                         setFragment(4);
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
+                    case R.id.navigation_item_5:
+                        setFragment(5);
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
                 }
                 return true;
             }
@@ -161,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
     public void setFragment(int position) {
         android.support.v4.app.FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
+
+        Bundle bundle = new Bundle();
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -177,7 +170,16 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 4:
                 PostsFragment postsFragment = new PostsFragment();
+                bundle.putString("TYPE", "small");
+                postsFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.fragment, postsFragment, "POSTS_FRAGMENT");
+                fragmentTransaction.commit();
+                break;
+            case 5:
+                PostsFragment postsFragment1 = new PostsFragment();
+                bundle.putString("TYPE", "large");
+                postsFragment1.setArguments(bundle);
+                fragmentTransaction.replace(R.id.fragment, postsFragment1, "POSTS_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
         }

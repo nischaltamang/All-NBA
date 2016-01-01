@@ -58,7 +58,13 @@ public class GamesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
-        
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
         // Game data
         homeTeam = new ArrayList<>();
         awayTeam = new ArrayList<>();
@@ -71,13 +77,6 @@ public class GamesFragment extends Fragment {
 
         // Register Broadcast manager to update scores automatically
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("game-data"));
-
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_games, container, false);
@@ -201,9 +200,16 @@ public class GamesFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
         // Unregister since the fragment is about to be closed.
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        Log.d("GamesFragment", "View destroyed of GamesFragment");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("GamesFragment", "Destroy GamesFragment");
         super.onDestroy();
     }
 

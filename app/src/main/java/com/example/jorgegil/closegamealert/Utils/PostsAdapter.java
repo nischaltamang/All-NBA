@@ -1,10 +1,6 @@
 package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +21,13 @@ import java.util.ArrayList;
 public class PostsAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Post> postsList;
+    private String type;
     private static LayoutInflater inflater = null;
 
-    public PostsAdapter(Context context, ArrayList<Post> postsList) {
+    public PostsAdapter(Context context, ArrayList<Post> postsList, String type) {
         this.context = context;
         this.postsList = postsList;
+        this.type = type;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -50,7 +48,17 @@ public class PostsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = inflater.inflate(R.layout.post_layout, parent, false);
+        View rowView;
+        switch (type) {
+            case "small":
+                rowView = inflater.inflate(R.layout.post_layout, parent, false);
+                break;
+            case "large":
+                rowView = inflater.inflate(R.layout.post_layout_large, parent, false);
+                break;
+            default:
+                rowView = inflater.inflate(R.layout.post_layout, parent, false);
+        }
 
         TextView scoreView = (TextView) rowView.findViewById(R.id.scoreView);
         TextView authorView = (TextView) rowView.findViewById(R.id.authorView);
@@ -66,7 +74,7 @@ public class PostsAdapter extends BaseAdapter {
         authorView.setText(postsList.get(position).author);
         createdView.setText(String.valueOf(postsList.get(position).created));
         titleView.setText(postsList.get(position).title);
-        numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
+        //numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
 
         String url = postsList.get(position).thumbnail;
         if (postsList.get(position).isSelf || url.equals("")) {
