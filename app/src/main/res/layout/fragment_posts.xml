@@ -36,4 +36,26 @@
         android:dividerHeight="10dp"
         android:scrollbars="none"/>
 
+    <FrameLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="#AA000000">
+
+        <VideoView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/videoView"
+            android:layout_gravity="center" />
+
+        <FrameLayout
+            android:id="@+id/placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#AA000000">
+        </FrameLayout>
+
+    </FrameLayout>
+
 </FrameLayout>

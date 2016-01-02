@@ -1,6 +1,8 @@
 package com.example.jorgegil.closegamealert.View.Fragments;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.media.session.MediaController;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -35,6 +39,10 @@ public class PostsFragment extends Fragment {
     String url;
     ListView postsListView;
     LinearLayout linlaHeaderProgress;
+
+    VideoView videoView;
+    MediaController videoMediaController;
+    View placeholder, background;
 
     ArrayList<Post> postsList;
 
@@ -60,6 +68,11 @@ public class PostsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_posts, container, false);
         postsListView = (ListView) rootView.findViewById(R.id.postsListView);
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
+        videoView = (VideoView) rootView.findViewById(R.id.videoView);
+        placeholder = rootView.findViewById(R.id.placeholder);
+        background = rootView.findViewById(R.id.background);
+        background.setVisibility(View.GONE);
+        //videoView.setVisibility(View.INVISIBLE);
 
         float scale = getResources().getDisplayMetrics().density;
         int dpAsPixels;
@@ -106,8 +119,39 @@ public class PostsFragment extends Fragment {
             // Loads posts into list view adapter
             PostsLoader postsLoader = new PostsLoader(response);
             postsList = postsLoader.fetchPosts();
-
             postsListView.setAdapter(new PostsAdapter(context, postsList, type));
+
+            postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //postsListView.setVisibility(View.GONE);
+                    //videoView.setVisibility(View.INVISIBLE);
+                    postsListView.setEnabled(false);
+                    background.setVisibility(View.VISIBLE);
+
+                    String videoURL = postsList.get(position).url
+                            .replace("https://streamable.com/", "http://cdn.streamable.com/video/mp4/");
+                    videoURL = videoURL + ".mp4";
+
+                    try {
+                        Uri uri = Uri.parse(videoURL);
+                        videoView.setMediaController(new android.widget.MediaController(context));
+                        videoView.setVideoURI(uri);
+                        videoView.requestFocus();
+                        videoView.start();
+                        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                placeholder.setVisibility(View.GONE);
+                                //videoView.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    } catch (Exception e) {
+                        // TODO: Handle exception
+                        Toast.makeText(context, "Error loading video", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
             linlaHeaderProgress.setVisibility(View.GONE);
             postsListView.setVisibility(View.VISIBLE);
