@@ -81,6 +81,7 @@
             android:layout_below="@id/authorView"
             android:background="@color/black" />
 
+        <!--
         <TextView
             android:id="@+id/scoreView"
             android:layout_width="wrap_content"
@@ -91,6 +92,7 @@
             android:textSize="18dp"
             android:layout_below="@id/thumbnail"
             android:layout_alignParentLeft="true"/>
+        -->
 
     </RelativeLayout>
 

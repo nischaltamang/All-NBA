@@ -71,10 +71,12 @@ public class PostsAdapter extends BaseAdapter {
 
         ImageView thumbnail = (ImageView) rowView.findViewById(R.id.thumbnail);
 
-        scoreView.setText(String.valueOf(postsList.get(position).score));
+        //scoreView.setText(String.valueOf(postsList.get(position).score));
         authorView.setText(postsList.get(position).author);
         createdView.setText(String.valueOf(postsList.get(position).created));
-        titleView.setText(postsList.get(position).title);
+
+        String text = postsList.get(position).title.replace("ironsteel2", " ");
+        titleView.setText(text);
         //numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
 
         String url;

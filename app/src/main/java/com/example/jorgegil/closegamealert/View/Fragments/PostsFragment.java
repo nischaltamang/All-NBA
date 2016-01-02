@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,9 +31,10 @@ import java.util.ArrayList;
 public class PostsFragment extends Fragment {
     Context context;
     View rootView;
-    String url = "http://www.reddit.com/r/ironsteel2/.json";
     String type;
+    String url;
     ListView postsListView;
+    LinearLayout linlaHeaderProgress;
 
     ArrayList<Post> postsList;
 
@@ -45,7 +48,9 @@ public class PostsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             type = getArguments().getString("TYPE");
+            url = getArguments().getString("URL");
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -54,6 +59,7 @@ public class PostsFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_posts, container, false);
         postsListView = (ListView) rootView.findViewById(R.id.postsListView);
+        linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
 
         float scale = getResources().getDisplayMetrics().density;
         int dpAsPixels;
@@ -74,6 +80,9 @@ public class PostsFragment extends Fragment {
     }
 
     private void getPosts() {
+        linlaHeaderProgress.setVisibility(View.VISIBLE);
+        postsListView.setVisibility(View.GONE);
+
         // Request /r/nba threads
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -99,7 +108,20 @@ public class PostsFragment extends Fragment {
             postsList = postsLoader.fetchPosts();
 
             postsListView.setAdapter(new PostsAdapter(context, postsList, type));
+
+            linlaHeaderProgress.setVisibility(View.GONE);
+            postsListView.setVisibility(View.VISIBLE);
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                getPosts();
+                Log.d("POSTS", "fragment reloaded");
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

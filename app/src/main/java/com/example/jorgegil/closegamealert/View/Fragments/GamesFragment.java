@@ -31,6 +31,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
+
 public class GamesFragment extends Fragment {
     public final static String GAME_THREAD_HOME = "com.example.jorgegil.closegamealert.GAME_THREAD_HOME";
     public final static String GAME_THREAD_AWAY = "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
@@ -169,26 +171,28 @@ public class GamesFragment extends Fragment {
 
             }
 
-            if (reload) { // when full reload is requested
+            if (reload || listView.getAdapter() == null) { // when full reload is requested
                 // Set list view adapter for game events
-                listView.setAdapter(new CustomAdapter(getActivity(), homeTeam, awayTeam, homeScore,
-                        awayScore, clock, period));
+                if (getActivity() != null){
+                    listView.setAdapter(new CustomAdapter(getActivity(), homeTeam, awayTeam, homeScore,
+                            awayScore, clock, period));
 
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Intent intent = new Intent(getActivity(), CommentsActivity.class);
-                        intent.putExtra(GAME_THREAD_HOME, homeTeam.get(i));
-                        intent.putExtra(GAME_THREAD_AWAY, awayTeam.get(i));
-                        intent.putExtra(GAME_ID, gameId.get(i));
-                        startActivity(intent);
-                    }
-                });
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            Intent intent = new Intent(getActivity(), CommentsActivity.class);
+                            intent.putExtra(GAME_THREAD_HOME, homeTeam.get(i));
+                            intent.putExtra(GAME_THREAD_AWAY, awayTeam.get(i));
+                            intent.putExtra(GAME_ID, gameId.get(i));
+                            startActivity(intent);
+                        }
+                    });
 
-                // Hide reload icon and show list view
-                //setProgressBarIndeterminateVisibility(false);
-                linlaHeaderProgress.setVisibility(View.GONE);
-                listView.setVisibility(View.VISIBLE);
+                    // Hide reload icon and show list view
+                    //setProgressBarIndeterminateVisibility(false);
+                    linlaHeaderProgress.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+                }
 
             } else { // when refresh is requested
                 ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();

@@ -26,7 +26,6 @@ import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.PostsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.StandingsFragment;
 
-
 public class MainActivity extends AppCompatActivity {
 
     private GCMClientManager pushClientManager;
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setProgressBarIndeterminateVisibility(true);
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         setUpToolbar();
         setUpNavigationView();
@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
             case 4:
                 PostsFragment postsFragment = new PostsFragment();
                 bundle.putString("TYPE", "small");
+                bundle.putString("URL", "http://www.reddit.com/r/nba/.json");
                 postsFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.fragment, postsFragment, "POSTS_FRAGMENT");
                 fragmentTransaction.commit();
@@ -178,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
             case 5:
                 PostsFragment postsFragment1 = new PostsFragment();
                 bundle.putString("TYPE", "large");
+                bundle.putString("URL", "http://www.reddit.com/r/ironsteel2/.json");
                 postsFragment1.setArguments(bundle);
                 fragmentTransaction.replace(R.id.fragment, postsFragment1, "POSTS_FRAGMENT");
                 fragmentTransaction.commit();

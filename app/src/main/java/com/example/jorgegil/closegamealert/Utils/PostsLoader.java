@@ -46,7 +46,6 @@ public class PostsLoader {
                 Object media = data.get("media");
                 if (media != JSONObject.NULL) {
                     ext_thumbnail = data.getJSONObject("media").getJSONObject("oembed").getString("thumbnail_url");
-                    Log.d("LOADER", "ext_thumbnail: " + ext_thumbnail);
                 }
 
                 Post post = new Post(subreddit, title, author, url, id, score, numOfComments,
