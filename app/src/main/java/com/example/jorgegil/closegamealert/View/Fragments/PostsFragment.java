@@ -27,9 +27,6 @@ import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.PostsAdapter;
 import com.example.jorgegil.closegamealert.Utils.PostsLoader;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class PostsFragment extends Fragment {
@@ -69,7 +66,6 @@ public class PostsFragment extends Fragment {
         postsListView = (ListView) rootView.findViewById(R.id.postsListView);
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
         videoView = (VideoView) rootView.findViewById(R.id.videoView);
-        placeholder = rootView.findViewById(R.id.placeholder);
         background = rootView.findViewById(R.id.background);
         background.setVisibility(View.GONE);
         //videoView.setVisibility(View.INVISIBLE);
@@ -125,7 +121,8 @@ public class PostsFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     //postsListView.setVisibility(View.GONE);
-                    //videoView.setVisibility(View.INVISIBLE);
+                    //videoView.setVisibility(View.GONE);
+                    videoView.setZOrderOnTop(true);
                     postsListView.setEnabled(false);
                     background.setVisibility(View.VISIBLE);
 
@@ -134,18 +131,21 @@ public class PostsFragment extends Fragment {
                     videoURL = videoURL + ".mp4";
 
                     try {
+
+
+
                         Uri uri = Uri.parse(videoURL);
                         videoView.setMediaController(new android.widget.MediaController(context));
                         videoView.setVideoURI(uri);
                         videoView.requestFocus();
-                        videoView.start();
                         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                             @Override
                             public void onPrepared(MediaPlayer mp) {
-                                placeholder.setVisibility(View.GONE);
+                                videoView.setZOrderOnTop(false);
                                 //videoView.setVisibility(View.VISIBLE);
                             }
                         });
+                        videoView.start();
                     } catch (Exception e) {
                         // TODO: Handle exception
                         Toast.makeText(context, "Error loading video", Toast.LENGTH_SHORT).show();
