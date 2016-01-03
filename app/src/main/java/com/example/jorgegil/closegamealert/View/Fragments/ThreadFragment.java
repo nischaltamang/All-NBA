@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -305,6 +306,16 @@ public class ThreadFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.d("DESTROY", "View of ThreadFragment destroyed");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                parseComments();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 
