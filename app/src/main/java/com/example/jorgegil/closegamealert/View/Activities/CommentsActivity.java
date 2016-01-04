@@ -123,14 +123,6 @@ public class CommentsActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.action_refresh:
-                Log.d("Comments", "refreshed clicked");
-                noThread.setText("");
-                if (commentsUrl.contains("GTID"))
-                    getGameThreads();
-                else
-                    parseComments();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }

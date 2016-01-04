@@ -15,12 +15,12 @@ public class Post {
     public int numOfComments;
     public String thumbnail;
     public String ext_thumbnail;
-    public double created;
+    public String created;
     public boolean isSelf;
     public String domain;
 
     public Post(String subreddit, String title, String author, String url, String id, int score,
-                 int numOfComments, String thumbnail, String ext_thumbnail, double created, boolean isSelf, String domain) {
+                 int numOfComments, String thumbnail, String ext_thumbnail, String created, boolean isSelf, String domain) {
         this.subreddit = subreddit;
         this.title = title;
         this.author = author;

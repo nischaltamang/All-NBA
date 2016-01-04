@@ -44,6 +44,26 @@
         android:layout_gravity="center"
         android:background="#AA000000">
 
+        <LinearLayout
+            android:id="@+id/videoProgressLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ProgressBar
+                android:id="@+id/videoProgress"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:indeterminateTintMode="src_atop"
+                android:indeterminateTint="@color/colorWhite">
+            </ProgressBar>
+
+        </LinearLayout>
+
         <VideoView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

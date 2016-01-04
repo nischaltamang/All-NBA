@@ -67,6 +67,8 @@ public class ThreadFragment extends Fragment {
             threadUrl = getArguments().getString("threadUrl");
             threadType = getArguments().getString("threadType");
         }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -312,7 +314,10 @@ public class ThreadFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                parseComments();
+                if (commentsUrl.contains("GTID"))
+                    getGameThreads();
+                else
+                    parseComments();
                 return true;
         }
         return super.onOptionsItemSelected(item);

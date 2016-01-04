@@ -35,11 +35,10 @@ public class PostsFragment extends Fragment {
     String type;
     String url;
     ListView postsListView;
-    LinearLayout linlaHeaderProgress;
+    LinearLayout linlaHeaderProgress, videoProgressLayout;
 
     VideoView videoView;
-    MediaController videoMediaController;
-    View placeholder, background;
+    View background;
 
     ArrayList<Post> postsList;
 
@@ -65,10 +64,10 @@ public class PostsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_posts, container, false);
         postsListView = (ListView) rootView.findViewById(R.id.postsListView);
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
+        videoProgressLayout = (LinearLayout) rootView.findViewById(R.id.videoProgressLayout);
         videoView = (VideoView) rootView.findViewById(R.id.videoView);
         background = rootView.findViewById(R.id.background);
         background.setVisibility(View.GONE);
-        //videoView.setVisibility(View.INVISIBLE);
 
         float scale = getResources().getDisplayMetrics().density;
         int dpAsPixels;
@@ -120,36 +119,11 @@ public class PostsFragment extends Fragment {
             postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //postsListView.setVisibility(View.GONE);
-                    //videoView.setVisibility(View.GONE);
-                    videoView.setZOrderOnTop(true);
-                    postsListView.setEnabled(false);
-                    background.setVisibility(View.VISIBLE);
-
                     String videoURL = postsList.get(position).url
                             .replace("https://streamable.com/", "http://cdn.streamable.com/video/mp4/");
                     videoURL = videoURL + ".mp4";
+                    playVideo(videoURL);
 
-                    try {
-
-
-
-                        Uri uri = Uri.parse(videoURL);
-                        videoView.setMediaController(new android.widget.MediaController(context));
-                        videoView.setVideoURI(uri);
-                        videoView.requestFocus();
-                        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-                                videoView.setZOrderOnTop(false);
-                                //videoView.setVisibility(View.VISIBLE);
-                            }
-                        });
-                        videoView.start();
-                    } catch (Exception e) {
-                        // TODO: Handle exception
-                        Toast.makeText(context, "Error loading video", Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
 
@@ -158,14 +132,51 @@ public class PostsFragment extends Fragment {
         }
     }
 
-    @Override
+    private void playVideo(String url) {
+        videoView.setVisibility(View.VISIBLE);
+        videoView.setZOrderOnTop(true); //HIDE
+        postsListView.setEnabled(false);
+        background.setVisibility(View.VISIBLE);
+        videoProgressLayout.setVisibility(View.VISIBLE);
+
+        try {
+            Uri uri = Uri.parse(url);
+            videoView.setMediaController(new android.widget.MediaController(context));
+            videoView.setVideoURI(uri);
+            videoView.requestFocus();
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    videoProgressLayout.setVisibility(View.GONE);
+                    videoView.setZOrderOnTop(false); //SHOW
+                }
+            });
+            videoView.start();
+        } catch (Exception e) {
+            // TODO: Handle exception
+            stopVideo();
+            Toast.makeText(context, "Error loading video", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void stopVideo() {
+        videoView.stopPlayback();
+        videoView.setZOrderOnTop(true); //HIDE
+        videoView.setVisibility(View.GONE);
+        postsListView.setEnabled(true);
+        background.setVisibility(View.GONE);
+        videoProgressLayout.setVisibility(View.GONE);
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
+                stopVideo();
                 getPosts();
                 Log.d("POSTS", "fragment reloaded");
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -8,7 +8,11 @@ import com.example.jorgegil.closegamealert.General.Post;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by TOSHIBA on 12/25/2015.
@@ -25,7 +29,7 @@ public class PostsLoader {
         try {
             String title, author, subreddit, id, thumbnail, url, domain, ext_thumbnail;
             int score, numOfComments;
-            double created;
+            String created;
             boolean isSelf;
             JSONArray arr = new JSONObject(raw).getJSONObject("data").getJSONArray("children");
             for (int i = 0; i < arr.length(); i++) {
@@ -38,7 +42,7 @@ public class PostsLoader {
                 ext_thumbnail = "";
                 score = data.getInt("score");
                 url = data.getString("url");
-                created = data.getDouble("created");
+                created = getDate((long) data.getDouble("created_utc") * 1000);
                 isSelf = data.getBoolean("is_self");
                 numOfComments = data.getInt("num_comments");
 
@@ -58,5 +62,34 @@ public class PostsLoader {
         }
 
         return posts;
+    }
+
+    private String getDate(long l) {
+        String postedOn = "";
+        try {
+            Date date = new Date(l);
+            String format = "EEE MMM dd hh:mm:ss zzz yyyy";
+            Date past = new SimpleDateFormat(format, Locale.ENGLISH).parse(date.toString());
+            Date now = new Date();
+
+            long minutesAgo = (TimeUnit.MILLISECONDS.toMinutes(now.getTime() - past.getTime()));
+            long hoursAgo = (TimeUnit.MILLISECONDS.toHours(now.getTime() - past.getTime()));
+            long daysAgo = (TimeUnit.MILLISECONDS.toDays(now.getTime() - past.getTime()));
+
+            if (minutesAgo == 0) {
+                postedOn = " just now ";
+            } else if (minutesAgo < 60) {
+                postedOn = minutesAgo + " minutes ago";
+            } else {
+                if (hoursAgo < 49) {
+                    postedOn = hoursAgo + " hours ago";
+                } else {
+                    postedOn = daysAgo + " days ago";
+                }
+            }
+        } catch (Exception e) {
+            Log.e("PostLoader", "date exception: " + e.toString());
+        }
+        return postedOn;
     }
 }
