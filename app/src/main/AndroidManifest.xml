@@ -23,8 +23,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".View.Activities.MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,8 +33,7 @@
         <activity
             android:name=".View.Activities.CommentsActivity"
             android:label="Comments"
-            android:parentActivityName=".View.Activities.MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".View.Activities.MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -61,7 +59,6 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".View.Activities.BoxScoreActivity"></activity>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="87003f261e96116d27947fd20dd714ca5a34d579" />

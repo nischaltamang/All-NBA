@@ -26,6 +26,7 @@ import com.example.jorgegil.closegamealert.General.Post;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.PostsAdapter;
 import com.example.jorgegil.closegamealert.Utils.PostsLoader;
+import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
 
 import java.util.ArrayList;
 
@@ -133,6 +134,9 @@ public class PostsFragment extends Fragment {
     }
 
     private void playVideo(String url) {
+        //TODO: handle null pointer exception
+        ((MainActivity) getActivity()).getSupportActionBar().hide();
+
         videoView.setVisibility(View.VISIBLE);
         videoView.setZOrderOnTop(true); //HIDE
         postsListView.setEnabled(false);
@@ -160,6 +164,9 @@ public class PostsFragment extends Fragment {
     }
 
     private void stopVideo() {
+        //TODO: Handle null pointer exception
+        ((MainActivity) getActivity()).getSupportActionBar().show();
+
         videoView.stopPlayback();
         videoView.setZOrderOnTop(true); //HIDE
         videoView.setVisibility(View.GONE);

@@ -2,6 +2,7 @@ package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.os.Build;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -37,13 +38,15 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
 
+    GamesFragment gamesFragment;
+    StandingsFragment standingsFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         // Show loading icon
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setProgressBarIndeterminateVisibility(true);
 
         super.onCreate(savedInstanceState);
 
@@ -159,13 +162,13 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = fragmentManager.beginTransaction();
         switch (position) {
             case 1:
-                GamesFragment gamesFragment = new GamesFragment();
-                fragmentTransaction.replace(R.id.fragment, gamesFragment, "STANDINGS_FRAGMENT");
+                gamesFragment = new GamesFragment();
+                fragmentTransaction.replace(R.id.fragment, gamesFragment, "GAMES_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
             case 2:
-                StandingsFragment standingsFragment = new StandingsFragment();
-                fragmentTransaction.replace(R.id.fragment, standingsFragment, "GAMES_FRAGMENT");
+                standingsFragment = new StandingsFragment();
+                fragmentTransaction.replace(R.id.fragment, standingsFragment, "STANDINGS_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
             case 4:
