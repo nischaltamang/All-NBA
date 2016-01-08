@@ -35,6 +35,7 @@ public class PostsFragment extends Fragment {
     View rootView;
     String type;
     String url;
+    String filter;
     ListView postsListView;
     LinearLayout linlaHeaderProgress, videoProgressLayout;
 
@@ -55,6 +56,7 @@ public class PostsFragment extends Fragment {
         if (getArguments() != null) {
             type = getArguments().getString("TYPE");
             url = getArguments().getString("URL");
+            filter = getArguments().getString("FILTER");
         }
         setHasOptionsMenu(true);
     }
@@ -114,18 +116,24 @@ public class PostsFragment extends Fragment {
     private void loadPosts(String response) {
         if (context != null) {
             // Loads posts into list view adapter
-            PostsLoader postsLoader = new PostsLoader(response);
+            PostsLoader postsLoader = new PostsLoader(response, filter);
             postsList = postsLoader.fetchPosts();
             postsListView.setAdapter(new PostsAdapter(context, postsList, type));
 
             postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String videoURL = postsList.get(position).url
-                            .replace("https://streamable.com/", "http://cdn.streamable.com/video/mp4/");
-                    videoURL = videoURL + ".mp4";
-                    playVideo(videoURL);
-
+                    String videoURL = postsList.get(position).url;
+                    if (postsList.get(position).domain.equals("streamable.com")) {
+                        videoURL = videoURL.replace("https://streamable.com/", "http://cdn.streamable.com/video/mp4/");
+                        videoURL = videoURL + ".mp4";
+                        playVideo(videoURL);
+                    } else if (postsList.get(position).domain.equals("youtube.com")) {
+                        //TODO: Set up youtube player https://developers.google.com/youtube/android/player/
+                        Toast.makeText(context, "Youtube video still not ready", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Not a video...", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 

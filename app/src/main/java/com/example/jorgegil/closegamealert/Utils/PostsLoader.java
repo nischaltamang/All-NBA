@@ -19,15 +19,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class PostsLoader {
     private String raw;
+    private String filter;
 
-    public PostsLoader(String raw) {
+    public PostsLoader(String raw, String filter) {
         this.raw = raw;
+        this.filter = filter;
     }
 
     public ArrayList<Post> fetchPosts() {
         ArrayList<Post> posts = new ArrayList<>();
         try {
-            String title, author, subreddit, id, thumbnail, url, domain, ext_thumbnail;
+            String title, author, subreddit, id, thumbnail, url, domain, ext_thumbnail, link_flair;
             int score, numOfComments;
             String created;
             boolean isSelf;
@@ -45,6 +47,11 @@ public class PostsLoader {
                 created = getDate((long) data.getDouble("created_utc") * 1000);
                 isSelf = data.getBoolean("is_self");
                 numOfComments = data.getInt("num_comments");
+                if (data.get("link_flair_text") != JSONObject.NULL) {
+                    link_flair = data.getString("link_flair_text");
+                }else {
+                    link_flair = "";
+                }
 
                 domain = data.getString("domain");
                 Object media = data.get("media");
@@ -52,10 +59,20 @@ public class PostsLoader {
                     ext_thumbnail = data.getJSONObject("media").getJSONObject("oembed").getString("thumbnail_url");
                 }
 
-                Post post = new Post(subreddit, title, author, url, id, score, numOfComments,
-                         thumbnail, ext_thumbnail, created, isSelf, domain);
+                Post post;
+                if (filter.equals("Highlights")) {
+                    if (link_flair.equals(filter)) {
+                        post = new Post(subreddit, title, author, url, id, score, numOfComments,
+                                thumbnail, ext_thumbnail, created, isSelf, domain, link_flair);
+                        posts.add(post);
+                    }
+                } else {
+                    post = new Post(subreddit, title, author, url, id, score, numOfComments,
+                            thumbnail, ext_thumbnail, created, isSelf, domain, link_flair);
+                    posts.add(post);
+                }
 
-                posts.add(post);
+
             }
         } catch (Exception e) {
             Log.d("POSTS", "Error parsing JSON: " + e.toString());

@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
-                setTitle(menuItem.getTitle());
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
                         setFragment(1);
@@ -166,27 +165,33 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = fragmentManager.beginTransaction();
         switch (position) {
             case 1:
+                setTitle("Games");
                 gamesFragment = new GamesFragment();
                 fragmentTransaction.replace(R.id.fragment, gamesFragment, "GAMES_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
             case 2:
+                setTitle("Standings");
                 standingsFragment = new StandingsFragment();
                 fragmentTransaction.replace(R.id.fragment, standingsFragment, "STANDINGS_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
             case 4:
+                setTitle("NBA");
                 PostsFragment postsFragment = new PostsFragment();
                 bundle.putString("TYPE", "small");
                 bundle.putString("URL", "http://www.reddit.com/r/nba/.json");
+                bundle.putString("FILTER", "ALL");
                 postsFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.fragment, postsFragment, "POSTS_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
             case 5:
+                setTitle("Highlights");
                 postsFragment1 = new PostsFragment();
                 bundle.putString("TYPE", "large");
-                bundle.putString("URL", "http://www.reddit.com/r/ironsteel2/.json");
+                bundle.putString("URL", "http://www.reddit.com/r/nba/.json?limit=100");
+                bundle.putString("FILTER", "Highlights");
                 postsFragment1.setArguments(bundle);
                 fragmentTransaction.replace(R.id.fragment, postsFragment1, "POSTS_FRAGMENT");
                 fragmentTransaction.commit();
@@ -194,8 +199,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -216,14 +219,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (selectedFragment == 5) {
-            if (postsFragment1.isPreviewVisible()) {
-                postsFragment1.stopVideo();
-            } else {
+        switch (selectedFragment) {
+            case 1:
                 super.onBackPressed();
-            }
-        } else {
-            super.onBackPressed();
+                return;
+            case 2:
+                setFragment(1);
+                return;
+            case 3:
+                setFragment(1);
+                return;
+            case 4:
+                setFragment(1);
+                return;
+            case 5:
+                if (postsFragment1.isPreviewVisible()) {
+                    postsFragment1.stopVideo();
+                    return;
+                }
+                setFragment(1);
+                return;
         }
     }
 

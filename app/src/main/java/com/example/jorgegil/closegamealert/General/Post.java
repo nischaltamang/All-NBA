@@ -18,9 +18,11 @@ public class Post {
     public String created;
     public boolean isSelf;
     public String domain;
+    public String link_flair;
 
     public Post(String subreddit, String title, String author, String url, String id, int score,
-                 int numOfComments, String thumbnail, String ext_thumbnail, String created, boolean isSelf, String domain) {
+                int numOfComments, String thumbnail, String ext_thumbnail, String created,
+                boolean isSelf, String domain, String link_flair) {
         this.subreddit = subreddit;
         this.title = title;
         this.author = author;
@@ -33,6 +35,7 @@ public class Post {
         this.created = created;
         this.isSelf = isSelf;
         this.domain = domain;
+        this.link_flair = link_flair;
     }
 
     public String getDetails() {
