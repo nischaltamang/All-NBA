@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     GamesFragment gamesFragment;
     StandingsFragment standingsFragment;
 
+    int selectedFragment;
+    PostsFragment postsFragment1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setFragment(int position) {
+        selectedFragment = position;
         android.support.v4.app.FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
 
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
                 break;
             case 5:
-                PostsFragment postsFragment1 = new PostsFragment();
+                postsFragment1 = new PostsFragment();
                 bundle.putString("TYPE", "large");
                 bundle.putString("URL", "http://www.reddit.com/r/ironsteel2/.json");
                 postsFragment1.setArguments(bundle);
@@ -208,6 +212,19 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (selectedFragment == 5) {
+            if (postsFragment1.isPreviewVisible()) {
+                postsFragment1.stopVideo();
+            } else {
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

@@ -42,6 +42,7 @@ public class PostsFragment extends Fragment {
     View background;
 
     ArrayList<Post> postsList;
+    boolean isPreviewVisible;
 
     public PostsFragment() {
         // Required empty public constructor
@@ -142,7 +143,7 @@ public class PostsFragment extends Fragment {
         postsListView.setEnabled(false);
         background.setVisibility(View.VISIBLE);
         videoProgressLayout.setVisibility(View.VISIBLE);
-
+        isPreviewVisible = true;
         try {
             Uri uri = Uri.parse(url);
             videoView.setMediaController(new android.widget.MediaController(context));
@@ -163,7 +164,7 @@ public class PostsFragment extends Fragment {
         }
     }
 
-    private void stopVideo() {
+    public void stopVideo() {
         //TODO: Handle null pointer exception
         ((MainActivity) getActivity()).getSupportActionBar().show();
 
@@ -173,6 +174,7 @@ public class PostsFragment extends Fragment {
         postsListView.setEnabled(true);
         background.setVisibility(View.GONE);
         videoProgressLayout.setVisibility(View.GONE);
+        isPreviewVisible = false;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -186,4 +188,7 @@ public class PostsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    public boolean isPreviewVisible() {
+        return isPreviewVisible;
+    }
 }
