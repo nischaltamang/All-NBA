@@ -2,14 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightGray"
-    tools:context="com.example.jorgegil.closegamealert.View.Fragments.PostsFragment">
-
-    <WebView
-        android:id="@+id/webview3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+    tools:context="com.example.jorgegil.closegamealert.View.Fragments.HighlightsFragment"
+    android:background="@color/bgWhite">
 
     <LinearLayout
         android:id="@+id/linlaHeaderProgress"
@@ -17,7 +11,7 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/pbHeaderProgress"
@@ -28,15 +22,14 @@
 
     </LinearLayout>
 
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/postsListView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:paddingTop="7dp"
-        android:paddingBottom="7dp"
+        android:id="@+id/HLListView"
+        android:layout_margin="0dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="10dp"

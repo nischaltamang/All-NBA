@@ -1,5 +1,6 @@
 package com.example.jorgegil.closegamealert.Utils;
 
+import android.text.Html;
 import android.util.Log;
 
 import com.example.jorgegil.closegamealert.General.Comment;
@@ -28,7 +29,16 @@ public class CommentsLoader {
     private Comment loadComment(JSONObject data, int level){
         Comment comment = new Comment();
         try{
-            comment.text = data.getString("body");
+            String textHTML = data.getString("body_html");
+            textHTML = textHTML.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"")
+                    .replace("&apos;", "'").replace("&amp;", "&").replace("<li><p>", "<p>• ")
+                    .replace("</li>", "<br>").replaceAll("<li.*?>", "•").replace("<p>", "<div>")
+                    .replace("</p>","</div>");
+            textHTML = textHTML.substring(0, textHTML.lastIndexOf("\n"));
+            CharSequence sequence = trim(Html.fromHtml(noTrailingWhiteLines(textHTML)));
+
+            comment.text = sequence.toString();
+            //comment.text = data.getString("body_html");
             comment.author = data.getString("author");
             comment.points = (data.getInt("ups")
                     - data.getInt("downs"))
@@ -119,5 +129,27 @@ public class CommentsLoader {
         }
         return comments;
     }
+
+    public static CharSequence trim(CharSequence s) {
+        int start = 0;
+        int end = s.length();
+        while (start < end && Character.isWhitespace(s.charAt(start))) {
+            start++;
+        }
+
+        while (end > start && Character.isWhitespace(s.charAt(end - 1))) {
+            end--;
+        }
+
+        return s.subSequence(start, end);
+    }
+
+    public static String noTrailingWhiteLines(String text) {
+        while (text.charAt(text.length() - 1) == '\n') {
+            text = text.substring(0, text.length() - 1);
+        }
+        return text;
+    }
+
 
 }

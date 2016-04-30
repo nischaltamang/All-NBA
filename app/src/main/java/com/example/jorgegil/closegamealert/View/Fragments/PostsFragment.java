@@ -1,9 +1,10 @@
 package com.example.jorgegil.closegamealert.View.Fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
-import android.media.session.MediaController;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -20,6 +23,7 @@ import android.widget.VideoView;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.General.Post;
@@ -28,9 +32,25 @@ import com.example.jorgegil.closegamealert.Utils.PostsAdapter;
 import com.example.jorgegil.closegamealert.Utils.PostsLoader;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
 
+import net.dean.jraw.RedditClient;
+import net.dean.jraw.http.NetworkException;
+import net.dean.jraw.http.UserAgent;
+import net.dean.jraw.http.oauth.Credentials;
+import net.dean.jraw.http.oauth.OAuthData;
+import net.dean.jraw.http.oauth.OAuthException;
+import net.dean.jraw.http.oauth.OAuthHelper;
+import net.dean.jraw.models.Listing;
+import net.dean.jraw.models.LoggedInAccount;
+import net.dean.jraw.models.Submission;
+import net.dean.jraw.paginators.SubredditPaginator;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PostsFragment extends Fragment {
+    private static String CLIENT_ID = "XDtA2eYVKp1wWA";
+    private static String REDIRECT_URI = "http://127.0.0.1";
+
     Context context;
     View rootView;
     String type;
@@ -44,6 +64,15 @@ public class PostsFragment extends Fragment {
 
     ArrayList<Post> postsList;
     boolean isPreviewVisible;
+
+    UserAgent myUserAgent;
+    RedditClient redditClient;
+    LoggedInAccount me;
+    Credentials credentials;
+
+
+    RequestQueue queue;
+    WebView webView;
 
     public PostsFragment() {
         // Required empty public constructor
@@ -59,6 +88,7 @@ public class PostsFragment extends Fragment {
             filter = getArguments().getString("FILTER");
         }
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -86,8 +116,9 @@ public class PostsFragment extends Fragment {
                 break;
         }
 
-        getPosts();
+        connectToReddit();
 
+        //getPosts2();
         return rootView;
     }
 
@@ -99,7 +130,7 @@ public class PostsFragment extends Fragment {
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadPosts(response);
+                //loadPosts(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -113,6 +144,22 @@ public class PostsFragment extends Fragment {
         queue.add(request);
     }
 
+    private void getPosts2(RedditClient reddit) {
+        if (reddit.isAuthenticated()) {
+            SubredditPaginator paginator = new SubredditPaginator(reddit);
+            paginator.setSubreddit("nba");
+            Listing<Submission> firstPage = paginator.next();
+            postsListView.setAdapter(new PostsAdapter(context, firstPage, type));
+
+            webView.setVisibility(View.GONE);
+            linlaHeaderProgress.setVisibility(View.GONE);
+            postsListView.setVisibility(View.VISIBLE);
+        } else {
+            Toast.makeText(context, "Not logged in", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /*
     private void loadPosts(String response) {
         if (context != null) {
             // Loads posts into list view adapter
@@ -141,6 +188,7 @@ public class PostsFragment extends Fragment {
             postsListView.setVisibility(View.VISIBLE);
         }
     }
+    */
 
     private void playVideo(String url) {
         //TODO: handle null pointer exception
@@ -189,7 +237,8 @@ public class PostsFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 stopVideo();
-                getPosts();
+                linlaHeaderProgress.setVisibility(View.VISIBLE);
+                getPosts2(redditClient);
                 Log.d("POSTS", "fragment reloaded");
                 return true;
         }
@@ -199,4 +248,43 @@ public class PostsFragment extends Fragment {
     public boolean isPreviewVisible() {
         return isPreviewVisible;
     }
+
+    private void connectToReddit() {
+
+        AuthenticateTask task = new AuthenticateTask();
+        task.execute(null, null, null);
+
+    }
+
+    private class AuthenticateTask extends AsyncTask<Void, Void, RedditClient> {
+        UserAgent myUserAgent;
+        RedditClient redditClient;
+        Credentials credentials;
+        OAuthData authData;
+
+        @Override
+        protected void onPreExecute() {
+            myUserAgent = UserAgent.of("mobile", "com.example.jorgegil.closegamealert", "v0.1", "/u/jorgegil96");
+            redditClient = new RedditClient(myUserAgent);
+            credentials = Credentials.script("nbapp", "georges01", "HezS_CqT8RJwCg", "T3erjkDbPREpaH30hYgpo70KKis");
+        }
+
+        @Override
+        protected RedditClient doInBackground(Void... voids) {
+            try {
+                authData = redditClient.getOAuthHelper().easyAuth(credentials);
+                redditClient.authenticate(authData);
+                Log.d("REDDIT", "authenticated");
+            } catch (OAuthException e) {
+
+            }
+            return redditClient;
+        }
+
+        @Override
+        protected void onPostExecute(RedditClient redditClient) {
+            getPosts2(redditClient);
+        }
+    }
+
 }

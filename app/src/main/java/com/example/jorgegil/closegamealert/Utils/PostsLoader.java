@@ -26,6 +26,7 @@ public class PostsLoader {
         this.filter = filter;
     }
 
+
     public ArrayList<Post> fetchPosts() {
         ArrayList<Post> posts = new ArrayList<>();
         try {

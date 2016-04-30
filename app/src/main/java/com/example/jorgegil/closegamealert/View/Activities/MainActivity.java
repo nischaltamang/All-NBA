@@ -2,7 +2,6 @@ package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.os.Build;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.GCM.GCMClientManager;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
+import com.example.jorgegil.closegamealert.View.Fragments.HighlightsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.PostsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.StandingsFragment;
 
@@ -40,9 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
     GamesFragment gamesFragment;
     StandingsFragment standingsFragment;
+    HighlightsFragment hlfragment;
+
 
     int selectedFragment;
     PostsFragment postsFragment1;
+
 
 
     @Override
@@ -188,12 +191,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 5:
                 setTitle("Highlights");
-                postsFragment1 = new PostsFragment();
-                bundle.putString("TYPE", "large");
-                bundle.putString("URL", "http://www.reddit.com/r/nba/.json?limit=100");
-                bundle.putString("FILTER", "Highlights");
-                postsFragment1.setArguments(bundle);
-                fragmentTransaction.replace(R.id.fragment, postsFragment1, "POSTS_FRAGMENT");
+                hlfragment = new HighlightsFragment();
+                fragmentTransaction.replace(R.id.fragment, hlfragment, "HL_FRAGMENT");
                 fragmentTransaction.commit();
                 break;
         }
@@ -222,23 +221,19 @@ public class MainActivity extends AppCompatActivity {
         switch (selectedFragment) {
             case 1:
                 super.onBackPressed();
-                return;
-            case 2:
-                setFragment(1);
-                return;
-            case 3:
-                setFragment(1);
-                return;
-            case 4:
-                setFragment(1);
-                return;
+                break;
             case 5:
-                if (postsFragment1.isPreviewVisible()) {
-                    postsFragment1.stopVideo();
-                    return;
+                if (hlfragment.isPreviewVisible()) {
+                    hlfragment.stopVideo();
+                } else {
+                    setFragment(1);
+                    navigationView.getMenu().getItem(0).setChecked(true);
                 }
+                break;
+            default:
                 setFragment(1);
-                return;
+                navigationView.getMenu().getItem(0).setChecked(true);
+                break;
         }
     }
 

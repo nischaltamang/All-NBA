@@ -13,6 +13,9 @@ import com.example.jorgegil.closegamealert.General.Post;
 import com.example.jorgegil.closegamealert.R;
 import com.squareup.picasso.Picasso;
 
+import net.dean.jraw.models.Listing;
+import net.dean.jraw.models.Submission;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -21,11 +24,11 @@ import java.util.ArrayList;
  */
 public class PostsAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<Post> postsList;
+    private Listing<Submission> postsList;
     private String type;
     private static LayoutInflater inflater = null;
 
-    public PostsAdapter(Context context, ArrayList<Post> postsList, String type) {
+    public PostsAdapter(Context context, Listing<Submission> postsList, String type) {
         this.context = context;
         this.postsList = postsList;
         this.type = type;
@@ -72,28 +75,28 @@ public class PostsAdapter extends BaseAdapter {
         ImageView thumbnail = (ImageView) rowView.findViewById(R.id.thumbnail);
 
         //scoreView.setText(String.valueOf(postsList.get(position).score));
-        authorView.setText(postsList.get(position).author);
-        createdView.setText(String.valueOf(postsList.get(position).created));
+        authorView.setText(postsList.get(position).getAuthor());
+        createdView.setText(String.valueOf(postsList.get(position).getCreated()));
 
-        String text = postsList.get(position).title.replace("ironsteel2", " ");
-        titleView.setText(text);
+        //String text = postsList.get(position).title.replace("ironsteel2", " ");
+        titleView.setText(postsList.get(position).getTitle());
         //numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
 
         String url;
-        if (type.equals("large") && !postsList.get(position).ext_thumbnail.equals("")) {
-            url = postsList.get(position).ext_thumbnail;
+        if (type.equals("large")) {
+            url = postsList.get(position).getThumbnail();
         } else {
-            url = postsList.get(position).thumbnail;
+            url = postsList.get(position).getThumbnail();
         }
 
-        if (postsList.get(position).isSelf || url.equals("")) {
+        if (postsList.get(position).isSelfPost() || url.equals("")) {
             linkView.setText("• self");
             thumbnail.setVisibility(View.GONE);
         } else {
             linkView.setText("• link");
             Picasso.with(context).load(url).into(thumbnail);
         }
-        subredditView.setText("• " + postsList.get(position).subreddit);
+        subredditView.setText("• " + postsList.get(position).getSubredditName());
 
 
 
