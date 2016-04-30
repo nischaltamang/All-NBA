@@ -1,3 +1,13 @@
-Android app for /r/NBA in reddit.  
+# All-NBA Android App
 
-Shows real-time scores and box scores, live game threads, user highlights and pushes notifications when games are close in score.
+Features
+-----
+
+* Real-time scores and box scores
+* Live and post game discussion threads (through Reddit)
+* Push notifications when games are close or interesting
+* Push notifications when games begin/end
+* User-submitted highlight videos
+* News and discussion threads (through Reddit)
+* Standings and playoff bracket
+* Custom twitter timeline with tweets from players, teams, reporters and more
