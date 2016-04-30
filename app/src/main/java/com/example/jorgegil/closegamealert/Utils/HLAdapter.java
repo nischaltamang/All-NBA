@@ -56,8 +56,6 @@ public class HLAdapter extends BaseAdapter {
         Picasso.with(context).load(highlights.get(i).thumbnailURL).into(thumbnailView);
         titleView.setText(highlights.get(i).title);
 
-        Log.d("HLAdapter", "" + highlights.get(i).title);
-
         return rowView;
     }
 }

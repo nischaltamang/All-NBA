@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class HighlightsFragment extends Fragment {
     private static final String TAG = "HighlightsFragment";
-    String url = "https://streamable.com/ajax/stream/nba?count=100&page=2&grouped=false";
+    String url = "https://streamable.com/ajax/stream/nba?count=100&page=3&grouped=false";
     Context context;
     View rootView;
     ListView hlListView;
@@ -95,7 +95,6 @@ public class HighlightsFragment extends Fragment {
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("HIGHLIGHTS", "Response from streamable");
                 loadHL(response);
             }
         }, new Response.ErrorListener() {
