@@ -1,5 +1,6 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -42,11 +43,13 @@ public class MainActivity extends AppCompatActivity {
     StandingsFragment standingsFragment;
     HighlightsFragment hlfragment;
 
-
     int selectedFragment;
     PostsFragment postsFragment1;
 
-
+    public static final String MyPreferences = "MyPrefs";
+    public static final String firstTime = "firstTime";
+    public static final String pushCloseGameAlert = "pushCGA";
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         setUpToolbar();
         setUpNavigationView();
         setUpDrawerContent();
+        setUpPreferences();
+
 
         // Select Games Fragment as default
         setTitle("Games");
@@ -126,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         if (toolbar != null) {
             drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             navigationView = (NavigationView) findViewById(R.id.navigation);
+            navigationView.getMenu().getItem(8).setCheckable(false);
         }
     }
 
@@ -197,6 +203,17 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+    }
+
+    public void setUpPreferences() {
+        sharedPreferences = getSharedPreferences(MyPreferences, MODE_PRIVATE);
+        // Set default preferences if not set yet
+        if (sharedPreferences.getBoolean(firstTime, true)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(firstTime, false);
+            editor.putBoolean(pushCloseGameAlert, true);
+            editor.commit();
+        }
     }
 
     @Override
