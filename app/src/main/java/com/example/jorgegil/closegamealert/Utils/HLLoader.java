@@ -37,10 +37,15 @@ public class HLLoader {
                     hl.ext = vData.getString("ext");
                     hl.fileID = vData.getString("file_id");
                     hl.thumbnailURL = "http:" + vData.getString("poster_url");
-                    hl.title = vData.getString("title");
+                    hl.title = vData.getString("result_title");
                     hl.redditURL = vData.getString("reddit_url");
 
-                    JSONObject mobileFile = vData.getJSONObject("files").getJSONObject("mp4-mobile");
+                    JSONObject mobileFile;
+                    if (vData.getJSONObject("files").has("mp4-mobile"))
+                        mobileFile = vData.getJSONObject("files").getJSONObject("mp4-mobile");
+                    else
+                        mobileFile = vData.getJSONObject("files").getJSONObject("mp4");
+
                     hl.height = mobileFile.getInt("height");
                     hl.width = mobileFile.getInt("width");
                     hl.videoURL = "http:" + mobileFile.getString("url");
