@@ -84,13 +84,13 @@ public class HighlightsFragment extends Fragment {
         loadMore.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         hlListView.addFooterView(loadMore);
 
-        getHL(page);
+        getHL(page, true);
 
         loadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loadMore.setText("Loading...");
-                getHL(page);
+                getHL(page, false);
             }
         });
 
@@ -103,17 +103,17 @@ public class HighlightsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                linlaHeaderProgress.setVisibility(View.VISIBLE);
                 stopVideo();
                 page = 1;
-                getHL(page);
+                getHL(page, true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void getHL(int page) {
-        if (hlList == null) {
+    public void getHL(int page, final boolean newLoad) {
+        // On first load or reload show spinner
+        if (newLoad) {
             linlaHeaderProgress.setVisibility(View.VISIBLE);
             hlListView.setVisibility(View.GONE);
         }
@@ -124,11 +124,7 @@ public class HighlightsFragment extends Fragment {
             @Override
             public void onResponse(String response) {
                 incrementPage();
-                if (hlList == null)
-                    loadHL(response);
-                else
-                    loadMoreHL(response);
-
+                loadHL(response, newLoad);
                 loadMore.setText("Load More");
             }
         }, new Response.ErrorListener() {
@@ -141,41 +137,35 @@ public class HighlightsFragment extends Fragment {
         queue.add(request);
     }
 
-    public void loadHL(String response) {
+    public void loadHL(String response, boolean newLoad) {
         if (context != null) {
             HLLoader hlLoader = new HLLoader(response);
 
-            hlList = hlLoader.fetchHighlights();
+            // When first load or reload make new list and hide spinner, if not just add new items
+            if (newLoad) {
+                hlList = hlLoader.fetchHighlights();
 
-            //Log.d(TAG, "list size " + hlList.get(0).title);
-            hlListView.setAdapter(new HLAdapter(context, hlList));
+                //Log.d(TAG, "list size " + hlList.get(0).title);
+                hlListView.setAdapter(new HLAdapter(context, hlList));
 
-            hlListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    String vURL = hlList.get(i).videoURL;
-                    playVideo(vURL);
-                }
-            });
+                hlListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        String vURL = hlList.get(i).videoURL;
+                        playVideo(vURL);
+                    }
+                });
 
+                linlaHeaderProgress.setVisibility(View.GONE);
+                hlListView.setVisibility(View.VISIBLE);
 
-            linlaHeaderProgress.setVisibility(View.GONE);
-            hlListView.setVisibility(View.VISIBLE);
-
-            if (hlList.size() < 5) {
-                getHL(page);
+            } else {
+                hlList.addAll(hlLoader.fetchHighlights());
+                ((HLAdapter)((HeaderViewListAdapter) hlListView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
             }
-        }
-    }
-
-    public void loadMoreHL(String response) {
-        if (context != null) {
-            HLLoader hlLoader = new HLLoader(response);
-            hlList.addAll(hlLoader.fetchHighlights());
-            ((HLAdapter)((HeaderViewListAdapter) hlListView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
 
             if (hlList.size() < 5) {
-                getHL(page);
+                getHL(page, false);
             }
         }
     }
