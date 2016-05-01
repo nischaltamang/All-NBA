@@ -89,7 +89,6 @@ public class HighlightsFragment extends Fragment {
         loadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                page++;
                 loadMore.setText("Loading...");
                 getHL(page);
             }
@@ -124,6 +123,7 @@ public class HighlightsFragment extends Fragment {
         StringRequest request = new StringRequest(url + page, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                incrementPage();
                 if (hlList == null)
                     loadHL(response);
                 else
@@ -161,6 +161,10 @@ public class HighlightsFragment extends Fragment {
 
             linlaHeaderProgress.setVisibility(View.GONE);
             hlListView.setVisibility(View.VISIBLE);
+
+            if (hlList.size() < 5) {
+                getHL(page);
+            }
         }
     }
 
@@ -169,8 +173,18 @@ public class HighlightsFragment extends Fragment {
             HLLoader hlLoader = new HLLoader(response);
             hlList.addAll(hlLoader.fetchHighlights());
             ((HLAdapter)((HeaderViewListAdapter) hlListView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+
+            if (hlList.size() < 5) {
+                getHL(page);
+            }
         }
     }
+
+    public void incrementPage() {
+        page++;
+    }
+
+
 
 
     public void playVideo(String vURL) {
