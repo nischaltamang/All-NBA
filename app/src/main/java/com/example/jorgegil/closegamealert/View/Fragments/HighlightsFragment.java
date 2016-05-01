@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.HeaderViewListAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -32,12 +34,16 @@ import java.util.ArrayList;
 
 public class HighlightsFragment extends Fragment {
     private static final String TAG = "HighlightsFragment";
-    String url = "https://streamable.com/ajax/stream/nba?count=100&page=3&grouped=false";
+
+    String url = "https://streamable.com/ajax/stream/nba?count=100&grouped=false&page=";
+    int page = 1;
+
     Context context;
     View rootView;
     ListView hlListView;
     LinearLayout linlaHeaderProgress, videoProgressLayout;
 
+    Button loadMore;
     ArrayList<Highlight> hlList;
 
     VideoView videoView;
@@ -57,6 +63,7 @@ public class HighlightsFragment extends Fragment {
         if (getArguments() != null) {
         }
         setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -71,7 +78,24 @@ public class HighlightsFragment extends Fragment {
         background = rootView.findViewById(R.id.background);
         background.setVisibility(View.GONE);
 
-        getHL();
+        loadMore = new Button(context);
+        loadMore.setText("Load More");
+        loadMore.setTextColor(getResources().getColor(R.color.secondaryText));
+        loadMore.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        hlListView.addFooterView(loadMore);
+
+        getHL(page);
+
+        loadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                page++;
+                loadMore.setText("Loading...");
+                getHL(page);
+            }
+        });
+
+
 
         return rootView;
     }
@@ -82,25 +106,35 @@ public class HighlightsFragment extends Fragment {
             case R.id.action_refresh:
                 linlaHeaderProgress.setVisibility(View.VISIBLE);
                 stopVideo();
-                getHL();
+                page = 1;
+                getHL(page);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void getHL() {
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
-        hlListView.setVisibility(View.GONE);
+    public void getHL(int page) {
+        if (hlList == null) {
+            linlaHeaderProgress.setVisibility(View.VISIBLE);
+            hlListView.setVisibility(View.GONE);
+        }
 
-        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
+        Log.d(TAG, "Loading page " + page);
+
+        StringRequest request = new StringRequest(url + page, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadHL(response);
+                if (hlList == null)
+                    loadHL(response);
+                else
+                    loadMoreHL(response);
+
+                loadMore.setText("Load More");
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                loadMore.setText("Load More");
             }
         });
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -110,7 +144,9 @@ public class HighlightsFragment extends Fragment {
     public void loadHL(String response) {
         if (context != null) {
             HLLoader hlLoader = new HLLoader(response);
+
             hlList = hlLoader.fetchHighlights();
+
             //Log.d(TAG, "list size " + hlList.get(0).title);
             hlListView.setAdapter(new HLAdapter(context, hlList));
 
@@ -122,10 +158,20 @@ public class HighlightsFragment extends Fragment {
                 }
             });
 
+
             linlaHeaderProgress.setVisibility(View.GONE);
             hlListView.setVisibility(View.VISIBLE);
         }
     }
+
+    public void loadMoreHL(String response) {
+        if (context != null) {
+            HLLoader hlLoader = new HLLoader(response);
+            hlList.addAll(hlLoader.fetchHighlights());
+            ((HLAdapter)((HeaderViewListAdapter) hlListView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+        }
+    }
+
 
     public void playVideo(String vURL) {
         //TODO: handle null pointer exception
@@ -151,7 +197,6 @@ public class HighlightsFragment extends Fragment {
             });
             videoView.start();
         } catch (Exception e) {
-            // TODO: Handle exception
             stopVideo();
             Toast.makeText(context, "Error loading video", Toast.LENGTH_SHORT).show();
         }
