@@ -1,5 +1,7 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.design.widget.NavigationView;
@@ -157,6 +159,11 @@ public class MainActivity extends AppCompatActivity {
                         setFragment(5);
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
+                    case R.id.navigation_item_9:
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                        startActivity(intent);
+
                 }
                 return true;
             }

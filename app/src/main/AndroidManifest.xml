@@ -26,7 +26,9 @@
             android:label="@string/app_name">
             <intent-filter>
                 <data android:scheme="my.nbapp.scheme" />
+
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -49,7 +51,6 @@
 
                 <category android:name="com.example.jorgegil.closegamealert" />
             </intent-filter>
-
         </receiver>
 
         <service
@@ -63,6 +64,10 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="87003f261e96116d27947fd20dd714ca5a34d579" />
+
+        <activity
+            android:name=".View.Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
