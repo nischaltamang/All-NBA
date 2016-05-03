@@ -19,10 +19,10 @@ import java.util.ArrayList;
  */
 public class CommentAdapter extends BaseAdapter{
     private final Context context;
-    private final ArrayList<Comment> commentsList;
+    private final ArrayList<net.dean.jraw.models.Comment> commentsList;
     private static LayoutInflater inflater = null;
 
-    public CommentAdapter(Context context, ArrayList<Comment> commentsList) {
+    public CommentAdapter(Context context, ArrayList<net.dean.jraw.models.Comment> commentsList) {
         this.context = context;
         this.commentsList = commentsList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -56,7 +56,8 @@ public class CommentAdapter extends BaseAdapter{
         final float scale = context.getResources().getDisplayMetrics().density;
         int padding_in_px = (int) (padding_in_dp * scale + 0.5F);
 
-        int level = commentsList.get(position).level + 1;
+        //int level = commentsList.get(position) + 1;
+        int level = 1;
 
         if (level - 1 > 0) {
             int res = (level - 1) % 6;
@@ -82,10 +83,10 @@ public class CommentAdapter extends BaseAdapter{
         }
         rowView.setPadding(padding_in_px * (level - 1), 0, 0, 0);
 
-        authorView.setText(commentsList.get(position).author);
-        scoreView.setText(commentsList.get(position).points + " points");
-        postedOnView.setText(commentsList.get(position).postedOn);
-        commentView.setText(commentsList.get(position).text);
+        authorView.setText(commentsList.get(position).getAuthor());
+        scoreView.setText(commentsList.get(position).getScore() + " points");
+        postedOnView.setText(commentsList.get(position).getCreatedUtc().toString());
+        commentView.setText(commentsList.get(position).getBody());
 
         return rowView;
     }

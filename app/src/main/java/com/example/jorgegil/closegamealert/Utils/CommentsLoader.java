@@ -5,12 +5,17 @@ import android.util.Log;
 
 import com.example.jorgegil.closegamealert.General.Comment;
 
+import net.dean.jraw.models.CommentNode;
+import net.dean.jraw.models.Listing;
+import net.dean.jraw.models.Submission;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -20,10 +25,34 @@ import java.util.concurrent.TimeUnit;
 public class CommentsLoader {
 
     private String raw;
+    private Submission submission;
+    private ArrayList<net.dean.jraw.models.Comment> comments;
 
     public CommentsLoader(String raw){
         this.raw = raw;
     }
+
+    public CommentsLoader(Submission submission) {
+        this.submission = submission;
+    }
+
+    public ArrayList<net.dean.jraw.models.Comment> fetchComments() {
+        comments = new ArrayList<>();
+        CommentNode commentNode = submission.getComments();
+        Log.d("CommentsLoader", submission.);
+        traverseTree(commentNode);
+        return comments;
+    }
+
+    public void traverseTree(CommentNode root) {
+        for (CommentNode node : root) {
+            comments.add(node.getComment());
+            Log.d("CommentsLoader", "Added: " + node.getComment().getBody());
+            if (node.hasMoreComments())
+                traverseTree(node);
+        }
+    }
+
 
     // Load various details about the comment
     private Comment loadComment(JSONObject data, int level){
@@ -111,6 +140,7 @@ public class CommentsLoader {
 
     // Load the comments as an ArrayList, so that it can be
     // easily passed to the ArrayAdapter
+    /*
     public ArrayList<Comment> fetchComments(){
         ArrayList<Comment> comments = new ArrayList<Comment>();
         try{
@@ -129,6 +159,7 @@ public class CommentsLoader {
         }
         return comments;
     }
+    */
 
     public static CharSequence trim(CharSequence s) {
         int start = 0;
