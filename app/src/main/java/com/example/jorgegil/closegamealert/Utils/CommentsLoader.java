@@ -54,7 +54,7 @@ public class CommentsLoader {
     // Load various details about the comment
     /*
     private Comment loadComment(JSONObject data, int level){
-        Comment comment = new Comment();
+        Comment comment = new Comment();.get
         try{
             String textHTML = data.getString("body_html");
             textHTML = textHTML.replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", "\"")
