@@ -8,6 +8,7 @@ import com.example.jorgegil.closegamealert.General.Comment;
 import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.paginators.Paginator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,6 +25,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class CommentsLoader {
 
+    private static final String TAG = "CommentsLoader";
+
     private String raw;
     private Submission submission;
     private ArrayList<net.dean.jraw.models.Comment> comments;
@@ -36,25 +39,20 @@ public class CommentsLoader {
         this.submission = submission;
     }
 
-    public ArrayList<net.dean.jraw.models.Comment> fetchComments() {
-        comments = new ArrayList<>();
-        CommentNode commentNode = submission.getComments();
-        Log.d("CommentsLoader", submission.);
-        traverseTree(commentNode);
-        return comments;
-    }
+    public ArrayList<Comment> fetchComments() {
+        Iterable<CommentNode> iterable = submission.getComments().walkTree();
 
-    public void traverseTree(CommentNode root) {
-        for (CommentNode node : root) {
-            comments.add(node.getComment());
-            Log.d("CommentsLoader", "Added: " + node.getComment().getBody());
-            if (node.hasMoreComments())
-                traverseTree(node);
+        ArrayList<Comment> comments = new ArrayList<>();
+        for (CommentNode node : iterable) {
+            comments.add(new Comment(node.getComment(), node.getDepth()));
         }
+
+        return comments;
     }
 
 
     // Load various details about the comment
+    /*
     private Comment loadComment(JSONObject data, int level){
         Comment comment = new Comment();
         try{
@@ -101,7 +99,9 @@ public class CommentsLoader {
         }
         return comment;
     }
+    */
 
+    /*
     // This is where the comment is actually loaded
     // For each comment, its replies are recursively loaded
     private void process(ArrayList<Comment> comments
@@ -159,7 +159,7 @@ public class CommentsLoader {
         }
         return comments;
     }
-    */
+
 
     public static CharSequence trim(CharSequence s) {
         int start = 0;
@@ -181,6 +181,7 @@ public class CommentsLoader {
         }
         return text;
     }
+    */
 
 
 }

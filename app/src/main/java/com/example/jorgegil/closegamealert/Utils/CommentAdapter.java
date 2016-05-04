@@ -1,6 +1,7 @@
 package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,21 @@ import android.widget.TextView;
 import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jorgegil on 11/29/15.
  */
 public class CommentAdapter extends BaseAdapter{
     private final Context context;
-    private final ArrayList<net.dean.jraw.models.Comment> commentsList;
+    private final ArrayList<Comment> commentsList;
     private static LayoutInflater inflater = null;
 
-    public CommentAdapter(Context context, ArrayList<net.dean.jraw.models.Comment> commentsList) {
+    public CommentAdapter(Context context, ArrayList<Comment> commentsList) {
         this.context = context;
         this.commentsList = commentsList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -56,8 +61,7 @@ public class CommentAdapter extends BaseAdapter{
         final float scale = context.getResources().getDisplayMetrics().density;
         int padding_in_px = (int) (padding_in_dp * scale + 0.5F);
 
-        //int level = commentsList.get(position) + 1;
-        int level = 1;
+        int level = commentsList.get(position).level + 1;
 
         if (level - 1 > 0) {
             int res = (level - 1) % 6;
@@ -83,11 +87,35 @@ public class CommentAdapter extends BaseAdapter{
         }
         rowView.setPadding(padding_in_px * (level - 1), 0, 0, 0);
 
-        authorView.setText(commentsList.get(position).getAuthor());
-        scoreView.setText(commentsList.get(position).getScore() + " points");
-        postedOnView.setText(commentsList.get(position).getCreatedUtc().toString());
-        commentView.setText(commentsList.get(position).getBody());
+        authorView.setText(commentsList.get(position).jrawComment.getAuthor());
+        scoreView.setText(commentsList.get(position).jrawComment.getScore() + " points");
+        postedOnView.setText(formatDate(commentsList.get(position).jrawComment.getCreatedUtc()));
+        commentView.setText(commentsList.get(position).jrawComment.getBody());
 
         return rowView;
+    }
+
+    public String formatDate(Date date) {
+
+        String postedOn;
+        Date now = new Date();
+
+        long minutesAgo = (TimeUnit.MILLISECONDS.toMinutes(now.getTime() - date.getTime()));
+        long hoursAgo = (TimeUnit.MILLISECONDS.toHours(now.getTime() - date.getTime()));
+        long daysAgo = (TimeUnit.MILLISECONDS.toDays(now.getTime() - date.getTime()));
+
+        if (minutesAgo == 0) {
+            postedOn = " just now ";
+        } else if (minutesAgo < 60) {
+            postedOn = minutesAgo + " minutes ago";
+        } else {
+            if (hoursAgo < 49) {
+                postedOn = hoursAgo + " hours ago";
+            } else {
+                postedOn = daysAgo + " days ago";
+            }
+        }
+
+        return postedOn;
     }
 }

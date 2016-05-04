@@ -70,7 +70,7 @@ public class ThreadFragment extends Fragment {
     boolean foundThread = false;
 
     FloatingActionButton fab;
-    ArrayList<net.dean.jraw.models.Comment> commentList;
+    ArrayList<Comment> commentList;
 
     UserAgent userAgent;
     RedditClient redditClient;
@@ -142,7 +142,7 @@ public class ThreadFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String JSONcomment = intent.getStringExtra("comment");
             Log.d("recevier", "Got comment: " + JSONcomment);
-
+            /*
             try {
                 JSONObject jsonObject = new JSONObject(JSONcomment);
 
@@ -161,6 +161,7 @@ public class ThreadFragment extends Fragment {
             } catch (Exception e) {
                 Log.e("JSON", "add comment e: " + e.toString());
             }
+            */
         }
     };
 
@@ -218,7 +219,6 @@ public class ThreadFragment extends Fragment {
         TeamNames tn = new TeamNames();
         String nameH = tn.getName(homeTeam).toUpperCase();
         String nameA = tn.getName(awayTeam).toUpperCase();
-        Submission thread = null;
 
         for (int i = 0; i < submissions.size(); i++) {
             Submission s = submissions.get(i);
@@ -232,7 +232,6 @@ public class ThreadFragment extends Fragment {
                 if (flair != null) {
                     if (flair.equals("Game Thread") && title.contains(nameH) && title.contains(nameA)) {
                         threadId = s.getId();
-                        thread = s;
                         foundThread = true;
                         break;
                     }
@@ -257,15 +256,29 @@ public class ThreadFragment extends Fragment {
         } else {
             noThread.setText("");
             commentsUrl = commentsUrl.replace("GTID", threadId);
-            getComments(thread);
+            GetFullThread task = new GetFullThread();
+            task.execute(threadId);
             //parseComments();
         }
     }
 
-    public void getComments(Submission thread) {
+    private class GetFullThread extends AsyncTask<String, Void, Submission> {
+        @Override
+        protected Submission doInBackground(String... strings) {
+            Submission submission = redditClient.getSubmission(strings[0]);
+            return submission;
+        }
+
+        @Override
+        protected void onPostExecute(Submission submission) {
+            getComments(submission);
+        }
+    }
+
+    public void getComments(Submission submission) {
         if (getActivity() != null) {
             // Loads comments into list view adapter
-            CommentsLoader commentsLoader = new CommentsLoader(thread);
+            CommentsLoader commentsLoader = new CommentsLoader(submission);
             commentList = commentsLoader.fetchComments();
 
 
