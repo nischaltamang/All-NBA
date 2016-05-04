@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.example.jorgegil.closegamealert.General.Comment;
 
+import net.dean.jraw.http.SubmissionRequest;
 import net.dean.jraw.models.CommentNode;
+import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.Paginator;
@@ -29,6 +31,7 @@ public class CommentsLoader {
 
     private String raw;
     private Submission submission;
+    private String sID;
     private ArrayList<net.dean.jraw.models.Comment> comments;
 
     public CommentsLoader(String raw){
@@ -37,10 +40,12 @@ public class CommentsLoader {
 
     public CommentsLoader(Submission submission) {
         this.submission = submission;
+        sID = submission.getId();
     }
 
+    /*
     public ArrayList<Comment> fetchComments() {
-        Iterable<CommentNode> iterable = submission.getComments().walkTree();
+        Iterable<CommentNode> iterable = re.getComments().walkTree();
 
         ArrayList<Comment> comments = new ArrayList<>();
         for (CommentNode node : iterable) {
@@ -49,6 +54,7 @@ public class CommentsLoader {
 
         return comments;
     }
+    */
 
 
     // Load various details about the comment

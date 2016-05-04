@@ -25,10 +25,13 @@ import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
 import com.example.jorgegil.closegamealert.Utils.CommentsLoader;
 
 import net.dean.jraw.RedditClient;
+import net.dean.jraw.http.SubmissionRequest;
 import net.dean.jraw.http.UserAgent;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
 import net.dean.jraw.http.oauth.OAuthException;
+import net.dean.jraw.models.CommentNode;
+import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.Sorting;
@@ -249,8 +252,11 @@ public class ThreadFragment extends Fragment {
 
         @Override
         protected Submission doInBackground(String... strings) {
-            Submission submission = redditClient.getSubmission(strings[0]);
-            return submission;
+            SubmissionRequest.Builder b = new SubmissionRequest.Builder(strings[0]);
+            b.sort(CommentSort.NEW);
+            SubmissionRequest sr = b.build();
+
+            return redditClient.getSubmission(sr);
         }
 
         @Override
@@ -261,9 +267,17 @@ public class ThreadFragment extends Fragment {
 
     public void getComments(Submission submission) {
         if (getActivity() != null) {
-            // Loads comments into list view adapter
+
+            Iterable<CommentNode> iterable = submission.getComments().walkTree();
+            commentList = new ArrayList<>();
+            for (CommentNode node : iterable) {
+                commentList.add(new Comment(node.getComment(), node.getDepth()));
+            }
+
+            /*
             CommentsLoader commentsLoader = new CommentsLoader(submission);
             commentList = commentsLoader.fetchComments();
+            */
 
 
             listView.setAdapter(new CommentAdapter(getActivity(), commentList));
