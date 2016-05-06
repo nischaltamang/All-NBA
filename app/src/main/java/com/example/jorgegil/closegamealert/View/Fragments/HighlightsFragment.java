@@ -155,17 +155,26 @@ public class HighlightsFragment extends Fragment {
                     }
                 });
 
-                linlaHeaderProgress.setVisibility(View.GONE);
-                hlListView.setVisibility(View.VISIBLE);
+                if (hlList.size() < 5) {
+                    getHL(page, false);
+                } else {
+                    linlaHeaderProgress.setVisibility(View.GONE);
+                    hlListView.setVisibility(View.VISIBLE);
+                }
+
 
             } else {
                 hlList.addAll(hlLoader.fetchHighlights());
                 ((HLAdapter)((HeaderViewListAdapter) hlListView.getAdapter()).getWrappedAdapter()).notifyDataSetChanged();
+
+                if (hlList.size() < 5) {
+                    getHL(page, false);
+                } else {
+                    linlaHeaderProgress.setVisibility(View.GONE);
+                    hlListView.setVisibility(View.VISIBLE);
+                }
             }
 
-            if (hlList.size() < 5) {
-                getHL(page, false);
-            }
         }
     }
 

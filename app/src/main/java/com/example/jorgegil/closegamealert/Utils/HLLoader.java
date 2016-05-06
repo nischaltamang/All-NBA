@@ -42,7 +42,7 @@ public class HLLoader {
                     if (hl.title == null) {
                         hl.title = vData.getString("reddit_title");
                     }
-                    
+
                     hl.redditURL = vData.getString("reddit_url");
 
                     JSONObject mobileFile;
