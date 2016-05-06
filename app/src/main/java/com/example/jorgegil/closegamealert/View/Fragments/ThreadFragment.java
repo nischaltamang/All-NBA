@@ -177,6 +177,7 @@ public class ThreadFragment extends Fragment {
     }
 
     public void getThreads() {
+        showLoadingIcon();
         GetSubmissionsTask task = new GetSubmissionsTask();
         task.execute();
     }

@@ -37,7 +37,12 @@ public class HLLoader {
                     hl.ext = vData.getString("ext");
                     hl.fileID = vData.getString("file_id");
                     hl.thumbnailURL = "http:" + vData.getString("poster_url");
-                    hl.title = vData.getString("result_title");
+
+                    hl.title = vData.getString("title");
+                    if (hl.title == null) {
+                        hl.title = vData.getString("reddit_title");
+                    }
+                    
                     hl.redditURL = vData.getString("reddit_url");
 
                     JSONObject mobileFile;
@@ -55,7 +60,7 @@ public class HLLoader {
                 }
             }
         }catch (Exception e) {
-            Log.e(TAG , "Error leyendo JSON");
+            Log.e(TAG , "Error leyendo JSON " + e.toString());
         }
 
 
