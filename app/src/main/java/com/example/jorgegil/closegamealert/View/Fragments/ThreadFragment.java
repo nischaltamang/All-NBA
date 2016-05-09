@@ -254,7 +254,11 @@ public class ThreadFragment extends Fragment {
         @Override
         protected Submission doInBackground(String... strings) {
             SubmissionRequest.Builder b = new SubmissionRequest.Builder(strings[0]);
-            b.sort(CommentSort.NEW);
+            if (threadType.equals("LIVE")) {
+                b.sort(CommentSort.NEW);
+            } else {
+                b.sort(CommentSort.TOP);
+            }
             SubmissionRequest sr = b.build();
 
             return redditClient.getSubmission(sr);
