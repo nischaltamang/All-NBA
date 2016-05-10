@@ -57,30 +57,29 @@ public class CommentAdapter extends BaseAdapter{
         TextView postedOnView = (TextView) rowView.findViewById(R.id.timeTextView);
         RelativeLayout relativeLayout = (RelativeLayout) rowView.findViewById(R.id.relativeLayout);
 
-        int padding_in_dp = 10;
+        int padding_in_dp = 5;
         final float scale = context.getResources().getDisplayMetrics().density;
         int padding_in_px = (int) (padding_in_dp * scale + 0.5F);
 
-        int level = commentsList.get(position).level + 1;
+        int level = commentsList.get(position).level; // From 0
 
-        if (level - 1 > 0) {
-            int res = (level - 1) % 6;
+
+        if (level > 0) {
+            int res = (level) % 5;
             switch (res) {
                 case 0:
-                    break;
-                case 1:
                     relativeLayout.setBackgroundResource(R.drawable.borderblue);
                     break;
-                case 2:
+                case 1:
                     relativeLayout.setBackgroundResource(R.drawable.bordergreen);
                     break;
-                case 3:
+                case 2:
                     relativeLayout.setBackgroundResource(R.drawable.borderbrown);
                     break;
-                case 4:
+                case 3:
                     relativeLayout.setBackgroundResource(R.drawable.borderorange);
                     break;
-                case 5:
+                case 4:
                     relativeLayout.setBackgroundResource(R.drawable.borderred);
                     break;
             }

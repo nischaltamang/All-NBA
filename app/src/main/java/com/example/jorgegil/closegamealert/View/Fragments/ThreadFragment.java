@@ -233,6 +233,10 @@ public class ThreadFragment extends Fragment {
             }
         }
 
+        threadType = "POST";
+        threadId = "4ipwo0";
+        foundThread = true;
+
         Log.d(TAG, awayTeam + "@" + homeTeam + " id -> " + threadId);
 
         if (!foundThread) {
