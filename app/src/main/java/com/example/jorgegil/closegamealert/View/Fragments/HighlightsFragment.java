@@ -36,7 +36,7 @@ import java.util.ArrayList;
 public class HighlightsFragment extends Fragment {
     private static final String TAG = "HighlightsFragment";
 
-    String url = "https://streamable.com/ajax/stream/nba?count=100&grouped=false&page=";
+    String url = "https://streamable.com/ajax/stream/nba?count=10&sort=new&page=";
     int page = 1;
 
     Context context;

@@ -26,19 +26,17 @@ public class HLLoader {
         ArrayList<Highlight> highlights = new ArrayList<>();
 
         try {
-            JSONArray groups = new JSONObject(raw).getJSONArray("groups");
-            for (int i = 0; i < groups.length(); i++) {
-                JSONObject group = groups.getJSONObject(i);
-                JSONArray videos = group.getJSONArray("videos");
+                JSONArray videos = new JSONObject(raw).getJSONArray("videos");
                 for (int j = 0; j < videos.length(); j++) {
                     JSONObject vData = videos.getJSONObject(j);
+                    JSONObject activity = vData.getJSONArray("activity").getJSONObject(0);
                     Highlight hl = new Highlight();
                     hl.dateAdded = vData.getDouble("date_added");
                     hl.ext = vData.getString("ext");
                     hl.fileID = vData.getString("file_id");
                     hl.thumbnailURL = "http:" + vData.getString("poster_url");
 
-                    hl.title = vData.getString("title");
+                    hl.title = activity.getString("title");
                     if (hl.title == null) {
                         hl.title = vData.getString("reddit_title");
                     }
@@ -58,7 +56,7 @@ public class HLLoader {
                     Log.d(TAG, "" + hl.videoURL);
                     highlights.add(hl);
                 }
-            }
+
         }catch (Exception e) {
             Log.e(TAG , "Error leyendo JSON " + e.toString());
         }
