@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NBA Reddit</string>
+    <string name="app_name">All NBA</string>
     <string name="title_activity_thread">ThreadActivity</string>
 
     <string name="action_refresh">Refresh</string>

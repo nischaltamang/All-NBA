@@ -22,7 +22,7 @@ import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.General.TeamNames;
 import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
-import com.example.jorgegil.closegamealert.Utils.CommentsLoader;
+import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.SubmissionRequest;
@@ -34,15 +34,14 @@ import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
-import net.dean.jraw.paginators.Sorting;
-import net.dean.jraw.paginators.SubredditPaginator;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 public class ThreadFragment extends Fragment {
     private final String TAG = "ThreadFragment";
+    private static final String CLIENT_ID = "XDtA2eYVKp1wWA";
+
 
     Context context;
 
@@ -64,6 +63,7 @@ public class ThreadFragment extends Fragment {
     Credentials credentials;
     OAuthData oAuthData;
 
+    RedditAuthentication redditAuthentication;
 
     public ThreadFragment() {
         // Required empty public constructor
@@ -82,7 +82,6 @@ public class ThreadFragment extends Fragment {
 
         context = getActivity();
 
-        connectToReddit();
     }
 
     @Override
@@ -116,6 +115,7 @@ public class ThreadFragment extends Fragment {
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("comment-data"));
         }
 
+        connectToReddit();
 
         return view;
     }
@@ -150,11 +150,24 @@ public class ThreadFragment extends Fragment {
     };
 
     public void connectToReddit() {
-        userAgent = UserAgent.of("mobile", "com.example.jorgegil96.allnba", "v0.1", "jorgegil96");
-        redditClient = new RedditClient(userAgent);
-        credentials = Credentials.userlessApp("XDtA2eYVKp1wWA", UUID.randomUUID());
-        AuthenticateTask task = new AuthenticateTask();
-        task.execute();
+
+        RedditAuthentication redditAuthentication = RedditAuthentication.getInstance(context);
+        /*if (redditAuthentication.isAuthenticated()) {
+            redditClient = redditAuthentication.redditClient;
+            getThreads();
+        } else {
+
+        }
+        Log.d(TAG, "Is authenticated? => " + redditAuthentication.isAuthenticated());*/
+
+    }
+
+    private class AuthenticateReddit extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            redditAuthentication = RedditAuthentication.getInstance(context);
+            return null;
+        }
     }
 
     private class AuthenticateTask extends AsyncTask<Void, Void, Void> {
@@ -178,10 +191,13 @@ public class ThreadFragment extends Fragment {
 
     public void getThreads() {
         showLoadingIcon();
+        /*
         GetSubmissionsTask task = new GetSubmissionsTask();
         task.execute();
+        */
     }
 
+    /*
     private class GetSubmissionsTask extends AsyncTask<Void, Void, Listing<Submission>> {
         @Override
         protected Listing<Submission> doInBackground(Void... voids) {
@@ -199,6 +215,7 @@ public class ThreadFragment extends Fragment {
             searchInSubmissions(submissions);
         }
     }
+    */
 
     public void searchInSubmissions(Listing<Submission> submissions) {
         TeamNames tn = new TeamNames();
@@ -232,10 +249,6 @@ public class ThreadFragment extends Fragment {
                 }
             }
         }
-
-        threadType = "POST";
-        threadId = "4ipwo0";
-        foundThread = true;
 
         Log.d(TAG, awayTeam + "@" + homeTeam + " id -> " + threadId);
 
