@@ -30,13 +30,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_centerHorizontal="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginLeft="1dp"
+        android:paddingTop="1dp"
+        android:paddingBottom="1dp"
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
-        android:dividerHeight="10dp"
+        android:dividerHeight="0dp"
         android:scrollbars="none"/>
 
 </RelativeLayout>

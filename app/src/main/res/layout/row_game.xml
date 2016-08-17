@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="110dp">
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="2dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@color/colorWhite">
+
+            <ImageView
+                android:id="@+id/homeicon"
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="5dp"
+                android:src="@mipmap/ic_launcher"
+                />
+
+            <TextView
+                android:id="@+id/homelabel"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Spurs"
+                android:textColor="@color/secondaryText"
+                android:textSize="15dp"
+                android:textAlignment="center"
+                android:layout_below="@+id/homeicon"/>
+
+            <TextView
+                android:id="@+id/homescore"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/homeicon"
+                android:layout_toLeftOf="@+id/clock"
+                android:gravity="center"
+                android:text="50"
+                android:textSize="30dp"
+                android:textAlignment="center"
+                android:textColor="@color/primaryText"/>
+
+            <ImageView
+                android:id="@+id/awayicon"
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:src="@mipmap/ic_launcher"
+                />
+
+            <TextView
+                android:id="@+id/awaylabel"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Rockets"
+                android:textColor="@color/secondaryText"
+                android:textSize="15dp"
+                android:textAlignment="center"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/awayicon"/>
+
+            <TextView
+                android:id="@+id/awayscore"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/clock"
+                android:layout_toLeftOf="@+id/awayicon"
+                android:gravity="center"
+                android:text="100"
+                android:textSize="30dp"
+                android:textAlignment="center"
+                android:textColor="@color/primaryText"/>
+
+            <TextView
+                android:id="@+id/clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:paddingTop="30dp"
+                android:text="12:00"
+                android:textColor="@color/secondaryText"
+                android:textSize="15dp"
+                android:textAlignment="center"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/clock"
+                android:layout_marginBottom="0dp"
+                android:text="4th Qtr"
+                android:textColor="@color/secondaryText"
+                android:textSize="15dp"
+                android:textAlignment="center"
+                android:layout_centerHorizontal="true"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</RelativeLayout>

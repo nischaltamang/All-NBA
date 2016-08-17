@@ -46,7 +46,7 @@ public class CustomAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = inflater.inflate(R.layout.rowlayout, parent, false);
+        View rowView = inflater.inflate(R.layout.row_game, parent, false);
         TextView homeTeamLabel = (TextView) rowView.findViewById(R.id.homelabel);
         TextView awayTeamLabel = (TextView) rowView.findViewById(R.id.awaylabel);
         ImageView homeLogo = (ImageView) rowView.findViewById(R.id.homeicon);
