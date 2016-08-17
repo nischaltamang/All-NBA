@@ -15,22 +15,11 @@ import com.example.jorgegil.closegamealert.R;
 
 
 public class BoxScoreFragment extends Fragment {
-
-    public BoxScoreFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-    }
+    private static final String ESPN_BOX_SCORE_URL = "http://espn.go.com/nba/gamecast?version=mobile&gcSection=boxscore&gameId=";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_box_score, container, false);
 
         String gameId = getArguments().getString("gameId");
@@ -44,12 +33,7 @@ public class BoxScoreFragment extends Fragment {
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
         });
-
-
-        webView.loadUrl("http://espn.go.com/nba/gamecast?gameId=" + gameId + "&version=mobile&gcSection=boxscore");
-
-
+        webView.loadUrl(ESPN_BOX_SCORE_URL + gameId);
         return view;
-
     }
 }

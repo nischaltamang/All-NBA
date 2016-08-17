@@ -10,19 +10,16 @@ import android.widget.TextView;
 
 import com.example.jorgegil.closegamealert.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by jorgegil on 11/5/15.
- */
 public class CustomAdapter extends BaseAdapter {
     private final Context context;
-    private final ArrayList<String> homeTeam, awayTeam, homeScore, awayScore, clock, period;
+    private final List<String> homeTeam, awayTeam, homeScore, awayScore, clock, period;
     private static LayoutInflater inflater = null;
 
-    public CustomAdapter(Context context, ArrayList<String> homeTeam, ArrayList<String> awayTeam,
-                         ArrayList<String> homeScore, ArrayList<String> awayScore,
-                         ArrayList<String> clock, ArrayList<String> period) {
+    public CustomAdapter(Context context, List<String> homeTeam, List<String> awayTeam,
+                         List<String> homeScore, List<String> awayScore,
+                         List<String> clock, List<String> period) {
         this.context = context;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
@@ -59,8 +56,10 @@ public class CustomAdapter extends BaseAdapter {
         TextView clockLabel = (TextView) rowView.findViewById(R.id.clock);
         TextView periodLabel = (TextView) rowView.findViewById(R.id.period);
 
-        int resKeyHome = context.getResources().getIdentifier(homeTeam.get(position).toLowerCase(), "drawable", context.getPackageName());
-        int resKeyAway = context.getResources().getIdentifier(awayTeam.get(position).toLowerCase(), "drawable", context.getPackageName());
+        int resKeyHome = context.getResources().getIdentifier(homeTeam.get(position).toLowerCase(),
+                "drawable", context.getPackageName());
+        int resKeyAway = context.getResources().getIdentifier(awayTeam.get(position).toLowerCase(),
+                "drawable", context.getPackageName());
 
         homeTeamLabel.setText(homeTeam.get(position));
         awayTeamLabel.setText(awayTeam.get(position));

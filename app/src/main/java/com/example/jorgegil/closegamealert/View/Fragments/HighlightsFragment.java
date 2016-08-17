@@ -36,6 +36,7 @@ import java.util.ArrayList;
 public class HighlightsFragment extends Fragment {
     private static final String TAG = "HighlightsFragment";
 
+    //TODO: do not use STREAMABLE API here, change it to a server I can control.
     String url = "https://streamable.com/ajax/stream/nba?count=10&sort=new&page=";
     int page = 1;
 

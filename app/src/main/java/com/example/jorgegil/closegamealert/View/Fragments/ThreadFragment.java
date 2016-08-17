@@ -20,9 +20,8 @@ import android.widget.TextView;
 
 import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.General.TeamNames;
+import com.example.jorgegil.closegamealert.General.TeamName;
 import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
-import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.SubmissionRequest;
@@ -63,12 +62,6 @@ public class ThreadFragment extends Fragment {
     Credentials credentials;
     OAuthData oAuthData;
 
-    RedditAuthentication redditAuthentication;
-
-    public ThreadFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,10 +80,8 @@ public class ThreadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_thread, container, false);
-
 
         // Show loading icon and hide list view
         listView = (ListView) view.findViewById(R.id.commentsListView);
@@ -150,7 +141,7 @@ public class ThreadFragment extends Fragment {
     };
 
     public void connectToReddit() {
-
+        /*
         RedditAuthentication redditAuthentication = RedditAuthentication.getInstance(context);
         /*if (redditAuthentication.isAuthenticated()) {
             redditClient = redditAuthentication.redditClient;
@@ -165,8 +156,11 @@ public class ThreadFragment extends Fragment {
     private class AuthenticateReddit extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
+            /*
             redditAuthentication = RedditAuthentication.getInstance(context);
+            */
             return null;
+
         }
     }
 
@@ -218,9 +212,8 @@ public class ThreadFragment extends Fragment {
     */
 
     public void searchInSubmissions(Listing<Submission> submissions) {
-        TeamNames tn = new TeamNames();
-        String nameH = tn.getName(homeTeam).toUpperCase();
-        String nameA = tn.getName(awayTeam).toUpperCase();
+        String nameH = TeamName.valueOf(homeTeam.toUpperCase()).getTeamName().toUpperCase();
+        String nameA = TeamName.valueOf(awayTeam.toUpperCase()).getTeamName().toUpperCase();
 
         for (int i = 0; i < submissions.size(); i++) {
             Submission s = submissions.get(i);

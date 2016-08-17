@@ -30,35 +30,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-
+import java.util.List;
 
 public class GamesFragment extends Fragment {
-    public final static String GAME_THREAD_HOME = "com.example.jorgegil.closegamealert.GAME_THREAD_HOME";
-    public final static String GAME_THREAD_AWAY = "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
+    public final static String TAG = "GamesFragment";
+
+    public final static String GAME_THREAD_HOME =
+            "com.example.jorgegil.closegamealert.GAME_THREAD_HOME";
+    public final static String GAME_THREAD_AWAY =
+            "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
     public final static String GAME_ID = "com.example.jorgegil.closegamealert.GAME_ID";
+    public final static String GAME_DATA_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt";
 
     View rootView;
 
-    ArrayList<String> homeTeam;
-    ArrayList<String> awayTeam;
-    ArrayList<String> homeScore;
-    ArrayList<String> awayScore;
-    ArrayList<String> clock;
-    ArrayList<String> period;
-    ArrayList<String> gameId;
-    ArrayList<String> status;
+    List<String> homeTeam;
+    List<String> awayTeam;
+    List<String> homeScore;
+    List<String> awayScore;
+    List<String> clock;
+    List<String> period;
+    List<String> gameId;
+    List<String> status;
 
     ListView listView;
     LinearLayout linlaHeaderProgress;
 
-    public GamesFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
@@ -66,19 +65,9 @@ public class GamesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Game data
-        homeTeam = new ArrayList<>();
-        awayTeam = new ArrayList<>();
-        homeScore = new ArrayList<>();
-        awayScore = new ArrayList<>();
-        clock = new ArrayList<>();
-        period = new ArrayList<>();
-        gameId = new ArrayList<>();
-        status = new ArrayList<>();
-
         // Register Broadcast manager to update scores automatically
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("game-data"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("game-data"));
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_games, container, false);
@@ -90,35 +79,33 @@ public class GamesFragment extends Fragment {
         return rootView;
     }
 
-    // When new data is received, the JSON is parsed and the listview is notified of change
+    // When new data is received, the JSON is parsed and the listview is notified of change.
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (isVisible()) {
                 String message = intent.getStringExtra("message");
-                Log.d("recevier", "Got message: " + message);
-
                 parseData(message, false);
             }
         }
     };
 
-    // Called on full refreshing, adapter is reloaded (not refreshed)
-    public void loadGameData() {
-
+    private void loadGameData() {
+        // Show spinner and hide games.
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
 
-        StringRequest request = new StringRequest("http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt", new Response.Listener<String>() {
+        StringRequest request = new StringRequest(GAME_DATA_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseData(response, true);
-                System.out.println("JSON:" + response);
+                parseData(response, true /* reload */);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse (VolleyError error) {
-                Log.e("VOLLEY", error.toString());
+                Log.e(TAG, "Volley error when loading game data. " + error.toString());
+                linlaHeaderProgress.setVisibility(View.INVISIBLE);
+                //TODO: show "could not load message" and retry button.
             }
         });
 
@@ -127,18 +114,18 @@ public class GamesFragment extends Fragment {
     }
 
     public void parseData(String response, boolean reload) {
+        homeTeam = new ArrayList<>();
+        awayTeam = new ArrayList<>();
+        homeScore = new ArrayList<>();
+        awayScore = new ArrayList<>();
+        clock = new ArrayList<>();
+        period = new ArrayList<>();
+        gameId = new ArrayList<>();
+        status = new ArrayList<>();
+
         try {
             JSONArray jsonArray = new JSONArray(response);
             int numOfEvents = jsonArray.length();
-
-            homeTeam.clear();
-            awayTeam.clear();
-            homeScore.clear();
-            awayScore.clear();
-            clock.clear();
-            period.clear();
-            gameId.clear();
-            status.clear();
 
             for(int i = 0; i < numOfEvents; i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -171,11 +158,11 @@ public class GamesFragment extends Fragment {
 
             }
 
-            if (reload || listView.getAdapter() == null) { // when full reload is requested
-                // Set list view adapter for game events
-                if (getActivity() != null){
-                    listView.setAdapter(new CustomAdapter(getActivity(), homeTeam, awayTeam, homeScore,
-                            awayScore, clock, period));
+            if (listView.getAdapter() == null) {
+                if (getActivity() != null) {
+                    // Set list view adapter for game events.
+                    listView.setAdapter(new CustomAdapter(getActivity(), homeTeam, awayTeam,
+                            homeScore, awayScore, clock, period));
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -187,19 +174,19 @@ public class GamesFragment extends Fragment {
                             startActivity(intent);
                         }
                     });
-
-                    // Hide reload icon and show list view
-                    //setProgressBarIndeterminateVisibility(false);
-                    linlaHeaderProgress.setVisibility(View.GONE);
-                    listView.setVisibility(View.VISIBLE);
                 }
-
-            } else { // when refresh is requested
+            } else {
                 ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
-                Log.d("adapter", "notified of change");
+            }
+
+            if (reload) {
+                // Hide reload icon and show list view
+                linlaHeaderProgress.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error parsing JSON. " + e.toString());
+            //TODO: show "could not load message" and retry button.
         }
     }
 
@@ -207,14 +194,7 @@ public class GamesFragment extends Fragment {
     public void onDestroyView() {
         // Unregister since the fragment is about to be closed.
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
-        Log.d("GamesFragment", "View destroyed of GamesFragment");
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d("GamesFragment", "Destroy GamesFragment");
-        super.onDestroy();
     }
 
     @Override
@@ -222,7 +202,6 @@ public class GamesFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 loadGameData();
-                Log.d("Games", "reloaded games");
                 return true;
         }
         return super.onOptionsItemSelected(item);

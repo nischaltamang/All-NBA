@@ -1,5 +1,5 @@
 package com.example.jorgegil.closegamealert.Utils;
-
+/*
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,10 +21,11 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-
+*/
 /**
  * Created by jorgegil on 5/7/16.
  */
+/*
 public class RedditAuthentication {
     private static final String TAG = "RedditAuthentication";
     private static RedditAuthentication mInstance = null;
@@ -112,3 +113,4 @@ public class RedditAuthentication {
     }
 
 }
+*/

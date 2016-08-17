@@ -1,18 +1,22 @@
 <resources>
     <string name="app_name">All NBA</string>
     <string name="title_activity_thread">ThreadActivity</string>
+    <string name="title_activity_settings">Settings</string>
 
+    <!-- Strings for MainActivity -->
     <string name="action_refresh">Refresh</string>
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="games_fragment_title">Games</string>
+    <string name="standings_fragment_title">Standings</string>
+    <string name="reddit_nba_fragment_title">/r/NBA</string>
+    <string name="highlights_fragment_title">Highlights</string>
+    <string name="today_string">Today</string>
 
     <!-- Strings related to Settings -->
     <string name="notifications">Notifications</string>
     <string name="theme">Theme</string>
+
 
     <string name="noThreadFound">No thread found...</string>
 

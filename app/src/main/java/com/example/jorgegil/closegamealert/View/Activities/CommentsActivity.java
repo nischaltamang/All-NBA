@@ -1,37 +1,23 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.General.Comment;
-import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
-import com.example.jorgegil.closegamealert.Utils.CommentsLoader;
 import com.example.jorgegil.closegamealert.Utils.PagerAdapter;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.General.TeamNames;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
