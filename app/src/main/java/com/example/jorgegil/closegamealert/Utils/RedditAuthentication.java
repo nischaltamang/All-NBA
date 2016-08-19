@@ -26,33 +26,6 @@ public class RedditAuthentication {
         // TODO: check that internet is available
 
     }
-    /*
-    private class AuthenticateTask extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                OAuthData oAuthData = mOAuthHelper.onUserChallenge(params[0], mCredentials);
-                if (oAuthData != null) {
-                    sRedditClient.authenticate(oAuthData);
-                    String refreshToken = sRedditClient.getOAuthData().getRefreshToken();
-                    sAccount = sRedditClient.me();
-                    Log.d(TAG, sAccount.getFullName());
-                    // TODO: save name and token in shared prefs.
-                } else {
-                    // auth data is null
-                }
-            } catch (OAuthException e) {
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-        }
-    }
-    */
 
     /*
     public class GetSubmissionsTask extends AsyncTask<Void, Void, Listing<Submission>> {
