@@ -12,14 +12,14 @@ import com.example.jorgegil.closegamealert.R;
 
 import java.util.List;
 
-public class CustomAdapter extends BaseAdapter {
+public class GameAdapter extends BaseAdapter {
     private final Context context;
     private final List<String> homeTeam, awayTeam, homeScore, awayScore, clock, period;
     private static LayoutInflater inflater = null;
 
-    public CustomAdapter(Context context, List<String> homeTeam, List<String> awayTeam,
-                         List<String> homeScore, List<String> awayScore,
-                         List<String> clock, List<String> period) {
+    public GameAdapter(Context context, List<String> homeTeam, List<String> awayTeam,
+                       List<String> homeScore, List<String> awayScore,
+                       List<String> clock, List<String> period) {
         this.context = context;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;

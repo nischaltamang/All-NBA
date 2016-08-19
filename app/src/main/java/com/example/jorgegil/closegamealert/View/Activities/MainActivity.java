@@ -23,6 +23,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.GCM.GCMClientManager;
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.HighlightsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.PostsFragment;
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.tricornBlack));
 
         registerGmcClient();
+
+        RedditAuthentication redditAuthentication = new RedditAuthentication(this);
     }
 
     private void setUpToolbar(){
@@ -113,10 +116,18 @@ public class MainActivity extends AppCompatActivity {
                         setFragment(HIGHLIGHTS_FRAGMENT_ID);
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
+                    case R.id.navigation_item_7:
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        Intent loginIntent = new Intent(getApplicationContext(),
+                                LoginActivity.class);
+                        startActivity(loginIntent);
+                        return true;
                     case R.id.navigation_item_9:
                         drawerLayout.closeDrawer(GravityCompat.START);
-                        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                        startActivity(intent);
+                        // TODO: check if already logged in, if not, fire intent.
+                        Intent settingsIntent = new Intent(getApplicationContext(),
+                                SettingsActivity.class);
+                        startActivity(settingsIntent);
                         return true;
                     default:
                         setFragment(GAMES_FRAGMENT_ID);

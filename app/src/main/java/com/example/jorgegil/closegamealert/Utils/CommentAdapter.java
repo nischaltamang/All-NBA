@@ -88,7 +88,7 @@ public class CommentAdapter extends BaseAdapter{
 
         authorView.setText(commentsList.get(position).jrawComment.getAuthor());
         scoreView.setText(commentsList.get(position).jrawComment.getScore() + " points");
-        postedOnView.setText(formatDate(commentsList.get(position).jrawComment.getCreatedUtc()));
+        //postedOnView.setText(formatDate(commentsList.get(position).jrawComment.getCreatedUtc()));
         commentView.setText(commentsList.get(position).jrawComment.getBody());
 
         return rowView;

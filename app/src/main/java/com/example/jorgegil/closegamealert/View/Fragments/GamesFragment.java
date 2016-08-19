@@ -22,7 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.CustomAdapter;
+import com.example.jorgegil.closegamealert.Utils.GameAdapter;
 import com.example.jorgegil.closegamealert.View.Activities.CommentsActivity;
 
 import org.json.JSONArray;
@@ -161,7 +161,7 @@ public class GamesFragment extends Fragment {
             if (listView.getAdapter() == null) {
                 if (getActivity() != null) {
                     // Set list view adapter for game events.
-                    listView.setAdapter(new CustomAdapter(getActivity(), homeTeam, awayTeam,
+                    listView.setAdapter(new GameAdapter(getActivity(), homeTeam, awayTeam,
                             homeScore, awayScore, clock, period));
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -176,7 +176,7 @@ public class GamesFragment extends Fragment {
                     });
                 }
             } else {
-                ((CustomAdapter) listView.getAdapter()).notifyDataSetChanged();
+                ((GameAdapter) listView.getAdapter()).notifyDataSetChanged();
             }
 
             if (reload) {
