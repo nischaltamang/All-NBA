@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 Log.d(TAG, "url: " + url);
                 if (url.contains("code=")) {
+                    webView.stopLoading();
                     new AuthenticateTask(oAuthHelper, credentials).execute(url);
                     finish();
                 }
