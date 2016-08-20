@@ -1,6 +1,7 @@
 package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,28 +71,31 @@ public class PostsAdapter extends BaseAdapter {
         TextView titleView = (TextView) rowView.findViewById(R.id.titleView);
         TextView numOfCommentsView = (TextView) rowView.findViewById(R.id.numCommentsView);
         TextView linkView = (TextView) rowView.findViewById(R.id.linkView);
-        TextView subredditView = (TextView) rowView.findViewById(R.id.subredditView);
 
         ImageView thumbnail = (ImageView) rowView.findViewById(R.id.thumbnail);
 
-        //scoreView.setText(String.valueOf(postsList.get(position).score));
-        authorView.setText(postsList.get(position).getAuthor());
-        createdView.setText(String.valueOf(postsList.get(position).getCreated()));
+        Submission post = postsList.get(position);
 
-        //String text = postsList.get(position).title.replace("ironsteel2", " ");
-        titleView.setText(postsList.get(position).getTitle());
-        //numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
+        titleView.setText(post.getTitle());
+        if (post.isStickied()) {
+            titleView.setTextColor(ContextCompat.getColor(context, R.color.stickiedColor));
+        }
+        scoreView.setText(String.valueOf(post.getScore()));
+        authorView.setText(post.getAuthor());
+        createdView.setText(Utilities.formatDate(post.getCreated()));
+        numOfCommentsView.setText(post.getCommentCount() + " Comments");
 
-        String url = postsList.get(position).getThumbnail();
+        String thumbnailUrl = post.getThumbnail();
 
-        if (postsList.get(position).isSelfPost()) {
-            linkView.setText("• self");
+        if (post.isSelfPost()) {
+            linkView.setText("• self." + post.getSubredditName());
             thumbnail.setVisibility(View.GONE);
         } else {
-            linkView.setText("• link");
-            Picasso.with(context).load(url).into(thumbnail);
+            linkView.setText("• link (" + post.getDomain() + ")");
+            if (thumbnailUrl != null) {
+                Picasso.with(context).load(thumbnailUrl).into(thumbnail);
+            }
         }
-        subredditView.setText("• " + postsList.get(position).getSubredditName());
 
         return rowView;
     }

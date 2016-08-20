@@ -30,4 +30,6 @@
     <color name="colorPrimary">#2d2d2e</color>
     <color name="colorPrimaryDark">#212122</color>
 
+    <color name="stickiedColor">#228822</color>
+
 </resources>

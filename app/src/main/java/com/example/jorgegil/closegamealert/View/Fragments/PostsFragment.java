@@ -86,7 +86,7 @@ public class PostsFragment extends Fragment {
         spinner.setVisibility(View.VISIBLE);
         postsListView.setVisibility(View.GONE);
 
-        new GetSubmissionListing(RedditAuthentication.sRedditClient, "MMA", 100, Sorting.HOT).execute();
+        new GetSubmissionListing(RedditAuthentication.sRedditClient, "nba", 20, Sorting.HOT).execute();
     }
 
     private class GetSubmissionListing extends AsyncTask<Void, Void, Listing<Submission>> {
