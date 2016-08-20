@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     GamesFragment gamesFragment;
     StandingsFragment standingsFragment;
     HighlightsFragment highlightsFragment;
+    PostsFragment postsFragment;
 
     int selectedFragment;
 
@@ -165,10 +166,8 @@ public class MainActivity extends AppCompatActivity {
             case REDDIT_FRAGMENT_ID:
                 toolbar.setSubtitle("");
                 setTitle(R.string.reddit_nba_fragment_title);
-                PostsFragment postsFragment = new PostsFragment();
+                postsFragment = new PostsFragment();
                 bundle.putString("TYPE", "small");
-                bundle.putString("URL", "http://www.reddit.com/r/nba/.json");
-                bundle.putString("FILTER", "ALL");
                 postsFragment.setArguments(bundle);
                 fragmentTransaction.replace(R.id.fragment, postsFragment, "POSTS_FRAGMENT");
                 fragmentTransaction.commit();
@@ -253,6 +252,14 @@ public class MainActivity extends AppCompatActivity {
             case GAMES_FRAGMENT_ID:
                 // Exit application.
                 super.onBackPressed();
+                break;
+            case REDDIT_FRAGMENT_ID:
+                if (postsFragment.isPreviewVisible()) {
+                    postsFragment.stopVideo();
+                } else {
+                    setFragment(GAMES_FRAGMENT_ID);
+                    navigationView.getMenu().getItem(0).setChecked(true);
+                }
                 break;
             case HIGHLIGHTS_FRAGMENT_ID:
                 if (highlightsFragment.isPreviewVisible()) {

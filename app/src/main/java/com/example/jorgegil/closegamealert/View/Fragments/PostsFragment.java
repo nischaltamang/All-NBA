@@ -1,7 +1,6 @@
 package com.example.jorgegil.closegamealert.View.Fragments;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,61 +11,35 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.jorgegil.closegamealert.General.Post;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.PostsAdapter;
-import com.example.jorgegil.closegamealert.Utils.PostsLoader;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
 
 import net.dean.jraw.RedditClient;
-import net.dean.jraw.http.NetworkException;
-import net.dean.jraw.http.UserAgent;
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthException;
-import net.dean.jraw.http.oauth.OAuthHelper;
 import net.dean.jraw.models.Listing;
-import net.dean.jraw.models.LoggedInAccount;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.SubredditPaginator;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 public class PostsFragment extends Fragment {
+    private static final String TAG = "PostsFragment";
 
     Context context;
     View rootView;
     String type;
-    String url;
-    String filter;
     ListView postsListView;
-    LinearLayout linlaHeaderProgress, videoProgressLayout;
+    LinearLayout spinner, videoProgressLayout;
 
     VideoView videoView;
     View background;
-
-    ArrayList<Post> postsList;
     boolean isPreviewVisible;
-
-    RequestQueue queue;
-    WebView webView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,8 +47,6 @@ public class PostsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             type = getArguments().getString("TYPE");
-            url = getArguments().getString("URL");
-            filter = getArguments().getString("FILTER");
         }
         setHasOptionsMenu(true);
 
@@ -84,10 +55,9 @@ public class PostsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_posts, container, false);
         postsListView = (ListView) rootView.findViewById(R.id.postsListView);
-        linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
+        spinner = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
         videoProgressLayout = (LinearLayout) rootView.findViewById(R.id.videoProgressLayout);
         videoView = (VideoView) rootView.findViewById(R.id.videoView);
         background = rootView.findViewById(R.id.background);
@@ -113,10 +83,10 @@ public class PostsFragment extends Fragment {
 
     // TODO: rename
     private void getPosts() {
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE);
         postsListView.setVisibility(View.GONE);
 
-        new GetSubmissionListing(RedditAuthentication.sRedditClient, "nba", 100, Sorting.HOT).execute();
+        new GetSubmissionListing(RedditAuthentication.sRedditClient, "MMA", 100, Sorting.HOT).execute();
     }
 
     private class GetSubmissionListing extends AsyncTask<Void, Void, Listing<Submission>> {
@@ -156,52 +126,45 @@ public class PostsFragment extends Fragment {
     }
 
 
-    private void loadPosts(Listing<Submission> posts) {
+    private void loadPosts(final Listing<Submission> posts) {
+        final String STREAMABLE_DOMAIN = "streamable.com";
+        final String STREAMABLE_URL = "https://streamable.com/";
+        final String STREAMABLE_VIDEO_URL = "http://cdn.streamable.com/video/mp4/";
+        final String YOUTUBE_DOMAIN = "youtube.com";
+        final String SELF_POST_NBA_DOMAIN = "self.nba";
+
         if (context != null) {
 
             postsListView.setAdapter(new PostsAdapter(context, posts, type));
             postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Submission post = posts.get(position);
+                    String url = post.getUrl();
+                    String domain = post.getDomain();
 
-                }
-            });
+                    switch (domain) {
+                        case STREAMABLE_DOMAIN:
+                            url = url.replace(STREAMABLE_URL, STREAMABLE_VIDEO_URL);
+                            url = url + ".mp4";
+                            playVideo(url);
+                            break;
+                        case YOUTUBE_DOMAIN:
+                            //TODO: Set up youtube player https://developers.google.com/youtube/android/player/
+                            Toast.makeText(context, "Youtube video still not ready", Toast.LENGTH_SHORT).show();
+                            break;
+                        case SELF_POST_NBA_DOMAIN:
+                            Toast.makeText(context, "Text post", Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
+                            Toast.makeText(context, "Not a video", Toast.LENGTH_SHORT).show();
 
-            linlaHeaderProgress.setVisibility(View.GONE);
-            postsListView.setVisibility(View.VISIBLE);
-
-
-
-
-
-
-
-
-
-            // Loads posts into list view adapter
-            /*
-            PostsLoader postsLoader = new PostsLoader(response, filter);
-            postsList = postsLoader.fetchPosts();
-            postsListView.setAdapter(new PostsAdapter(context, postsList, type));
-
-            postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String videoURL = postsList.get(position).url;
-                    if (postsList.get(position).domain.equals("streamable.com")) {
-                        videoURL = videoURL.replace("https://streamable.com/", "http://cdn.streamable.com/video/mp4/");
-                        videoURL = videoURL + ".mp4";
-                        playVideo(videoURL);
-                    } else if (postsList.get(position).domain.equals("youtube.com")) {
-                        //TODO: Set up youtube player https://developers.google.com/youtube/android/player/
-                        Toast.makeText(context, "Youtube video still not ready", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, "Not a video...", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            */
 
+            spinner.setVisibility(View.GONE);
+            postsListView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -253,7 +216,7 @@ public class PostsFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 stopVideo();
-                linlaHeaderProgress.setVisibility(View.VISIBLE);
+                spinner.setVisibility(View.VISIBLE);
                 getPosts();
                 Log.d("POSTS", "fragment reloaded");
                 return true;

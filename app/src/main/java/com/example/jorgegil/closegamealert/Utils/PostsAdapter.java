@@ -82,14 +82,9 @@ public class PostsAdapter extends BaseAdapter {
         titleView.setText(postsList.get(position).getTitle());
         //numOfCommentsView.setText(String.valueOf(postsList.get(position).numOfComments) + " Comments");
 
-        String url;
-        if (type.equals("large")) {
-            url = postsList.get(position).getThumbnail();
-        } else {
-            url = postsList.get(position).getThumbnail();
-        }
+        String url = postsList.get(position).getThumbnail();
 
-        if (postsList.get(position).isSelfPost() || url.equals("")) {
+        if (postsList.get(position).isSelfPost()) {
             linkView.setText("• self");
             thumbnail.setVisibility(View.GONE);
         } else {
@@ -97,9 +92,6 @@ public class PostsAdapter extends BaseAdapter {
             Picasso.with(context).load(url).into(thumbnail);
         }
         subredditView.setText("• " + postsList.get(position).getSubredditName());
-
-
-
 
         return rowView;
     }
