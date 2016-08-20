@@ -2,6 +2,7 @@ package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -92,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
         if (toolbar != null) {
             drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             navigationView = (NavigationView) findViewById(R.id.navigation);
+            if (navigationView != null) {
+                NavigationMenuView navMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+                if (navMenuView != null) {
+                    navMenuView.setVerticalScrollBarEnabled(false);
+                }
+            }
         }
     }
 
