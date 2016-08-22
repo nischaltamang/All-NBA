@@ -94,6 +94,8 @@ public class PostsAdapter extends BaseAdapter {
             linkView.setText("• link (" + post.getDomain() + ")");
             if (thumbnailUrl != null) {
                 Picasso.with(context).load(thumbnailUrl).into(thumbnail);
+            } else {
+                thumbnail.setVisibility(View.GONE);
             }
         }
 

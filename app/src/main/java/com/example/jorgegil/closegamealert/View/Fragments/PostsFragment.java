@@ -1,6 +1,7 @@
 package com.example.jorgegil.closegamealert.View.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,6 +22,7 @@ import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.PostsAdapter;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
+import com.example.jorgegil.closegamealert.View.Activities.SubmissionActivity;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.models.Listing;
@@ -132,13 +134,16 @@ public class PostsFragment extends Fragment {
         final String STREAMABLE_VIDEO_URL = "http://cdn.streamable.com/video/mp4/";
         final String YOUTUBE_DOMAIN = "youtube.com";
         final String SELF_POST_NBA_DOMAIN = "self.nba";
-
+        final String THREAD_ID_KEY = "THREAD_ID";
         if (context != null) {
 
             postsListView.setAdapter(new PostsAdapter(context, posts, type));
             postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent submissionIntent = new Intent(getActivity(), SubmissionActivity.class);
+                    submissionIntent.putExtra(THREAD_ID_KEY, posts.get(position).getId());
+                    startActivity(submissionIntent);
                     Submission post = posts.get(position);
                     String url = post.getUrl();
                     String domain = post.getDomain();

@@ -13,21 +13,18 @@ import android.widget.TextView;
 import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.R;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by jorgegil on 11/29/15.
- */
 public class CommentAdapter extends BaseAdapter{
+    private static final String TAG = "CommentAdapter";
+
     private final Context context;
-    private final ArrayList<Comment> commentsList;
+    private final List<Comment> commentsList;
     private static LayoutInflater inflater = null;
 
-    public CommentAdapter(Context context, ArrayList<Comment> commentsList) {
+    public CommentAdapter(Context context, List<Comment> commentsList) {
         this.context = context;
         this.commentsList = commentsList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -49,7 +46,8 @@ public class CommentAdapter extends BaseAdapter{
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = inflater.inflate(R.layout.comments_layout, parent, false);
+        Log.d(TAG, "pos: " + position);
+        View rowView = inflater.inflate(R.layout.comment_layout, parent, false);
 
         TextView commentView = (TextView) rowView.findViewById(R.id.bodyTextView);
         TextView authorView = (TextView) rowView.findViewById(R.id.authorTextView);

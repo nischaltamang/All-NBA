@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/lightGray"
+    tools:context="com.example.jorgegil.closegamealert.View.Activities.SubmissionActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:layout_scrollFlags="scroll|enterAlways"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/submission_rel_layout"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/submission_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/submission_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:background="@color/black"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:id="@+id/submission_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Team USA defeats Spain 82-76"
+                        android:textSize="22sp"
+                        android:layout_below="@id/submission_image"
+                        android:padding="3dp" />
+
+                    <TextView
+                        android:id="@+id/submission_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="jorgegil96"
+                        android:textSize="10sp"
+                        android:layout_below="@id/submission_title"
+                        android:layout_alignParentStart="true"/>
+
+                    <TextView
+                        android:id="@+id/submission_separator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="•"
+                        android:textSize="10sp"
+                        android:layout_below="@id/submission_title"
+                        android:layout_toEndOf="@id/submission_author"/>
+
+                    <TextView
+                        android:id="@+id/submission_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="2 hours ago"
+                        android:textSize="10sp"
+                        android:layout_below="@id/submission_title"
+                        android:layout_toEndOf="@id/submission_separator"/>
+
+                    <TextView
+                        android:id="@+id/submission_save"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textSize="18sp"
+                        android:background="@drawable/ic_star_black_24dp"
+                        android:layout_below="@id/submission_title"
+                        android:layout_alignParentEnd="true"/>
+
+                    <TextView
+                        android:id="@+id/submission_downvote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textSize="18sp"
+                        android:background="@drawable/ic_arrow_upward_black_24dp"
+                        android:layout_below="@id/submission_title"
+                        android:layout_toStartOf="@id/submission_save"/>
+
+                    <TextView
+                        android:id="@+id/submission_upvote"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textSize="18sp"
+                        android:background="@drawable/ic_arrow_upward_black_24dp"
+                        android:layout_below="@id/submission_title"
+                        android:layout_toStartOf="@id/submission_downvote"/>
+
+                    <TextView
+                        android:id="@+id/submission_votes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textSize="18sp"
+                        android:text="1200"
+                        android:layout_below="@id/submission_title"
+                        android:layout_toStartOf="@id/submission_upvote"/>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/submission_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/submission_card">
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:rippleColor="@color/yellow"
+        android:src="@android:drawable/ic_input_add" />
+
+</android.support.design.widget.CoordinatorLayout>
