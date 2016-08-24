@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_7:
-                        drawerLayout.closeDrawer(GravityCompat.START);
                         Intent loginIntent = new Intent(getApplicationContext(),
                                 LoginActivity.class);
                         startActivity(loginIntent);

@@ -289,12 +289,6 @@ public class ThreadFragment extends Fragment {
                 commentList.add(new Comment(node.getComment(), node.getDepth()));
             }
 
-            /*
-            CommentsLoader commentsLoader = new CommentsLoader(submission);
-            commentList = commentsLoader.fetchComments();
-            */
-
-
             listView.setAdapter(new CommentAdapter(getActivity(), commentList));
 
             // Hide reload icon and show list view
@@ -303,22 +297,6 @@ public class ThreadFragment extends Fragment {
             fab.setVisibility(View.VISIBLE);
         }
     }
-
-
-    /*
-    public void addComment(Comment comment) {
-
-        commentList.add(0, comment);
-        int lastViewedPosition = listView.getFirstVisiblePosition();
-        ((CommentAdapter) listView.getAdapter()).notifyDataSetChanged();
-        if (lastViewedPosition != 0) {
-            listView.setSelection(lastViewedPosition + 1);
-        }
-        Log.d("adapter", "added new comment");
-
-    }
-
-    */
 
     private void hideLoadingIcon() {
         if(getActivity() != null) {

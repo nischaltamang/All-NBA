@@ -1,10 +1,17 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -31,15 +38,27 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        setTitle("Log in to Reddit");
+
         final OAuthHelper oAuthHelper = RedditAuthentication.sRedditClient.getOAuthHelper();
         final Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
         String[] scopes = {"identity", "edit", "flair", "mysubreddits", "read", "vote",
                 "submit", "subscribe"};
         URL authURL = oAuthHelper.getAuthorizationUrl(credentials, true, true, scopes);
 
-        final WebView webView = (WebView) findViewById(R.id.webView1);
-        webView.loadUrl(authURL.toExternalForm());
+        final WebView webView = (WebView) findViewById(R.id.login_webview);
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return true;
+            }
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 Log.d(TAG, "url: " + url);
@@ -47,9 +66,22 @@ public class LoginActivity extends AppCompatActivity {
                     webView.stopLoading();
                     new AuthenticateTask(oAuthHelper, credentials).execute(url);
                     finish();
+                } else {
+
                 }
             }
         });
+        webView.loadUrl(authURL.toExternalForm());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class AuthenticateTask extends AsyncTask<String, Void, String> {
@@ -70,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
                     RedditAuthentication.sLoggedInStatus = true;
                     String refreshToken = RedditAuthentication.sRedditClient.getOAuthData().getRefreshToken();
                     LoggedInAccount me = RedditAuthentication.sRedditClient.me();
-                    Log.d(TAG, me.getFullName());
                     return me.getFullName();
                     // TODO: save name and token in shared prefs.
                 } else {
