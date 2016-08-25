@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Use View Holder pattern instead of list view with adapter.
 public class GamesFragment extends Fragment {
     public final static String TAG = "GamesFragment";
 
