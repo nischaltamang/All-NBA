@@ -1,13 +1,11 @@
 # All-NBA Android App
 
-Features
------
+## Features
 
 * Real-time scores and box scores
-* Live and post game discussion threads (through Reddit)
+* [/r/NBA](https://www.reddit.com/r/nba) live and post game discussion threads
+* [/r/NBA](https://www.reddit.com/r/nba) and all team subreddits threads
 * Push notifications when games are close or interesting
 * Push notifications when games begin/end
 * User-submitted highlight videos
-* News and discussion threads (through Reddit)
 * Standings and playoff bracket
-* Custom twitter timeline with tweets from players, teams, reporters and more
