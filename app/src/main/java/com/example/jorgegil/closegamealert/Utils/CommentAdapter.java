@@ -1,118 +1,110 @@
 package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.R;
 
-import java.util.Date;
+import net.dean.jraw.models.Comment;
+import net.dean.jraw.models.CommentNode;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class CommentAdapter extends BaseAdapter{
-    private static final String TAG = "CommentAdapter";
+/**
+ * Adapter used to hold all of the comments from a thread.
+ */
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
+    Context mContext;
+    List<CommentNode> mComments;
 
-    private final Context context;
-    private final List<Comment> commentsList;
-    private static LayoutInflater inflater = null;
-
-    public CommentAdapter(Context context, List<Comment> commentsList) {
-        this.context = context;
-        this.commentsList = commentsList;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public CommentAdapter(Context context, List<CommentNode> comments) {
+        mContext = context;
+        mComments = comments;
     }
 
     @Override
-    public int getCount() {
-        return commentsList.size();
+    public CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_layout,
+                parent, false);
+
+        CommentViewHolder commentVH = new CommentViewHolder(view);
+        return commentVH;
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public void onBindViewHolder(CommentViewHolder holder, int position) {
+        CommentNode commentNode = mComments.get(position);
+
+        Comment comment = commentNode.getComment();
+        String author = comment.getAuthor();
+        String body = comment.getBody();
+        String timestamp = Utilities.formatDate(comment.getCreated());
+        String score = String.valueOf(comment.getScore());
+
+        holder.authorTextView.setText(author);
+        holder.bodyTextView.setText(body);
+        holder.timestampTextView.setText(timestamp);
+        holder.scoreTextView.setText(mContext.getString(R.string.points, score));
+        setBackgroundAndPadding(commentNode, holder);
     }
 
     @Override
-    public long getItemId(int i) {
-        return 0;
+    public int getItemCount() {
+        return null !=  mComments ? mComments.size() : 0;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(TAG, "pos: " + position);
-        View rowView = inflater.inflate(R.layout.comment_layout, parent, false);
-
-        TextView commentView = (TextView) rowView.findViewById(R.id.bodyTextView);
-        TextView authorView = (TextView) rowView.findViewById(R.id.authorTextView);
-        TextView scoreView = (TextView) rowView.findViewById(R.id.scoreTextView);
-        TextView postedOnView = (TextView) rowView.findViewById(R.id.timeTextView);
-        RelativeLayout relativeLayout = (RelativeLayout) rowView.findViewById(R.id.relativeLayout);
-
+    private void setBackgroundAndPadding(CommentNode commentNode, CommentViewHolder holder) {
         int padding_in_dp = 5;
-        final float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = mContext.getResources().getDisplayMetrics().density;
         int padding_in_px = (int) (padding_in_dp * scale + 0.5F);
 
-        int level = commentsList.get(position).level; // From 0
+        int depth = commentNode.getDepth(); // From 1
 
-
-        if (level > 0) {
-            int res = (level) % 5;
+        // Add color if it is not a top-level comment.
+        if (depth > 1) {
+            int depthFromZero = depth - 2;
+            int res = (depthFromZero) % 5;
             switch (res) {
                 case 0:
-                    relativeLayout.setBackgroundResource(R.drawable.borderblue);
+                    holder.mCommentInnerRelLayout.setBackgroundResource(R.drawable.borderblue);
                     break;
                 case 1:
-                    relativeLayout.setBackgroundResource(R.drawable.bordergreen);
+                    holder.mCommentInnerRelLayout.setBackgroundResource(R.drawable.bordergreen);
                     break;
-                case 2:
-                    relativeLayout.setBackgroundResource(R.drawable.borderbrown);
+                case 2: //
+                    holder.mCommentInnerRelLayout.setBackgroundResource(R.drawable.borderbrown);
                     break;
                 case 3:
-                    relativeLayout.setBackgroundResource(R.drawable.borderorange);
+                    holder.mCommentInnerRelLayout.setBackgroundResource(R.drawable.borderorange);
                     break;
                 case 4:
-                    relativeLayout.setBackgroundResource(R.drawable.borderred);
+                    holder.mCommentInnerRelLayout.setBackgroundResource(R.drawable.borderred);
                     break;
             }
         }
-        rowView.setPadding(padding_in_px * (level - 1), 0, 0, 0);
-
-        authorView.setText(commentsList.get(position).jrawComment.getAuthor());
-        scoreView.setText(commentsList.get(position).jrawComment.getScore() + " points");
-        //postedOnView.setText(formatDate(commentsList.get(position).jrawComment.getCreatedUtc()));
-        commentView.setText(commentsList.get(position).jrawComment.getBody());
-
-        return rowView;
+        // Add padding depending on level.
+        holder.mCommentOuterRelLayout.setPadding(padding_in_px * (depth - 2), 0, 0, 0);
     }
 
-    public String formatDate(Date date) {
+    public static class CommentViewHolder extends RecyclerView.ViewHolder {
+        public TextView authorTextView, scoreTextView, timestampTextView, bodyTextView;
+        public RelativeLayout mCommentOuterRelLayout;
+        public RelativeLayout mCommentInnerRelLayout;
 
-        String postedOn;
-        Date now = new Date();
-
-        long minutesAgo = (TimeUnit.MILLISECONDS.toMinutes(now.getTime() - date.getTime()));
-        long hoursAgo = (TimeUnit.MILLISECONDS.toHours(now.getTime() - date.getTime()));
-        long daysAgo = (TimeUnit.MILLISECONDS.toDays(now.getTime() - date.getTime()));
-
-        if (minutesAgo == 0) {
-            postedOn = " just now ";
-        } else if (minutesAgo < 60) {
-            postedOn = minutesAgo + " minutes ago";
-        } else {
-            if (hoursAgo < 49) {
-                postedOn = hoursAgo + " hours ago";
-            } else {
-                postedOn = daysAgo + " days ago";
-            }
+        public CommentViewHolder(View view) {
+            super(view);
+            mCommentOuterRelLayout = (RelativeLayout) view;
+            mCommentInnerRelLayout = (RelativeLayout)
+                    view.findViewById(R.id.comment_inner_relativeLayout);
+            authorTextView = (TextView) view.findViewById(R.id.comment_author);
+            scoreTextView = (TextView) view.findViewById(R.id.comment_score);
+            timestampTextView = (TextView) view.findViewById(R.id.comment_timestamp);
+            bodyTextView = (TextView) view.findViewById(R.id.comment_body);
         }
-
-        return postedOn;
     }
 }

@@ -4,6 +4,7 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- General -->
+    <string name="rnba">/r/NBA</string>
     <string name="points">%1$s points</string>
 
     <!-- Strings for MainActivity -->

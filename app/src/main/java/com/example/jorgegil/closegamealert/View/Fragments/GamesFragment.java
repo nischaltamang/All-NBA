@@ -91,6 +91,9 @@ public class GamesFragment extends Fragment {
     };
 
     private void loadGameData() {
+        if (linlaHeaderProgress == null || listView == null ) {
+            return;
+        }
         // Show spinner and hide games.
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);

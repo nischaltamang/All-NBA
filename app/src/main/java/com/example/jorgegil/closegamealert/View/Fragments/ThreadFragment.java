@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.General.TeamName;
-import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.SubmissionRequest;
@@ -289,7 +288,6 @@ public class ThreadFragment extends Fragment {
                 commentList.add(new Comment(node.getComment(), node.getDepth()));
             }
 
-            listView.setAdapter(new CommentAdapter(getActivity(), commentList));
 
             // Hide reload icon and show list view
             hideLoadingIcon();

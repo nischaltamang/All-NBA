@@ -18,9 +18,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.jorgegil.closegamealert.General.Constants;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.PostsAdapter;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
+import com.example.jorgegil.closegamealert.Utils.Utilities;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
 import com.example.jorgegil.closegamealert.View.Activities.SubmissionActivity;
 
@@ -134,20 +136,35 @@ public class PostsFragment extends Fragment {
         final String STREAMABLE_VIDEO_URL = "http://cdn.streamable.com/video/mp4/";
         final String YOUTUBE_DOMAIN = "youtube.com";
         final String SELF_POST_NBA_DOMAIN = "self.nba";
-        final String THREAD_ID_KEY = "THREAD_ID";
         if (context != null) {
 
             postsListView.setAdapter(new PostsAdapter(context, posts, type));
             postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent submissionIntent = new Intent(getActivity(), SubmissionActivity.class);
-                    submissionIntent.putExtra(THREAD_ID_KEY, posts.get(position).getId());
-                    startActivity(submissionIntent);
                     Submission post = posts.get(position);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.THREAD_ID, post.getId());
+                    bundle.putString(Constants.THREAD_TITLE, post.getTitle());
+                    bundle.putString(Constants.THREAD_AUTHOR, post.getAuthor());
+                    bundle.putString(Constants.THREAD_TIMESTAMP,
+                            Utilities.formatDate(post.getCreated()));
+                    bundle.putString(Constants.THREAD_SCORE, String.valueOf(post.getScore()));
+                    bundle.putString(Constants.THREAD_DOMAIN, post.getDomain());
+                    if (post.getThumbnails() != null) {
+                        bundle.putString(Constants.THREAD_IMAGE,
+                                post.getThumbnails().getSource().getUrl());
+                    } else {
+                        bundle.putString(Constants.THREAD_IMAGE, null);
+                    }
+                    bundle.putBoolean(Constants.THREAD_SELF, post.isSelfPost());
+
+                    Intent submissionIntent = new Intent(getActivity(), SubmissionActivity.class);
+                    submissionIntent.putExtras(bundle);
+                    startActivity(submissionIntent);
+
                     String url = post.getUrl();
                     String domain = post.getDomain();
-
                     switch (domain) {
                         case STREAMABLE_DOMAIN:
                             url = url.replace(STREAMABLE_URL, STREAMABLE_VIDEO_URL);

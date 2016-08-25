@@ -20,8 +20,7 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:indeterminateTintMode="src_atop"
-            android:indeterminateTint="@color/tricornBlack"
-            >
+            android:indeterminateTint="@color/tricornBlack">
         </ProgressBar>
 
     </LinearLayout>

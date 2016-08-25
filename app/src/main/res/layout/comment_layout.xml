@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="0dp"
-    android:paddingRight="0dp"
-    android:paddingTop="0dp"
-    android:paddingBottom="0dp">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/relativeLayout"
+        android:id="@+id/comment_inner_relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
@@ -17,7 +13,7 @@
         android:background="@color/colorWhite">
 
         <TextView
-            android:id="@+id/authorTextView"
+            android:id="@+id/comment_author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
@@ -27,30 +23,30 @@
             android:textSize="10dp"/>
 
         <TextView
-            android:id="@+id/scoreTextView"
+            android:id="@+id/comment_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/authorTextView"
+            android:layout_toRightOf="@+id/comment_author"
             android:paddingLeft="2dp"
             android:text="1000 points"
             android:textColor="@color/secondaryText"
             android:textSize="10dp"/>
 
         <TextView
-            android:id="@+id/timeTextView"
+            android:id="@+id/comment_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/scoreTextView"
+            android:layout_toRightOf="@+id/comment_score"
             android:paddingLeft="2dp"
             android:text="10 hours ago"
             android:textColor="@color/secondaryText"
             android:textSize="10dp"/>
 
         <TextView
-            android:id="@+id/bodyTextView"
+            android:id="@+id/comment_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/authorTextView"
+            android:layout_below="@+id/comment_author"
             android:paddingLeft="10dp"
             android:paddingTop="2dp"
             android:text="This is a comment"
@@ -58,7 +54,5 @@
             android:textSize="12dp"/>
 
     </RelativeLayout>
-
-
 
 </RelativeLayout>

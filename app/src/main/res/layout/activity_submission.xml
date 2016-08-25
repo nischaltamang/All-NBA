@@ -8,11 +8,6 @@
     android:background="@color/lightGray"
     tools:context="com.example.jorgegil.closegamealert.View.Activities.SubmissionActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
@@ -23,7 +18,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:layout_scrollFlags="scroll|enterAlways"/>
 
@@ -32,20 +26,20 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/submission_rel_layout"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.v7.widget.CardView
                 android:id="@+id/submission_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="0dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -64,7 +58,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Team USA defeats Spain 82-76"
-                        android:textSize="22sp"
+                        android:textColor="@color/primaryText"
+                        android:textSize="18sp"
                         android:layout_below="@id/submission_image"
                         android:padding="3dp" />
 
@@ -89,7 +84,7 @@
                         android:layout_toEndOf="@id/submission_author"/>
 
                     <TextView
-                        android:id="@+id/submission_date"
+                        android:id="@+id/submission_timestamp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -129,7 +124,7 @@
                         android:layout_toStartOf="@id/submission_downvote"/>
 
                     <TextView
-                        android:id="@+id/submission_votes"
+                        android:id="@+id/submission_score"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -142,16 +137,15 @@
 
             </android.support.v7.widget.CardView>
 
-            <LinearLayout
-                android:id="@+id/submission_comments"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/submission_rv"
+                android:scrollbars="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/submission_card">
-            </LinearLayout>
+                android:layout_height="wrap_content">
 
+            </android.support.v7.widget.RecyclerView>
 
-        </RelativeLayout>
+        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
@@ -160,7 +154,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:rippleColor="@color/yellow"
         android:src="@android:drawable/ic_input_add" />
 
 </android.support.design.widget.CoordinatorLayout>

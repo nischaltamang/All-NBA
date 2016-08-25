@@ -2,48 +2,78 @@ package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.jorgegil.closegamealert.General.Constants;
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.Utils.Utilities;
+import com.squareup.picasso.Picasso;
 
 import net.dean.jraw.http.SubmissionRequest;
-import net.dean.jraw.models.Comment;
 import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Submission;
+import net.dean.jraw.models.Thumbnails;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubmissionActivity extends AppCompatActivity {
     private static final String TAG = "SubmissionActivity";
 
-    private static final String THREAD_ID_KEY = "THREAD_ID";
-    private ViewGroup mCommentsLinearLayout;
+    private Toolbar mToolbar;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private TextView mTitleTextView;
+    private TextView mAuthorTextView;
+    private TextView mTimestampTextView;
+    private TextView mScoreTextView;
+    private ImageView mSubmissionImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submission);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setUpToolbar();
 
-        Intent intent = getIntent();
-        String threadId = intent.getStringExtra(THREAD_ID_KEY);
+        setTitle(getString(R.string.rnba));
 
-        // TODO: get submission from id and set image and text.
+        Bundle extras = getIntent().getExtras();
+        String threadId = extras.getString(Constants.THREAD_ID);
 
-        mCommentsLinearLayout = (ViewGroup) findViewById(R.id.submission_comments);
+        mTitleTextView = (TextView) findViewById(R.id.submission_title);
+        mAuthorTextView = (TextView) findViewById(R.id.submission_author);
+        mTimestampTextView = (TextView) findViewById(R.id.submission_timestamp);
+        mScoreTextView = (TextView) findViewById(R.id.submission_score);
+        mSubmissionImageView = (ImageView) findViewById(R.id.submission_image);
+        loadSubmissionDetails(extras);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.submission_rv);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mRecyclerView.setNestedScrollingEnabled(false);
+        } else {
+            ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +85,55 @@ public class SubmissionActivity extends AppCompatActivity {
         });
 
         new GetFullThread().execute(threadId);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setUpToolbar(){
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        }
+    }
+
+    private void loadSubmissionDetails(Bundle extras) {
+        mTitleTextView.setText(extras.getString(Constants.THREAD_TITLE));
+        mAuthorTextView.setText(extras.getString(Constants.THREAD_AUTHOR));
+        mTimestampTextView.setText(extras.getString(Constants.THREAD_TIMESTAMP));
+        mScoreTextView.setText(extras.getString(Constants.THREAD_SCORE));
+
+        if (extras.getBoolean(Constants.THREAD_SELF)) {
+            mSubmissionImageView.setVisibility(View.GONE);
+        } else {
+            String imageUrl = extras.getString(Constants.THREAD_IMAGE);
+            if (imageUrl != null) {
+                Picasso.with(this).load(imageUrl).fit().centerCrop().into(mSubmissionImageView);
+            } else {
+                mSubmissionImageView.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public void getComments(Submission submission) {
+        Iterable<CommentNode> iterable = submission.getComments().walkTree();
+        List<CommentNode> commentNodes = new ArrayList<>();
+        for (CommentNode node : iterable) {
+            commentNodes.add(node);
+        }
+        mAdapter = new CommentAdapter(this, commentNodes);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private class GetFullThread extends AsyncTask<String, Void, Submission> {
@@ -75,75 +154,6 @@ public class SubmissionActivity extends AppCompatActivity {
         protected void onPostExecute(Submission submission) {
             getComments(submission);
         }
-    }
-
-    public void getComments(Submission submission) {
-        Iterable<CommentNode> iterable = submission.getComments().walkTree();
-        for (CommentNode node : iterable) {
-            addCommentToLayout(node);
-        }
-    }
-
-    private void addCommentToLayout(CommentNode commentNode) {
-        View commentLayout = LayoutInflater.from(this).inflate(R.layout.comment_layout,
-                mCommentsLinearLayout, false);
-
-        TextView authorView = (TextView) commentLayout.findViewById(R.id.authorTextView);
-        TextView bodyView = (TextView) commentLayout.findViewById(R.id.bodyTextView);
-        TextView timestampView = (TextView) commentLayout.findViewById(R.id.timeTextView);
-        TextView pointsView = (TextView) commentLayout.findViewById(R.id.scoreTextView);
-
-        Comment comment = commentNode.getComment();
-        String author = comment.getAuthor();
-        String body = comment.getBody();
-        String timestamp = Utilities.formatDate(comment.getCreated());
-        String points = String.valueOf(comment.getScore());
-
-        authorView.setText(author);
-        bodyView.setText(body);
-        timestampView.setText(timestamp);
-        pointsView.setText(getString(R.string.points, points));
-        stuff(commentNode, commentLayout);
-
-        mCommentsLinearLayout.addView(commentLayout);
-    }
-
-    private void stuff(CommentNode commentNode, View commentLayout) {
-        RelativeLayout relativeLayout = (RelativeLayout) commentLayout
-                .findViewById(R.id.relativeLayout);
-
-        int padding_in_dp = 5;
-        final float scale = this.getResources().getDisplayMetrics().density;
-        int padding_in_px = (int) (padding_in_dp * scale + 0.5F);
-
-        int depth = commentNode.getDepth(); // From 1
-
-        // Add color if it is not a top-level comment.
-        if (depth > 1) {
-            int depthFromZero = depth - 2;
-            int res = (depthFromZero) % 5;
-            switch (res) {
-                case 0:
-                    relativeLayout.setBackgroundResource(R.drawable.borderblue);
-                    break;
-                case 1:
-                    relativeLayout.setBackgroundResource(R.drawable.bordergreen);
-                    break;
-                case 2: //
-                    relativeLayout.setBackgroundResource(R.drawable.borderbrown);
-                    break;
-                case 3:
-                    relativeLayout.setBackgroundResource(R.drawable.borderorange);
-                    break;
-                case 4:
-                    relativeLayout.setBackgroundResource(R.drawable.borderred);
-                    break;
-            }
-        }
-
-        // Add padding depending on level.
-
-        commentLayout.setPadding(padding_in_px * (depth - 2), 0, 0, 0);
     }
 
 }
