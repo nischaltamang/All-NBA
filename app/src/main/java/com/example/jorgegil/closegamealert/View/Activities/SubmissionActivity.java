@@ -19,10 +19,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jorgegil.closegamealert.General.Constants;
+import com.example.jorgegil.closegamealert.General.Streamable;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.Utils.Utilities;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 
 import net.dean.jraw.http.SubmissionRequest;
@@ -31,6 +35,15 @@ import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.Thumbnails;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +60,10 @@ public class SubmissionActivity extends AppCompatActivity {
     private TextView mScoreTextView;
     private ImageView mSubmissionImageView;
 
+    private String threadId;
+    private String threadDomain;
+    private String threadUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +73,9 @@ public class SubmissionActivity extends AppCompatActivity {
         setTitle(getString(R.string.rnba));
 
         Bundle extras = getIntent().getExtras();
-        String threadId = extras.getString(Constants.THREAD_ID);
+        threadId = extras.getString(Constants.THREAD_ID);
+        threadDomain = extras.getString(Constants.THREAD_DOMAIN);
+        threadUrl = extras.getString(Constants.THREAD_URL);
 
         mTitleTextView = (TextView) findViewById(R.id.submission_title);
         mAuthorTextView = (TextView) findViewById(R.id.submission_author);
@@ -74,6 +93,13 @@ public class SubmissionActivity extends AppCompatActivity {
         } else {
             ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
         }
+
+        mSubmissionImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openLink(threadUrl, threadDomain);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +152,7 @@ public class SubmissionActivity extends AppCompatActivity {
         }
     }
 
-    public void getComments(Submission submission) {
+    private void getComments(Submission submission) {
         Iterable<CommentNode> iterable = submission.getComments().walkTree();
         List<CommentNode> commentNodes = new ArrayList<>();
         for (CommentNode node : iterable) {
@@ -134,6 +160,22 @@ public class SubmissionActivity extends AppCompatActivity {
         }
         mAdapter = new CommentAdapter(this, commentNodes);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void openLink(String url, String domain) {
+        if (domain.equals(Constants.STREAMABLE_DOMAIN)) {
+            playStreamable(url);
+        }
+    }
+
+    private void playStreamable(String url) {
+        String streamableId = url.substring(url.lastIndexOf('/') + 1);
+
+        new FetchStreamable(streamableId).execute();
+    }
+
+    private void playVideo(String url, int width, int height) {
+
     }
 
     private class GetFullThread extends AsyncTask<String, Void, Submission> {
@@ -153,6 +195,45 @@ public class SubmissionActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Submission submission) {
             getComments(submission);
+        }
+    }
+
+    private class FetchStreamable extends AsyncTask<Void, Void, Streamable> {
+        String mStreamableId;
+
+        public FetchStreamable(String streamableId) {
+            mStreamableId = streamableId;
+        }
+
+        @Override
+        protected Streamable doInBackground(Void... params) {
+            String streamableUrl = Constants.STREAMABLE_API_URL + mStreamableId;
+            try {
+                URL url = new URL(streamableUrl);
+                HttpURLConnection request = (HttpURLConnection) url.openConnection();
+                request.setRequestMethod("GET");
+                request.connect();
+
+                JsonParser jsonParser = new JsonParser();
+                JsonElement root = jsonParser.parse(new InputStreamReader((InputStream)
+                        request.getContent()));
+                JsonObject jsonObject = root.getAsJsonObject();
+                Streamable streamable = new Streamable(jsonObject);
+                return  streamable;
+            } catch (MalformedURLException e) {
+                Log.e(TAG, "Failed to convert string to URL. ", e);
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to open URL connection. ", e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Streamable streamable) {
+            String videoUrl = streamable.getMobileVideoUrl();
+            int videoWidth = streamable.getMobileVideoWidth();
+            int videoHeight = streamable.getMobileVideoHeight();
+            playVideo(videoUrl, videoWidth, videoHeight);
         }
     }
 

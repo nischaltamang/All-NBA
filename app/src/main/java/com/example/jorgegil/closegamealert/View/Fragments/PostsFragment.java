@@ -131,7 +131,6 @@ public class PostsFragment extends Fragment {
 
 
     private void loadPosts(final Listing<Submission> posts) {
-        final String STREAMABLE_DOMAIN = "streamable.com";
         final String STREAMABLE_URL = "https://streamable.com/";
         final String STREAMABLE_VIDEO_URL = "http://cdn.streamable.com/video/mp4/";
         final String YOUTUBE_DOMAIN = "youtube.com";
@@ -151,6 +150,7 @@ public class PostsFragment extends Fragment {
                             Utilities.formatDate(post.getCreated()));
                     bundle.putString(Constants.THREAD_SCORE, String.valueOf(post.getScore()));
                     bundle.putString(Constants.THREAD_DOMAIN, post.getDomain());
+                    bundle.putString(Constants.THREAD_URL, post.getUrl());
                     if (post.getThumbnails() != null) {
                         bundle.putString(Constants.THREAD_IMAGE,
                                 post.getThumbnails().getSource().getUrl());
@@ -166,7 +166,7 @@ public class PostsFragment extends Fragment {
                     String url = post.getUrl();
                     String domain = post.getDomain();
                     switch (domain) {
-                        case STREAMABLE_DOMAIN:
+                        case Constants.STREAMABLE_DOMAIN:
                             url = url.replace(STREAMABLE_URL, STREAMABLE_VIDEO_URL);
                             url = url + ".mp4";
                             playVideo(url);
