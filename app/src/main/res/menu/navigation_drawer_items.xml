@@ -30,11 +30,6 @@
             android:id="@+id/navigation_item_5"
             android:icon="@drawable/ic_star_black_24dp"
             android:title="Highlights"/>
-
-        <item
-            android:id="@+id/navigation_item_6"
-            android:icon="@drawable/ic_twitter_black"
-            android:title="Twitter feed" />
     </group>
 
     <group
