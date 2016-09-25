@@ -2,17 +2,20 @@ package com.example.jorgegil.closegamealert.Utils;
 
 import com.example.jorgegil.closegamealert.Network.GetRequestListener;
 
-import java.util.Date;
-
 /**
  * Interface to get data of previous or upcoming NBA games.
  */
 public interface GameDataService {
 
     /**
-     * Fetches a list of NBA Games.
+     * Fetches a list of NBA Games from the most relevant game day.
      */
-    void fetchGames(Date date, GetRequestListener listener);
+    void fetchGames(GetRequestListener listener);
+
+    /**
+     * Fetches a list of NBA Games given a date.
+     */
+    void fetchGames(String date, GetRequestListener listener);
 
     /**
      * Cancels all network operations started by this service.

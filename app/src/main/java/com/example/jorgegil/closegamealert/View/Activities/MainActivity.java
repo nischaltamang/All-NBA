@@ -235,6 +235,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void setToolbarSubtitle(String subtitle) {
+        if (toolbar != null) {
+            toolbar.setSubtitle(subtitle);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

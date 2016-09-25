@@ -13,7 +13,7 @@ public enum TeamName {
     DAL("Dallas Mavericks"),
     DEN("Denver Nuggets"),
     DET("Detroit Pistons"),
-    GS("Golden State Warriors"),
+    GSW("Golden State Warriors"),
     HOU("Houston Rockets"),
     IND("Indiana Pacers"),
     LAC("Los Angeles Clippers"),
@@ -22,18 +22,18 @@ public enum TeamName {
     MIA("Miami Heat"),
     MIL("Milwaukee Bucks"),
     MIN("Minnesota Timberwolves"),
-    NO("New Orleans Pelicans"),
-    NY("New York Knicks"),
+    NOP("New Orleans Pelicans"),
+    NYK("New York Knicks"),
     OKC("Oklahoma City Thunder"),
     ORL("Orlando Magic"),
     PHI("Philadelphia 76ers"),
     PHX("Phoenix Suns"),
     POR("Portland Trail Blazers"),
-    SA("San Antonio Spurs"),
+    SAS("San Antonio Spurs"),
     SAC("Sacramento Kings"),
     TOR("Toronto Raptors"),
-    UTAH("Utah Jazz"),
-    WSH("Washington Wizards");
+    UTA("Utah Jazz"),
+    WAS("Washington Wizards");
 
     private String teamName;
 

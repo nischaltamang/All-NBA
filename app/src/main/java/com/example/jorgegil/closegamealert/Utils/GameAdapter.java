@@ -1,6 +1,7 @@
 package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,22 +50,31 @@ public class GameAdapter extends BaseAdapter {
         TextView awayScoreLabel = (TextView) rowView.findViewById(R.id.awayscore);
         TextView clockLabel = (TextView) rowView.findViewById(R.id.clock);
         TextView periodLabel = (TextView) rowView.findViewById(R.id.period);
+        TextView timeLabel = (TextView) rowView.findViewById(R.id.timeLabel);
 
         NBAGame nbaGame = nbaGames.get(position);
+        Log.d("GameAdapter", nbaGame.getHomeTeamAbbr() + "-" + nbaGame.getAwayTeamAbbr());
 
-        int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeam().toLowerCase(),
+        int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeamAbbr().toLowerCase(),
                 "drawable", context.getPackageName());
-        int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeam().toLowerCase(),
+        int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeamAbbr().toLowerCase(),
                 "drawable", context.getPackageName());
 
-        homeTeamLabel.setText(nbaGame.getHomeTeam());
-        awayTeamLabel.setText(nbaGame.getAwayTeam());
+        homeTeamLabel.setText(nbaGame.getHomeTeamAbbr());
+        awayTeamLabel.setText(nbaGame.getAwayTeamAbbr());
         homeLogo.setImageResource(resKeyHome);
         awayLogo.setImageResource(resKeyAway);
-        homeScoreLabel.setText(nbaGame.getHomeScore());
-        awayScoreLabel.setText(nbaGame.getAwayScore());
-        clockLabel.setText(nbaGame.getClock());
-        periodLabel.setText(String.valueOf(nbaGame.getPeriod()));
+        homeScoreLabel.setText(nbaGame.getHomeTeamScore());
+        awayScoreLabel.setText(nbaGame.getAwayTeamScore());
+        clockLabel.setText(nbaGame.getGameClock());
+        periodLabel.setText(String.valueOf(nbaGame.getPeriodValue()));
+
+        if (nbaGame.getGameStatus().equals(NBAGame.PRE_GAME)) {
+            timeLabel.setVisibility(View.VISIBLE);
+            timeLabel.setText(nbaGame.getPeriodStatus());
+        } else {
+            timeLabel.setVisibility(View.GONE);
+        }
 
         return rowView;
     }

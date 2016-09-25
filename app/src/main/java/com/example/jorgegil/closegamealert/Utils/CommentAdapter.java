@@ -43,7 +43,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         Comment comment = commentNode.getComment();
         String author = comment.getAuthor();
         String body = comment.getBody();
-        String timestamp = Utilities.formatDate(comment.getCreated());
+        String timestamp = Utilities.formatRedditDate(comment.getCreated());
         String score = String.valueOf(comment.getScore());
 
         holder.authorTextView.setText(author);

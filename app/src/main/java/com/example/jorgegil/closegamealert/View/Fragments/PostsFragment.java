@@ -147,7 +147,7 @@ public class PostsFragment extends Fragment {
                     bundle.putString(Constants.THREAD_TITLE, post.getTitle());
                     bundle.putString(Constants.THREAD_AUTHOR, post.getAuthor());
                     bundle.putString(Constants.THREAD_TIMESTAMP,
-                            Utilities.formatDate(post.getCreated()));
+                            Utilities.formatRedditDate(post.getCreated()));
                     bundle.putString(Constants.THREAD_SCORE, String.valueOf(post.getScore()));
                     bundle.putString(Constants.THREAD_DOMAIN, post.getDomain());
                     bundle.putString(Constants.THREAD_URL, post.getUrl());

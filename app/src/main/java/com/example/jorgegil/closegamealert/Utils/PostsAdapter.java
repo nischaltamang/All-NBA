@@ -2,7 +2,6 @@ package com.example.jorgegil.closegamealert.Utils;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +9,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.jorgegil.closegamealert.General.Post;
 import com.example.jorgegil.closegamealert.R;
 import com.squareup.picasso.Picasso;
 
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
-
-import java.io.InputStream;
-import java.util.ArrayList;
 
 /**
  * Created by TOSHIBA on 12/25/2015.
@@ -82,7 +77,7 @@ public class PostsAdapter extends BaseAdapter {
         }
         scoreView.setText(String.valueOf(post.getScore()));
         authorView.setText(post.getAuthor());
-        createdView.setText(Utilities.formatDate(post.getCreated()));
+        createdView.setText(Utilities.formatRedditDate(post.getCreated()));
         numOfCommentsView.setText(post.getCommentCount() + " Comments");
 
         String thumbnailUrl = post.getThumbnail();

@@ -6,5 +6,5 @@ package com.example.jorgegil.closegamealert.Network;
 public interface GetRequestListener {
     void onResult(String result);
 
-    void onFailure(int statusCode);
+    void onFailure(String error);
 }

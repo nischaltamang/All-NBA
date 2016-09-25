@@ -52,8 +52,8 @@ public class NetworkManager {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "Error code: " + error.networkResponse.statusCode);
-                        listener.onFailure(error.networkResponse.statusCode);
+                        Log.d(TAG, "Error code: " + error.toString());
+                        listener.onFailure(error.toString());
                     }
                 }
         );
