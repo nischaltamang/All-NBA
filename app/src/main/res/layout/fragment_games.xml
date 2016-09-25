@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/linlaHeaderProgress"
+        android:id="@+id/games_fragment_progress_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
@@ -26,9 +26,9 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/games_listview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/games_listview"
         android:layout_centerHorizontal="true"
         android:layout_marginRight="1dp"
         android:layout_marginLeft="1dp"

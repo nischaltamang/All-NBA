@@ -43,13 +43,13 @@ public class Streamable {
 
         if (files.has("mp4")) {
             JsonObject desktopVideo = files.get("mp4").getAsJsonObject();
-            desktopVideoUrl = desktopVideo.get("url").getAsString();
+            desktopVideoUrl = "http:" + desktopVideo.get("url").getAsString();
             desktopVideoWidth = desktopVideo.get("width").getAsInt();
             desktopVideoHeight = desktopVideo.get("height").getAsInt();
         }
         if (files.has("mp4-mobile")) {
             JsonObject mobileVideo = files.get("mp4-mobile").getAsJsonObject();
-            mobileVideoUrl = mobileVideo.get("url").getAsString();
+            mobileVideoUrl = "http:" + mobileVideo.get("url").getAsString();
             mobileVideoWidth = mobileVideo.get("width").getAsInt();
             mobileVideoHeight = mobileVideo.get("height").getAsInt();
         }

@@ -1,6 +1,7 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
-import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,18 +13,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.jorgegil.closegamealert.General.Constants;
 import com.example.jorgegil.closegamealert.General.Streamable;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
-import com.example.jorgegil.closegamealert.Utils.Utilities;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -33,11 +38,7 @@ import net.dean.jraw.http.SubmissionRequest;
 import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Submission;
-import net.dean.jraw.models.Thumbnails;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,10 +60,15 @@ public class SubmissionActivity extends AppCompatActivity {
     private TextView mTimestampTextView;
     private TextView mScoreTextView;
     private ImageView mSubmissionImageView;
+    private VideoView mVideoView;
+    private FloatingActionButton mFab;
 
     private String threadId;
     private String threadDomain;
     private String threadUrl;
+
+    private FetchFullThreadTask fetchFullThreadTask;
+    private FetchStreamableTask fetchStreamableTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,8 @@ public class SubmissionActivity extends AppCompatActivity {
         mTimestampTextView = (TextView) findViewById(R.id.submission_timestamp);
         mScoreTextView = (TextView) findViewById(R.id.submission_score);
         mSubmissionImageView = (ImageView) findViewById(R.id.submission_image);
+        mVideoView = (VideoView) findViewById(R.id.submission_video);
+        mVideoView.setVisibility(View.INVISIBLE);
         loadSubmissionDetails(extras);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.submission_rv);
@@ -101,8 +109,8 @@ public class SubmissionActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -110,7 +118,8 @@ public class SubmissionActivity extends AppCompatActivity {
             }
         });
 
-        new GetFullThread().execute(threadId);
+        fetchFullThreadTask = new FetchFullThreadTask(threadId);
+        fetchFullThreadTask.execute();
     }
 
     @Override
@@ -121,6 +130,17 @@ public class SubmissionActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (fetchFullThreadTask != null) {
+            fetchFullThreadTask.cancel(true);
+        }
+        if (fetchStreamableTask != null) {
+            fetchStreamableTask.cancel(true);
+        }
+        super.onDestroy();
     }
 
     private void setUpToolbar(){
@@ -166,26 +186,71 @@ public class SubmissionActivity extends AppCompatActivity {
         if (domain.equals(Constants.STREAMABLE_DOMAIN)) {
             playStreamable(url);
         }
+        playStreamable(url);
     }
 
     private void playStreamable(String url) {
         String streamableId = url.substring(url.lastIndexOf('/') + 1);
-
-        new FetchStreamable(streamableId).execute();
+        fetchStreamableTask = new FetchStreamableTask("dng6");
+        fetchStreamableTask.execute();
     }
 
     private void playVideo(String url, int width, int height) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+        mFab.hide();
+
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int displayH = displayMetrics.heightPixels;
+        int displayW = displayMetrics.widthPixels;
+        Log.d(TAG, "diplay wh: " + displayW + " x " + displayH);
+        Log.d(TAG, "video wh: " + width + " x " + height);
+
+        mVideoView.setVisibility(View.VISIBLE);
+        //mVideoView.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
+        //mVideoView.setZOrderOnTop(true); //HIDE
+        //background.setVisibility(View.VISIBLE);
+        //videoProgressLayout.setVisibility(View.VISIBLE);
+        //isPreviewVisible = true;
+        Log.d(TAG, "url: " + url);
+        Uri uri = Uri.parse(url);
+
+        try {
+
+            mVideoView.setMediaController(new android.widget.MediaController(this));
+            mVideoView.setVideoURI(uri);
+            mVideoView.requestFocus();
+            mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    //videoProgressLayout.setVisibility(View.GONE);
+                    //mVideoView.setZOrderOnTop(false); //SHOW
+                    mSubmissionImageView.setVisibility(View.GONE);
+                }
+            });
+            mVideoView.start();
+        } catch (Exception e) {
+            // TODO: Handle exception
+            //stopVideo();
+            //Toast.makeText(context, "Error loading video", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
-    private class GetFullThread extends AsyncTask<String, Void, Submission> {
-        @Override
-        protected void onPreExecute() {
+    private class FetchFullThreadTask extends AsyncTask<Void, Void, Submission> {
+        private String mThreadId;
+
+        public FetchFullThreadTask(String threadId) {
+            mThreadId = threadId;
         }
 
         @Override
-        protected Submission doInBackground(String... threadId) {
-            SubmissionRequest.Builder b = new SubmissionRequest.Builder(threadId[0]);
+        protected Submission doInBackground(Void... params) {
+            SubmissionRequest.Builder b = new SubmissionRequest.Builder(mThreadId);
             b.sort(CommentSort.HOT);
             SubmissionRequest sr = b.build();
 
@@ -198,10 +263,10 @@ public class SubmissionActivity extends AppCompatActivity {
         }
     }
 
-    private class FetchStreamable extends AsyncTask<Void, Void, Streamable> {
+    private class FetchStreamableTask extends AsyncTask<Void, Void, Streamable> {
         String mStreamableId;
 
-        public FetchStreamable(String streamableId) {
+        public FetchStreamableTask(String streamableId) {
             mStreamableId = streamableId;
         }
 
@@ -230,10 +295,26 @@ public class SubmissionActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Streamable streamable) {
-            String videoUrl = streamable.getMobileVideoUrl();
-            int videoWidth = streamable.getMobileVideoWidth();
-            int videoHeight = streamable.getMobileVideoHeight();
-            playVideo(videoUrl, videoWidth, videoHeight);
+            String videoUrl = null;
+            int videoWidth = -1;
+            int videoHeight = -1;
+
+            if (streamable.getMobileVideoUrl() != null) {
+                videoUrl = streamable.getMobileVideoUrl();
+                videoWidth = streamable.getMobileVideoWidth();
+                videoHeight = streamable.getMobileVideoHeight();
+            }
+            if (videoUrl == null && streamable.getDesktopVideoUrl() != null) {
+                videoUrl = streamable.getDesktopVideoUrl();
+                videoWidth = streamable.getDesktopVideoWidth();
+                videoHeight = streamable.getDesktopVideoHeight();
+            }
+
+            if (videoUrl != null && videoWidth != -1 && videoHeight != -1) {
+                playVideo(videoUrl, videoWidth, videoHeight);
+            } else {
+                Log.e(TAG, "Could not get video from Streamable.");
+            }
         }
     }
 

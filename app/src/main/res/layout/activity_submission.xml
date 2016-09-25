@@ -28,124 +28,142 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:id="@+id/submission_rel_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/submission_card"
+            <VideoView
+                android:id="@+id/submission_video"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"/>
+
+            <LinearLayout
+                android:id="@+id/submission_linear_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="0dp">
+                android:orientation="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <RelativeLayout
+                <android.support.v7.widget.CardView
+                    android:id="@+id/submission_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="0dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/submission_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:background="@color/black"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentStart="true"/>
+
+                        <TextView
+                            android:id="@+id/submission_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Team USA defeats Spain 82-76"
+                            android:textColor="@color/primaryText"
+                            android:textSize="18sp"
+                            android:layout_below="@id/submission_image"
+                            android:padding="3dp" />
+
+                        <TextView
+                            android:id="@+id/submission_author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="jorgegil96"
+                            android:textSize="10sp"
+                            android:layout_below="@id/submission_title"
+                            android:layout_alignParentStart="true"/>
+
+                        <TextView
+                            android:id="@+id/submission_separator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="•"
+                            android:textSize="10sp"
+                            android:layout_below="@id/submission_title"
+                            android:layout_toEndOf="@id/submission_author"/>
+
+                        <TextView
+                            android:id="@+id/submission_timestamp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="2 hours ago"
+                            android:textSize="10sp"
+                            android:layout_below="@id/submission_title"
+                            android:layout_toEndOf="@id/submission_separator"/>
+
+                        <TextView
+                            android:id="@+id/submission_save"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:textSize="18sp"
+                            android:background="@drawable/ic_star_black_24dp"
+                            android:layout_below="@id/submission_title"
+                            android:layout_alignParentEnd="true"/>
+
+                        <TextView
+                            android:id="@+id/submission_downvote"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:textSize="18sp"
+                            android:background="@drawable/ic_arrow_upward_black_24dp"
+                            android:layout_below="@id/submission_title"
+                            android:layout_toStartOf="@id/submission_save"/>
+
+                        <TextView
+                            android:id="@+id/submission_upvote"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:textSize="18sp"
+                            android:background="@drawable/ic_arrow_upward_black_24dp"
+                            android:layout_below="@id/submission_title"
+                            android:layout_toStartOf="@id/submission_downvote"/>
+
+                        <TextView
+                            android:id="@+id/submission_score"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:textSize="18sp"
+                            android:text="1200"
+                            android:layout_below="@id/submission_title"
+                            android:layout_toStartOf="@id/submission_upvote"/>
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/submission_rv"
+                    android:scrollbars="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/submission_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:background="@color/black"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentStart="true" />
+                </android.support.v7.widget.RecyclerView>
 
-                    <TextView
-                        android:id="@+id/submission_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Team USA defeats Spain 82-76"
-                        android:textColor="@color/primaryText"
-                        android:textSize="18sp"
-                        android:layout_below="@id/submission_image"
-                        android:padding="3dp" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/submission_author"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="jorgegil96"
-                        android:textSize="10sp"
-                        android:layout_below="@id/submission_title"
-                        android:layout_alignParentStart="true"/>
 
-                    <TextView
-                        android:id="@+id/submission_separator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="•"
-                        android:textSize="10sp"
-                        android:layout_below="@id/submission_title"
-                        android:layout_toEndOf="@id/submission_author"/>
 
-                    <TextView
-                        android:id="@+id/submission_timestamp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="2 hours ago"
-                        android:textSize="10sp"
-                        android:layout_below="@id/submission_title"
-                        android:layout_toEndOf="@id/submission_separator"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/submission_save"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:textSize="18sp"
-                        android:background="@drawable/ic_star_black_24dp"
-                        android:layout_below="@id/submission_title"
-                        android:layout_alignParentEnd="true"/>
-
-                    <TextView
-                        android:id="@+id/submission_downvote"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:textSize="18sp"
-                        android:background="@drawable/ic_arrow_upward_black_24dp"
-                        android:layout_below="@id/submission_title"
-                        android:layout_toStartOf="@id/submission_save"/>
-
-                    <TextView
-                        android:id="@+id/submission_upvote"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:textSize="18sp"
-                        android:background="@drawable/ic_arrow_upward_black_24dp"
-                        android:layout_below="@id/submission_title"
-                        android:layout_toStartOf="@id/submission_downvote"/>
-
-                    <TextView
-                        android:id="@+id/submission_score"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:textSize="18sp"
-                        android:text="1200"
-                        android:layout_below="@id/submission_title"
-                        android:layout_toStartOf="@id/submission_upvote"/>
-
-                </RelativeLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/submission_rv"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </android.support.v7.widget.RecyclerView>
-
-        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
