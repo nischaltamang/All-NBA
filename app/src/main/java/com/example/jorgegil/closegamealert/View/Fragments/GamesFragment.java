@@ -16,23 +16,16 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.jorgegil.closegamealert.General.NBAGame;
 import com.example.jorgegil.closegamealert.Network.GetRequestListener;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.GameAdapter;
 import com.example.jorgegil.closegamealert.Utils.GameDataService;
 import com.example.jorgegil.closegamealert.Utils.JSONGameDataService;
 import com.example.jorgegil.closegamealert.View.Activities.CommentsActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,21 +40,14 @@ public class GamesFragment extends Fragment {
             "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
     public final static String GAME_ID = "com.example.jorgegil.closegamealert.GAME_ID";
 
-    public final static String GAME_DATA_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt";
-
     View rootView;
 
-    List<String> homeTeam;
-    List<String> awayTeam;
-    List<String> homeScore;
-    List<String> awayScore;
-    List<String> clock;
-    List<String> period;
-    List<String> gameId;
-    List<String> status;
+    List<NBAGame> nbaGames;
 
     ListView listView;
     LinearLayout linlaHeaderProgress;
+
+    GameDataService gameDataService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,10 +58,6 @@ public class GamesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Register Broadcast manager to update scores automatically
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter("game-data"));
-
         rootView = inflater.inflate(R.layout.fragment_games, container, false);
         listView = (ListView) rootView.findViewById(R.id.games_listview);
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.games_fragment_progress_layout);
@@ -85,22 +67,28 @@ public class GamesFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register Broadcast manager to update scores automatically
+        Log.d(TAG, "Registering receiver");
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("game-data"));
+    }
+
     // When new data is received, the JSON is parsed and the listview is notified of change.
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (isVisible()) {
+                Log.d(TAG, "received new data!!");
                 String message = intent.getStringExtra("message");
-                parseData(message, false);
+                updateGameData(message);
             }
         }
     };
 
     private void loadGameData() {
-        if (linlaHeaderProgress == null || listView == null ) {
-            return;
-        }
-        // Show spinner and hide games.
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
 
@@ -109,7 +97,10 @@ public class GamesFragment extends Fragment {
         GetRequestListener listener = new GetRequestListener() {
             @Override
             public void onResult(String result) {
-                parseData(result, true /* reload */);
+                nbaGames = getGamesListFromJson(result);
+                setGameAdapter();
+                linlaHeaderProgress.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -120,92 +111,55 @@ public class GamesFragment extends Fragment {
             }
         };
 
-        GameDataService gameDataService = new JSONGameDataService();
+        gameDataService = new JSONGameDataService();
         gameDataService.fetchGames(now, listener);
     }
 
-    public void parseData(String response, boolean reload) {
-        homeTeam = new ArrayList<>();
-        awayTeam = new ArrayList<>();
-        homeScore = new ArrayList<>();
-        awayScore = new ArrayList<>();
-        clock = new ArrayList<>();
-        period = new ArrayList<>();
-        gameId = new ArrayList<>();
-        status = new ArrayList<>();
+    private void updateGameData(String jsonString) {
+        nbaGames = getGamesListFromJson(jsonString);
+        setGameAdapter();
+    }
 
-        try {
-            JSONArray jsonArray = new JSONArray(response);
-            int numOfEvents = jsonArray.length();
+    private List<NBAGame> getGamesListFromJson(String jsonString) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, new TypeToken<List<NBAGame>>(){}.getType());
+    }
 
-            for(int i = 0; i < numOfEvents; i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                homeTeam.add(jsonObject.getString("homeTeam"));
-                awayTeam.add(jsonObject.getString("awayTeam"));
-                homeScore.add(jsonObject.getString("homeScore"));
-                awayScore.add(jsonObject.getString("awayScore"));
-                clock.add(jsonObject.getString("clock"));
-                period.add(jsonObject.getString("period"));
-                gameId.add(jsonObject.getString("id"));
-                status.add(jsonObject.getString("status"));
-
-                switch (status.get(i)) {
-                    case "pre":
-                        clock.set(i, "PRE");
-                        period.set(i, "GAME");
-                        break;
-                    case "in":
-                        if (Integer.parseInt(period.get(i)) < 5)
-                            period.set(i, period.get(i) + " Qtr");
-                        else
-                            period.set(i, "OT" + (Integer.parseInt(period.get(i)) - 4));
-                        break;
-                    case "post":
-                        clock.set(i, "FINAL");
-                        period.set(i, "");
-                        break;
+    private void setGameAdapter() {
+        if (listView.getAdapter() == null) {
+            listView.setAdapter(new GameAdapter(getActivity(), nbaGames));
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent intent = new Intent(getActivity(), CommentsActivity.class);
+                    intent.putExtra(GAME_THREAD_HOME, nbaGames.get(i).getHomeTeam());
+                    intent.putExtra(GAME_THREAD_AWAY, nbaGames.get(i).getAwayTeam());
+                    intent.putExtra(GAME_ID, nbaGames.get(i).getId());
+                    startActivity(intent);
                 }
-
-            }
-
-            if (listView.getAdapter() == null) {
-                if (getActivity() != null) {
-                    // Set list view adapter for game events.
-                    listView.setAdapter(new GameAdapter(getActivity(), homeTeam, awayTeam,
-                            homeScore, awayScore, clock, period));
-
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Intent intent = new Intent(getActivity(), CommentsActivity.class);
-                            intent.putExtra(GAME_THREAD_HOME, homeTeam.get(i));
-                            intent.putExtra(GAME_THREAD_AWAY, awayTeam.get(i));
-                            intent.putExtra(GAME_ID, gameId.get(i));
-                            startActivity(intent);
-                        }
-                    });
-                }
-            } else {
-                ((GameAdapter) listView.getAdapter()).notifyDataSetChanged();
-            }
-
-            if (reload) {
-                // Hide reload icon and show list view
-                linlaHeaderProgress.setVisibility(View.GONE);
-                listView.setVisibility(View.VISIBLE);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Error parsing JSON. " + e.toString());
-            //TODO: show "could not load message" and retry button.
+            });
+        } else {
+            ((GameAdapter) listView.getAdapter()).notifyDataSetChanged();
         }
     }
 
+    public boolean isFragmentUIActive() {
+        return isAdded() && !isDetached() && !isRemoving();
+    }
+
     @Override
-    public void onDestroyView() {
-        // Unregister since the fragment is about to be closed.
+    public void onPause() {
+        if (gameDataService != null) {
+            gameDataService.cancel();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(TAG, "Unregistering receiver");
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
-        super.onDestroyView();
+        super.onStop();
     }
 
     @Override

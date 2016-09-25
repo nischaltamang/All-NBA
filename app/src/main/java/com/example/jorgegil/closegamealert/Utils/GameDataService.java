@@ -10,7 +10,12 @@ import java.util.Date;
 public interface GameDataService {
 
     /**
-     * Loads a list of NBA Games.
+     * Fetches a list of NBA Games.
      */
     void fetchGames(Date date, GetRequestListener listener);
+
+    /**
+     * Cancels all network operations started by this service.
+     */
+    void cancel();
 }

@@ -38,7 +38,7 @@ public class NetworkManager {
         return instance;
     }
 
-    public void makeGetRequest(String url, final GetRequestListener listener) {
+    public void makeGetRequest(String url, String requestTag, final GetRequestListener listener) {
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -57,6 +57,11 @@ public class NetworkManager {
                     }
                 }
         );
+        request.setTag(requestTag);
         requestQueue.add(request);
+    }
+
+    public void cancelAllRequests(String requestTag) {
+        requestQueue.cancelAll(requestTag);
     }
 }

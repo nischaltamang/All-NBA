@@ -8,31 +8,24 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.jorgegil.closegamealert.General.NBAGame;
 import com.example.jorgegil.closegamealert.R;
 
 import java.util.List;
 
 public class GameAdapter extends BaseAdapter {
     private final Context context;
-    private final List<String> homeTeam, awayTeam, homeScore, awayScore, clock, period;
+    private final List<NBAGame> nbaGames;
     private static LayoutInflater inflater = null;
 
-    public GameAdapter(Context context, List<String> homeTeam, List<String> awayTeam,
-                       List<String> homeScore, List<String> awayScore,
-                       List<String> clock, List<String> period) {
+    public GameAdapter(Context context, List<NBAGame> nbaGames) {
         this.context = context;
-        this.homeTeam = homeTeam;
-        this.awayTeam = awayTeam;
-        this.homeScore = homeScore;
-        this.awayScore = awayScore;
-        this.clock = clock;
-        this.period = period;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.nbaGames = nbaGames;
     }
 
     @Override
     public int getCount() {
-        return homeTeam.size();
+        return nbaGames.size();
     }
 
     @Override
@@ -46,6 +39,7 @@ public class GameAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.row_game, parent, false);
         TextView homeTeamLabel = (TextView) rowView.findViewById(R.id.homelabel);
         TextView awayTeamLabel = (TextView) rowView.findViewById(R.id.awaylabel);
@@ -56,19 +50,21 @@ public class GameAdapter extends BaseAdapter {
         TextView clockLabel = (TextView) rowView.findViewById(R.id.clock);
         TextView periodLabel = (TextView) rowView.findViewById(R.id.period);
 
-        int resKeyHome = context.getResources().getIdentifier(homeTeam.get(position).toLowerCase(),
+        NBAGame nbaGame = nbaGames.get(position);
+
+        int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeam().toLowerCase(),
                 "drawable", context.getPackageName());
-        int resKeyAway = context.getResources().getIdentifier(awayTeam.get(position).toLowerCase(),
+        int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeam().toLowerCase(),
                 "drawable", context.getPackageName());
 
-        homeTeamLabel.setText(homeTeam.get(position));
-        awayTeamLabel.setText(awayTeam.get(position));
+        homeTeamLabel.setText(nbaGame.getHomeTeam());
+        awayTeamLabel.setText(nbaGame.getAwayTeam());
         homeLogo.setImageResource(resKeyHome);
         awayLogo.setImageResource(resKeyAway);
-        homeScoreLabel.setText(homeScore.get(position));
-        awayScoreLabel.setText(awayScore.get(position));
-        clockLabel.setText(clock.get(position));
-        periodLabel.setText(period.get(position));
+        homeScoreLabel.setText(nbaGame.getHomeScore());
+        awayScoreLabel.setText(nbaGame.getAwayScore());
+        clockLabel.setText(nbaGame.getClock());
+        periodLabel.setText(String.valueOf(nbaGame.getPeriod()));
 
         return rowView;
     }

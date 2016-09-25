@@ -90,7 +90,6 @@ public class StandingsFragment extends Fragment {
     private void parseStandings(String jsonString) {
         try {
             JSONArray jsonArray = new JSONObject(jsonString).getJSONArray("resultSets");
-            Log.d("Standings", "num: " + jsonArray.length());
 
             JSONObject eastObj = jsonArray.getJSONObject(2);
             JSONArray eastData = eastObj.getJSONArray("rowSet");
@@ -132,7 +131,7 @@ public class StandingsFragment extends Fragment {
             tableLayout.setVisibility(View.VISIBLE);
 
         } catch (Exception e) {
-            Log.e("Standings", "Voley error: " + e.toString());
+            Log.e("Standings", "Volley error: " + e.toString());
         }
     }
 
