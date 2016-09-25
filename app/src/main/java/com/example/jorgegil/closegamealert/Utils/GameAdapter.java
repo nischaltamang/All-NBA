@@ -50,7 +50,8 @@ public class GameAdapter extends BaseAdapter {
         TextView awayScoreLabel = (TextView) rowView.findViewById(R.id.awayscore);
         TextView clockLabel = (TextView) rowView.findViewById(R.id.clock);
         TextView periodLabel = (TextView) rowView.findViewById(R.id.period);
-        TextView timeLabel = (TextView) rowView.findViewById(R.id.timeLabel);
+        TextView extraLabel = (TextView) rowView.findViewById(R.id.extraLabel);
+        TextView finalLabel = (TextView) rowView.findViewById(R.id.extraLabel2);
 
         NBAGame nbaGame = nbaGames.get(position);
         Log.d("GameAdapter", nbaGame.getHomeTeamAbbr() + "-" + nbaGame.getAwayTeamAbbr());
@@ -69,11 +70,23 @@ public class GameAdapter extends BaseAdapter {
         clockLabel.setText(nbaGame.getGameClock());
         periodLabel.setText(String.valueOf(nbaGame.getPeriodValue()));
 
-        if (nbaGame.getGameStatus().equals(NBAGame.PRE_GAME)) {
-            timeLabel.setVisibility(View.VISIBLE);
-            timeLabel.setText(nbaGame.getPeriodStatus());
-        } else {
-            timeLabel.setVisibility(View.GONE);
+        switch (nbaGame.getGameStatus()) {
+            case NBAGame.PRE_GAME:
+                extraLabel.setVisibility(View.VISIBLE);
+                finalLabel.setVisibility(View.GONE);
+                extraLabel.setText(nbaGame.getPeriodStatus());
+                break;
+            case NBAGame.IN_GAME:
+                extraLabel.setVisibility(View.GONE);
+                finalLabel.setVisibility(View.GONE);
+                break;
+            case NBAGame.POST_GAME:
+                extraLabel.setVisibility(View.GONE);
+                periodLabel.setVisibility(View.INVISIBLE);
+                clockLabel.setVisibility(View.INVISIBLE);
+                finalLabel.setVisibility(View.VISIBLE);
+                finalLabel.setText("FINAL");
+                break;
         }
 
         return rowView;

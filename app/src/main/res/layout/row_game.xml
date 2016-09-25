@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/lightGray"
     android:layout_width="fill_parent"
     android:layout_height="110dp">
 
@@ -39,19 +40,6 @@
                 android:textAlignment="center"
                 android:layout_below="@+id/homeicon"/>
 
-            <TextView
-                android:id="@+id/homescore"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/homeicon"
-                android:layout_toLeftOf="@+id/clock"
-                android:gravity="center"
-                android:text="50"
-                android:textSize="30dp"
-                android:textAlignment="center"
-                android:textColor="@color/primaryText"/>
-
             <ImageView
                 android:id="@+id/awayicon"
                 android:layout_width="70dp"
@@ -74,7 +62,7 @@
                 android:layout_below="@+id/awayicon"/>
 
             <TextView
-                android:id="@+id/timeLabel"
+                android:id="@+id/extraLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/homeicon"
@@ -86,15 +74,37 @@
                 android:gravity="center"/>
 
             <TextView
-                android:id="@+id/awayscore"
+                android:id="@+id/extraLabel2"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/homeicon"
+                android:layout_toStartOf="@id/awayicon"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:textSize="15dp"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/homescore"
+                android:layout_width="80dp"
                 android:layout_height="fill_parent"
                 android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/clock"
-                android:layout_toLeftOf="@+id/awayicon"
+                android:layout_toEndOf="@+id/homeicon"
+                android:gravity="center"
+                android:text="50"
+                android:textSize="25dp"
+                android:textAlignment="center"
+                android:textColor="@color/primaryText"/>
+
+            <TextView
+                android:id="@+id/awayscore"
+                android:layout_width="80dp"
+                android:layout_height="fill_parent"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/awayicon"
                 android:gravity="center"
                 android:text="100"
-                android:textSize="30dp"
+                android:textSize="25dp"
                 android:textAlignment="center"
                 android:textColor="@color/primaryText"/>
 
