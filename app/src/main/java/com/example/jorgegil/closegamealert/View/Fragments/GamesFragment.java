@@ -21,8 +21,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.jorgegil.closegamealert.Network.GetRequestListener;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.GameAdapter;
+import com.example.jorgegil.closegamealert.Utils.GameDataService;
+import com.example.jorgegil.closegamealert.Utils.JSONGameDataService;
 import com.example.jorgegil.closegamealert.View.Activities.CommentsActivity;
 
 import org.json.JSONArray;
@@ -30,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 // TODO: Use View Holder pattern instead of list view with adapter.
@@ -41,6 +46,7 @@ public class GamesFragment extends Fragment {
     public final static String GAME_THREAD_AWAY =
             "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
     public final static String GAME_ID = "com.example.jorgegil.closegamealert.GAME_ID";
+
     public final static String GAME_DATA_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/GameData.txt";
 
     View rootView;
@@ -70,7 +76,6 @@ public class GamesFragment extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("game-data"));
 
-        // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_games, container, false);
         listView = (ListView) rootView.findViewById(R.id.games_listview);
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.games_fragment_progress_layout);
@@ -99,22 +104,24 @@ public class GamesFragment extends Fragment {
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
 
-        StringRequest request = new StringRequest(GAME_DATA_URL, new Response.Listener<String>() {
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+        GetRequestListener listener = new GetRequestListener() {
             @Override
-            public void onResponse(String response) {
-                parseData(response, true /* reload */);
+            public void onResult(String result) {
+                parseData(result, true /* reload */);
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse (VolleyError error) {
-                Log.e(TAG, "Volley error when loading game data. " + error.toString());
+            public void onFailure(int statusCode) {
+                Log.e(TAG, "Volley error when loading game data: " + statusCode);
                 linlaHeaderProgress.setVisibility(View.INVISIBLE);
                 //TODO: show "could not load message" and retry button.
             }
-        });
+        };
 
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        queue.add(request);
+        GameDataService gameDataService = new JSONGameDataService();
+        gameDataService.fetchGames(now, listener);
     }
 
     public void parseData(String response, boolean reload) {

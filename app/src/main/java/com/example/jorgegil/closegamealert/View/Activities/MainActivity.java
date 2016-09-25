@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.GCM.GCMClientManager;
+import com.example.jorgegil.closegamealert.Network.NetworkManager;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         registerGmcClient();
 
         RedditAuthentication redditAuthentication = new RedditAuthentication(this);
+        NetworkManager.getInstance(this);
     }
 
     private void setUpToolbar(){
