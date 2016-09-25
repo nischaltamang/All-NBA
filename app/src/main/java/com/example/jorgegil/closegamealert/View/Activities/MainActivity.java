@@ -31,8 +31,6 @@ import com.example.jorgegil.closegamealert.View.Fragments.HighlightsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.PostsFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.StandingsFragment;
 
-import java.util.Calendar;
-
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
