@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.example.jorgegil.closegamealert.Utils.PagerAdapter;
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.View.Fragments.BoxScoreFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.CommentThreadFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 
@@ -43,7 +44,7 @@ public class CommentsActivity extends AppCompatActivity implements TabLayout.OnT
         Bundle bundle = new Bundle();
         bundle.putString(CommentThreadFragment.HOME_TEAM_KEY, homeTeam);
         bundle.putString(CommentThreadFragment.AWAY_TEAM_KEY, awayTeam);
-        bundle.putString("gameId", gameId);
+        bundle.putString(BoxScoreFragment.GAME_ID_KEY, gameId);
 
         setUpToolbar();
 
