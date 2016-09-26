@@ -22,12 +22,7 @@ import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.General.TeamName;
 
-import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.SubmissionRequest;
-import net.dean.jraw.http.UserAgent;
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthException;
 import net.dean.jraw.models.CommentNode;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Listing;
@@ -35,18 +30,24 @@ import net.dean.jraw.models.Submission;
 
 import java.util.ArrayList;
 
+public class CommentThreadFragment extends Fragment {
+    private static final String TAG = "CommentThreadFragment";
 
-public class ThreadFragment extends Fragment {
-    private final String TAG = "ThreadFragment";
-    private static final String CLIENT_ID = "XDtA2eYVKp1wWA";
+    public static final int LIVE_THREAD = 0;
+    public static final int POST_THREAD = 1;
+    public static final String HOME_TEAM_KEY = "HOME_TEAM";
+    public static final String AWAY_TEAM_KEY = "AWAY_TEAM";
+    public static final String THREAD_TYPE_KEY = "THREAD_TYPE";
 
+    private String homeTeam;
+    private String awayTeam;
+    private String threadType;
 
     Context context;
 
-    String threadId = null;
-    String homeTeam;
-    String awayTeam;
-    String threadType;
+    String threadId;
+
+
     boolean foundThread = false;
 
     ListView listView;
@@ -56,20 +57,15 @@ public class ThreadFragment extends Fragment {
     FloatingActionButton fab;
     ArrayList<Comment> commentList;
 
-    UserAgent userAgent;
-    RedditClient redditClient;
-    Credentials credentials;
-    OAuthData oAuthData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            homeTeam = getArguments().getString("homeTeam");
-            awayTeam = getArguments().getString("awayTeam");
-            threadType = getArguments().getString("threadType");
+            homeTeam = getArguments().getString(HOME_TEAM_KEY);
+            awayTeam = getArguments().getString(AWAY_TEAM_KEY);
+            threadType = getArguments().getString(THREAD_TYPE_KEY);
         }
-
         setHasOptionsMenu(true);
 
         context = getActivity();
@@ -105,7 +101,6 @@ public class ThreadFragment extends Fragment {
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, new IntentFilter("comment-data"));
         }
 
-        connectToReddit();
 
         return view;
     }
@@ -138,77 +133,6 @@ public class ThreadFragment extends Fragment {
             */
         }
     };
-
-    public void connectToReddit() {
-        /*
-        RedditAuthentication redditAuthentication = RedditAuthentication.getInstance(context);
-        /*if (redditAuthentication.isAuthenticated()) {
-            redditClient = redditAuthentication.redditClient;
-            getThreads();
-        } else {
-
-        }
-        Log.d(TAG, "Is authenticated? => " + redditAuthentication.isAuthenticated());*/
-
-    }
-
-    private class AuthenticateReddit extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            /*
-            redditAuthentication = RedditAuthentication.getInstance(context);
-            */
-            return null;
-
-        }
-    }
-
-    private class AuthenticateTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            try {
-                oAuthData = redditClient.getOAuthHelper().easyAuth(credentials);
-                redditClient.authenticate(oAuthData);
-                Log.d(TAG, "authenticated!!");
-            } catch (OAuthException e) {
-                Log.d(TAG, "Error authenticating: " + e.toString());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            getThreads();
-        }
-    }
-
-    public void getThreads() {
-        showLoadingIcon();
-        /*
-        GetSubmissionsTask task = new GetSubmissionsTask();
-        task.execute();
-        */
-    }
-
-    /*
-    private class GetSubmissionsTask extends AsyncTask<Void, Void, Listing<Submission>> {
-        @Override
-        protected Listing<Submission> doInBackground(Void... voids) {
-            if (redditClient.isAuthenticated()) {
-                SubredditPaginator paginator = new SubredditPaginator(redditClient, "nba");
-                paginator.setLimit(100);
-                paginator.setSorting(Sorting.HOT);
-                return paginator.next(true);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Listing<Submission> submissions) {
-            searchInSubmissions(submissions);
-        }
-    }
-    */
 
     public void searchInSubmissions(Listing<Submission> submissions) {
         String nameH = TeamName.valueOf(homeTeam.toUpperCase()).getTeamName().toUpperCase();
@@ -270,7 +194,8 @@ public class ThreadFragment extends Fragment {
             }
             SubmissionRequest sr = b.build();
 
-            return redditClient.getSubmission(sr);
+            //return redditClient.getSubmission(sr);
+            return null;
         }
 
         @Override
@@ -314,7 +239,7 @@ public class ThreadFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("DESTROY", "View of ThreadFragment destroyed");
+        Log.d("DESTROY", "View of CommentThreadFragment destroyed");
     }
 
     @Override
@@ -325,7 +250,7 @@ public class ThreadFragment extends Fragment {
                     GetFullThread task = new GetFullThread();
                     task.execute(threadId);
                 } else {
-                    getThreads();
+                    //getThreads();
                 }
                 return true;
         }

@@ -6,10 +6,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.jorgegil.closegamealert.View.Fragments.BoxScoreFragment;
-import com.example.jorgegil.closegamealert.View.Fragments.ThreadFragment;
+import com.example.jorgegil.closegamealert.View.Fragments.CommentThreadFragment;
 
 /**
- * Created by jorgegil on 12/6/15.
+ * Pager for the TabLayout in CommentsActivity.
  */
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int numOfTabs;
@@ -24,20 +24,20 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0:
-                bundle.putString("threadUrl", "https://www.reddit.com/r/nba/.json?limit=100");
-                bundle.putString("threadType", "LIVE");
-                ThreadFragment tab1 = new ThreadFragment();
+            case 0: // GAME THREAD
+                bundle.putInt(CommentThreadFragment.THREAD_TYPE_KEY,
+                        CommentThreadFragment.LIVE_THREAD);
+                CommentThreadFragment tab1 = new CommentThreadFragment();
                 tab1.setArguments(bundle);
                 return tab1;
-            case 1:
+            case 1: // BOX SCORE
                 BoxScoreFragment tab2 = new BoxScoreFragment();
                 tab2.setArguments(bundle);
                 return tab2;
-            case 2:
-                bundle.putString("threadUrl", "https://www.reddit.com/r/nba/.json?limit=100");
-                bundle.putString("threadType", "POST");
-                ThreadFragment tab3 = new ThreadFragment();
+            case 2: // POST GAME THREAD
+                bundle.putInt(CommentThreadFragment.THREAD_TYPE_KEY,
+                        CommentThreadFragment.POST_THREAD);
+                CommentThreadFragment tab3 = new CommentThreadFragment();
                 tab3.setArguments(bundle);
                 return tab3;
             default:

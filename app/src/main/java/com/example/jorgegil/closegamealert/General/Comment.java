@@ -1,6 +1,6 @@
 package com.example.jorgegil.closegamealert.General;
 
-// TODO: delete after ThreadFragment is reviewed.
+// TODO: delete after CommentThreadFragment is reviewed.
 public class Comment {
     public net.dean.jraw.models.Comment jrawComment;
     public int level;

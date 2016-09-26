@@ -10,46 +10,29 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.example.jorgegil.closegamealert.General.Comment;
 import com.example.jorgegil.closegamealert.Utils.PagerAdapter;
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.View.Fragments.CommentThreadFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 
-import java.util.ArrayList;
+public class CommentsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener{
+    private static final String TAG = "CommentsActivity";
 
-/**
- * Created by jorgegil on 11/29/15.
- */
-public class CommentsActivity extends AppCompatActivity {
+    private String homeTeam;
+    private String awayTeam;
+    private String gameId;
 
-    String gameThreadsUrl = "https://www.reddit.com/r/nba/search.json?sort=new&restrict_sr=on&q=flair%3AGame%2BThread";
-    String commentsUrl = "https://www.reddit.com/r/nba/comments/GTID/.json";
-    String gameThreadId = "No Game Thread found...";
-    String homeTeam = "";
-    String awayTeam= "";
-    String gameId = "";
-    TabLayout tabLayout;
-    ListView listView;
-    LinearLayout linlaHeaderProgress;
-    TextView noThread;
-    boolean foundThread = false;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
-    ArrayList<Comment> commentList;
-    Toolbar toolbar;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.comments_activity);
 
-
-        // Get teams abbrev from MainActivity
         Intent intent = getIntent();
         homeTeam = intent.getStringExtra(GamesFragment.GAME_THREAD_HOME);
         awayTeam = intent.getStringExtra(GamesFragment.GAME_THREAD_AWAY);
@@ -58,42 +41,24 @@ public class CommentsActivity extends AppCompatActivity {
         setTitle(awayTeam + " @ " + homeTeam);
 
         Bundle bundle = new Bundle();
-        bundle.putString("homeTeam", homeTeam);
-        bundle.putString("awayTeam", awayTeam);
+        bundle.putString(CommentThreadFragment.HOME_TEAM_KEY, homeTeam);
+        bundle.putString(CommentThreadFragment.AWAY_TEAM_KEY, awayTeam);
         bundle.putString("gameId", gameId);
 
         setUpToolbar();
-        setUpTabLayout();
 
-        //Set Colors
-        /*
-        toolbar.setBackgroundColor(getResources().getColor(R.color.indigo));
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setStatusBarColor(getResources().getColor(R.color.indigoDark));
-        }
-        */
+        // Initialize tab layout and add three tabs.
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.addTab(tabLayout.newTab().setText("Game Thread"));
+        tabLayout.addTab(tabLayout.newTab().setText("Box Score"));
+        tabLayout.addTab(tabLayout.newTab().setText("Post Game Thread"));
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-        final PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), bundle);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(),
+                tabLayout.getTabCount(), bundle);
         viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
+        tabLayout.setOnTabSelectedListener(this);
     }
 
     @Override
@@ -117,21 +82,28 @@ public class CommentsActivity extends AppCompatActivity {
 
     private void setUpToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar2);
-        setSupportActionBar(toolbar);
-        // Show menu icon
-        final ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            ActionBar ab = getSupportActionBar();
+            if (ab != null) {
+                ab.setDisplayHomeAsUpEnabled(true);
+            }
+        }
 
     }
 
-    private void setUpTabLayout() {
-        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        //tabLayout.setBackgroundColor(getResources().getColor(R.color.indigo));
-        tabLayout.addTab(tabLayout.newTab().setText("Game Thread"));
-        tabLayout.addTab(tabLayout.newTab().setText("Box Score"));
-        tabLayout.addTab(tabLayout.newTab().setText("Post Game Thread"));
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        viewPager.setCurrentItem(tab.getPosition());
     }
 
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
 
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
 }
