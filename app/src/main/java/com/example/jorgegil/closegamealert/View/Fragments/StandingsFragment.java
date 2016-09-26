@@ -28,7 +28,7 @@ import org.json.JSONObject;
 
 public class StandingsFragment extends Fragment {
     Context context;
-    String standingsURL = "http://stats.nba.com/stats/playoffpicture?LeagueID=00&SeasonID=22015";
+    String standingsURL = "http://stats.nba.com/stats/playoffpicture?LeagueID=00&SeasonID=22016";
     View rootView;
     LinearLayout linlaHeaderProgress;
     TableLayout tableLayout;
