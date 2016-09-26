@@ -13,5 +13,5 @@ Android app for NBA fans. Features live scores, highlights and Reddit integratio
 * Standings and playoff bracket
 
 ## Screenshots
-<img src="art/menu.png" alt="Ready" width="420px;"/>
-<img src="art/games.png" alt="Ready" width="420px;"/>
+<img src="art/menu.png" alt="Ready" width="300px;"/>
+<img src="art/games.png" alt="Ready" width="300px;"/>
