@@ -1,11 +1,7 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,9 +26,6 @@ import java.net.URL;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    private static final String CLIENT_ID = "XDtA2eYVKp1wWA";
-    private static final String REDIRECT_URL = "http://localhost/authorize_callback";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +39,9 @@ public class LoginActivity extends AppCompatActivity {
         }
         setTitle("Log in to Reddit");
 
-        final OAuthHelper oAuthHelper = RedditAuthentication.sRedditClient.getOAuthHelper();
-        final Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
+        final OAuthHelper oAuthHelper = RedditAuthentication.redditClient.getOAuthHelper();
+        final Credentials credentials = Credentials.installedApp(RedditAuthentication.CLIENT_ID,
+                RedditAuthentication.REDIRECT_URL);
         String[] scopes = {"identity", "edit", "flair", "mysubreddits", "read", "vote",
                 "submit", "subscribe"};
         URL authURL = oAuthHelper.getAuthorizationUrl(credentials, true, true, scopes);
@@ -66,8 +60,6 @@ public class LoginActivity extends AppCompatActivity {
                     webView.stopLoading();
                     new AuthenticateTask(oAuthHelper, credentials).execute(url);
                     finish();
-                } else {
-
                 }
             }
         });
@@ -98,10 +90,12 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 OAuthData oAuthData = mOAuthHelper.onUserChallenge(params[0], mCredentials);
                 if (oAuthData != null) {
-                    RedditAuthentication.sRedditClient.authenticate(oAuthData);
-                    RedditAuthentication.sLoggedInStatus = true;
-                    String refreshToken = RedditAuthentication.sRedditClient.getOAuthData().getRefreshToken();
-                    LoggedInAccount me = RedditAuthentication.sRedditClient.me();
+                    RedditAuthentication.redditClient.authenticate(oAuthData);
+                    RedditAuthentication.isLoggedIn = true;
+                    RedditAuthentication.isAuthenticated = true;
+
+                    String refreshToken = RedditAuthentication.redditClient.getOAuthData().getRefreshToken();
+                    LoggedInAccount me = RedditAuthentication.redditClient.me();
                     return me.getFullName();
                     // TODO: save name and token in shared prefs.
                 } else {

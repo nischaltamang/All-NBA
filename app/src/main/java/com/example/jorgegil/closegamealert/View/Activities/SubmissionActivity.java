@@ -17,11 +17,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.example.jorgegil.closegamealert.General.Constants;
@@ -254,7 +251,7 @@ public class SubmissionActivity extends AppCompatActivity {
             b.sort(CommentSort.HOT);
             SubmissionRequest sr = b.build();
 
-            return RedditAuthentication.sRedditClient.getSubmission(sr);
+            return RedditAuthentication.redditClient.getSubmission(sr);
         }
 
         @Override

@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
         registerGmcClient();
 
-        RedditAuthentication redditAuthentication = new RedditAuthentication(this);
+        RedditAuthentication redditAuthentication = new RedditAuthentication();
+        redditAuthentication.updateToken(this);
         NetworkManager.getInstance(this);
     }
 

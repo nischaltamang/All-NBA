@@ -90,7 +90,7 @@ public class PostsFragment extends Fragment {
         spinner.setVisibility(View.VISIBLE);
         postsListView.setVisibility(View.GONE);
 
-        new GetSubmissionListing(RedditAuthentication.sRedditClient, "nba", 20, Sorting.HOT).execute();
+        new GetSubmissionListing(RedditAuthentication.redditClient, "nba", 20, Sorting.HOT).execute();
     }
 
     private class GetSubmissionListing extends AsyncTask<Void, Void, Listing<Submission>> {
@@ -109,7 +109,7 @@ public class PostsFragment extends Fragment {
 
         @Override
         protected Listing<Submission> doInBackground(Void... params) {
-            if (RedditAuthentication.sRedditClient.isAuthenticated()) {
+            if (RedditAuthentication.redditClient.isAuthenticated()) {
                 SubredditPaginator paginator = new SubredditPaginator(mRedditClient, mSubreddit);
                 paginator.setLimit(mLimit);
                 paginator.setSorting(mSorting);

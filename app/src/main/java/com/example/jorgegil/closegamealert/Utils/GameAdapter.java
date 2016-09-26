@@ -54,7 +54,6 @@ public class GameAdapter extends BaseAdapter {
         TextView finalLabel = (TextView) rowView.findViewById(R.id.extraLabel2);
 
         NBAGame nbaGame = nbaGames.get(position);
-        Log.d("GameAdapter", nbaGame.getHomeTeamAbbr() + "-" + nbaGame.getAwayTeamAbbr());
 
         int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeamAbbr().toLowerCase(),
                 "drawable", context.getPackageName());
