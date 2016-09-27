@@ -24,7 +24,7 @@ public class BoxScoreFragment extends Fragment {
         String gameId = getArguments().getString(GAME_ID_KEY);
 
         WebView webView = (WebView) view.findViewById(R.id.webView1);
-        // TODO: check if javascript is needed.
+        // TODO: Fix or replace.
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(NBA_BOX_SCORE_URL + gameId);
         return view;

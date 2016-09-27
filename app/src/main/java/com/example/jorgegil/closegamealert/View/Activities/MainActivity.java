@@ -214,21 +214,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerGmcClient() {
-        final String GMC_REGISTRATION_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/gcm.php?shareRegId=1&regId=";
+        final String GCM_REGISTRATION_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/gcm.php?shareRegId=1&regId=";
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
         pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
             @Override
             public void onSuccess(String registrationId, boolean isNewRegistration) {
                 if (isNewRegistration) {
-                    StringRequest sendRegId = new StringRequest(GMC_REGISTRATION_URL + registrationId, new Response.Listener<String>() {
+                    StringRequest sendRegId = new StringRequest(GCM_REGISTRATION_URL + registrationId, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Log.i(TAG, "Registered with GMC. " + response);
+                            Log.i(TAG, "Registered with GCM. " + response);
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError e) {
-                            Log.e(TAG, "Volley error when registering with GMC. " + e.toString());
+                            Log.e(TAG, "Volley error when registering with GCM. " + e.toString());
                         }
                     });
                     RequestQueue sendQueue = Volley.newRequestQueue(getApplicationContext());
@@ -239,8 +239,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(String ex) {
                 super.onFailure(ex);
-                Log.e(TAG, "Failure to register with GMC. " + ex);
-                //TODO: see what's up with GMC.
+                Log.e(TAG, "Failure to register with GCM. " + ex);
+                //TODO: see what's up with GCM.
                 // If there is an error registering, don't just keep trying to register.
                 // Require the user to click a button again, or perform
                 // exponential back-off when retrying.
