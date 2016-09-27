@@ -35,6 +35,7 @@ public class StandingsFragment extends Fragment {
     private View rootView;
     private LinearLayout linlaHeaderProgress;
     private TableLayout tableLayout;
+    private Snackbar snackbar;
 
     private boolean dark;
 
@@ -136,7 +137,7 @@ public class StandingsFragment extends Fragment {
             tableLayout.setVisibility(View.VISIBLE);
 
         } catch (Exception e) {
-            Log.e("Standings", "Volley error: " + e.toString());
+            Log.e(TAG, "Volley error: " + e.toString());
             showSnackBar("Error parsing data", true);
         }
     }
@@ -220,7 +221,7 @@ public class StandingsFragment extends Fragment {
     }
 
     private void showSnackBar(String message, boolean retry) {
-        Snackbar snackbar = Snackbar.make(rootView, message,
+        snackbar = Snackbar.make(rootView, message,
                 Snackbar.LENGTH_INDEFINITE);
         if (retry) {
             snackbar.setAction("RETRY", new View.OnClickListener() {
@@ -234,6 +235,12 @@ public class StandingsFragment extends Fragment {
         snackbar.show();
     }
 
+    private void dismissSnackbar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -242,5 +249,18 @@ public class StandingsFragment extends Fragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        dismissSnackbar();
+        Log.d(TAG, "onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
     }
 }

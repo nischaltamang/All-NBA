@@ -37,14 +37,15 @@ import net.dean.jraw.paginators.SubredditPaginator;
 public class PostsFragment extends Fragment {
     private static final String TAG = "PostsFragment";
 
-    Context context;
-    View rootView;
-    String type;
-    ListView postsListView;
-    LinearLayout spinner, videoProgressLayout;
+    private Context context;
+    private View rootView;
+    private String type;
+    private ListView postsListView;
+    private LinearLayout spinner, videoProgressLayout;
+    private Snackbar snackbar;
 
-    VideoView videoView;
-    View background;
+    private VideoView videoView;
+    private View background;
     boolean isPreviewVisible;
 
     @Override
@@ -254,7 +255,7 @@ public class PostsFragment extends Fragment {
     }
 
     private void showSnackBar(String message, boolean retry) {
-        Snackbar snackbar = Snackbar.make(rootView, message,
+        snackbar = Snackbar.make(rootView, message,
                 Snackbar.LENGTH_INDEFINITE);
         if (retry) {
             snackbar.setAction("RETRY", new View.OnClickListener() {
@@ -265,6 +266,12 @@ public class PostsFragment extends Fragment {
             });
         }
         snackbar.show();
+    }
+
+    private void dismissSnackbar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -283,4 +290,16 @@ public class PostsFragment extends Fragment {
         return isPreviewVisible;
     }
 
+    @Override
+    public void onPause() {
+        dismissSnackbar();
+        Log.d(TAG, "onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
 }

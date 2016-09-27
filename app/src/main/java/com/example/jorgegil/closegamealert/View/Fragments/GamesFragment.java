@@ -42,14 +42,12 @@ public class GamesFragment extends Fragment {
             "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
     public final static String GAME_ID = "com.example.jorgegil.closegamealert.GAME_ID";
 
-    View rootView;
-
-    List<NBAGame> nbaGames;
-
-    ListView listView;
-    LinearLayout linlaHeaderProgress;
-
-    GameDataService gameDataService;
+    private View rootView;
+    private List<NBAGame> nbaGames;
+    private ListView listView;
+    private LinearLayout linlaHeaderProgress;
+    private GameDataService gameDataService;
+    private Snackbar snackbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -162,7 +160,7 @@ public class GamesFragment extends Fragment {
     }
 
     private void showSnackBar(String message, boolean retry) {
-        Snackbar snackbar = Snackbar.make(rootView, message,
+        snackbar = Snackbar.make(rootView, message,
                 Snackbar.LENGTH_INDEFINITE);
         if (retry) {
             snackbar.setAction("RETRY", new View.OnClickListener() {
@@ -176,11 +174,18 @@ public class GamesFragment extends Fragment {
         snackbar.show();
     }
 
+    private void dismissSnackbar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+        }
+    }
+
     @Override
     public void onPause() {
         if (gameDataService != null) {
             gameDataService.cancel();
         }
+        dismissSnackbar();
         super.onPause();
     }
 
