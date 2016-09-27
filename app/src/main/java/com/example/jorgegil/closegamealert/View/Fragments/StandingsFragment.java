@@ -27,18 +27,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class StandingsFragment extends Fragment {
-    Context context;
-    String standingsURL = "http://stats.nba.com/stats/playoffpicture?LeagueID=00&SeasonID=22016";
-    View rootView;
-    LinearLayout linlaHeaderProgress;
-    TableLayout tableLayout;
+    private static final String TAG = "StandingsFragment";
+    private static final String standingsURL = "http://stats.nba.com/stats/playoffpicture?LeagueID=00&SeasonID=22016";
+
+    private Context context;
+    private View rootView;
+    private LinearLayout linlaHeaderProgress;
+    private TableLayout tableLayout;
 
     boolean dark;
-
-
-    public StandingsFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,14 +47,11 @@ public class StandingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_standings, container, false);
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
 
         tableLayout = (TableLayout) rootView.findViewById(R.id.tableLayout);
         getStandings();
-
 
         return rootView;
     }
@@ -95,10 +89,15 @@ public class StandingsFragment extends Fragment {
 
             // Add Eastern Conference standings
             dark = false;
+            int rank = 0;
             addRow(0, "EASTERN", "W", "L", "%", "GB");
             for (int i = 0; i < eastData.length(); i++) {
                 JSONArray arr = eastData.getJSONArray(i);
-                int rank = arr.getInt(1);
+                if (!arr.isNull(1)) {
+                    rank = arr.getInt(1);
+                } else {
+                    rank++;
+                }
                 String teamName = arr.get(2).toString();
                 String wins = arr.get(4).toString();
                 String losses = arr.get(5).toString();
@@ -113,10 +112,15 @@ public class StandingsFragment extends Fragment {
 
             // Add Western Conference standings
             dark = false;
+            rank = 0;
             addRow(0, "WESTERN", "W", "L", "%", "GB");
             for (int i = 0; i < westData.length(); i++) {
                 JSONArray arr = westData.getJSONArray(i);
-                int rank = arr.getInt(1);
+                if (!arr.isNull(1)) {
+                    rank = arr.getInt(1);
+                } else {
+                    rank++;
+                }
                 String teamName = arr.get(2).toString();
                 String wins = arr.get(4).toString();
                 String losses = arr.get(5).toString();
