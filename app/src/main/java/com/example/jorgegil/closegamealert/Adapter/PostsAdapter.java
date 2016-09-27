@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert.Utils;
+package com.example.jorgegil.closegamealert.Adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.Utils.Utilities;
 import com.squareup.picasso.Picasso;
 
 import net.dean.jraw.models.Listing;

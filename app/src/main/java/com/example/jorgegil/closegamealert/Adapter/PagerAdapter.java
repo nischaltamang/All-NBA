@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert.Utils;
+package com.example.jorgegil.closegamealert.Adapter;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

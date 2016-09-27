@@ -20,7 +20,7 @@ import android.widget.VideoView;
 
 import com.example.jorgegil.closegamealert.General.Constants;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.PostsAdapter;
+import com.example.jorgegil.closegamealert.Adapter.PostsAdapter;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.Utils.Utilities;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;

@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert.Utils;
+package com.example.jorgegil.closegamealert.Adapter;
 
 import android.content.Context;
 import android.util.Log;

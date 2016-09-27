@@ -1,4 +1,4 @@
-package com.example.jorgegil.closegamealert.Utils;
+package com.example.jorgegil.closegamealert.Service;
 
 import com.example.jorgegil.closegamealert.Network.GetRequestListener;
 

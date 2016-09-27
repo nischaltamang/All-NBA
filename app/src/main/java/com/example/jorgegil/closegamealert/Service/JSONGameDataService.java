@@ -1,7 +1,8 @@
-package com.example.jorgegil.closegamealert.Utils;
+package com.example.jorgegil.closegamealert.Service;
 
 import com.example.jorgegil.closegamealert.Network.GetRequestListener;
 import com.example.jorgegil.closegamealert.Network.NetworkManager;
+import com.example.jorgegil.closegamealert.Service.GameDataService;
 
 /**
  * JSON implementation of the {@link GameDataService} interface.

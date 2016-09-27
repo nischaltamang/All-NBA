@@ -24,7 +24,7 @@ import android.widget.VideoView;
 import com.example.jorgegil.closegamealert.General.Constants;
 import com.example.jorgegil.closegamealert.General.Streamable;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.CommentAdapter;
+import com.example.jorgegil.closegamealert.Adapter.CommentAdapter;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

@@ -1,7 +1,6 @@
 package com.example.jorgegil.closegamealert.View.Fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,7 +25,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.General.Highlight;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.HLAdapter;
+import com.example.jorgegil.closegamealert.Adapter.HLAdapter;
 import com.example.jorgegil.closegamealert.Utils.HLLoader;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
 
