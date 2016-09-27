@@ -9,9 +9,6 @@ import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.UserAgent;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthException;
-import net.dean.jraw.http.oauth.OAuthHelper;
-import net.dean.jraw.models.LoggedInAccount;
 
 import java.util.UUID;
 
@@ -53,12 +50,14 @@ public class RedditAuthentication {
         protected Void doInBackground(Void... params) {
             Credentials credentials = Credentials.userlessApp(CLIENT_ID, UUID.randomUUID());
             OAuthData oAuthData;
+
             try {
                 oAuthData = redditClient.getOAuthHelper().easyAuth(credentials);
                 redditClient.authenticate(oAuthData);
-            } catch (OAuthException e) {
-                Log.e(TAG, "OAthException error: " + e.toString());
+            } catch (Exception e) {
+                Log.d(TAG, "Error trying to authenticate: " + e.toString());
             }
+
             return null;
         }
 

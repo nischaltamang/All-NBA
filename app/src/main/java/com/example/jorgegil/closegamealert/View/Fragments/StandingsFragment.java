@@ -3,6 +3,7 @@ package com.example.jorgegil.closegamealert.View.Fragments;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
@@ -35,7 +36,7 @@ public class StandingsFragment extends Fragment {
     private LinearLayout linlaHeaderProgress;
     private TableLayout tableLayout;
 
-    boolean dark;
+    private boolean dark;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class StandingsFragment extends Fragment {
         return rootView;
     }
 
-    public void getStandings() {
+    private void getStandings() {
 
         tableLayout.removeAllViews();
 
@@ -72,7 +73,8 @@ public class StandingsFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("Standings", "Volley error: " + error.toString());
+                Log.e(TAG, "Volley error: " + error.toString());
+                showSnackBar("Could not load content", true /* retry */);
             }
         });
 
@@ -135,6 +137,7 @@ public class StandingsFragment extends Fragment {
 
         } catch (Exception e) {
             Log.e("Standings", "Volley error: " + e.toString());
+            showSnackBar("Error parsing data", true);
         }
     }
 
@@ -214,6 +217,21 @@ public class StandingsFragment extends Fragment {
         tableLayout.addView(row, new TableLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    private void showSnackBar(String message, boolean retry) {
+        Snackbar snackbar = Snackbar.make(rootView, message,
+                Snackbar.LENGTH_INDEFINITE);
+        if (retry) {
+            snackbar.setAction("RETRY", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getStandings();
+                }
+            });
+        }
+        linlaHeaderProgress.setVisibility(View.GONE);
+        snackbar.show();
     }
 
     @Override

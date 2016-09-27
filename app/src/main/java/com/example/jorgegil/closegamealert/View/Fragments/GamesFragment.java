@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -107,9 +108,9 @@ public class GamesFragment extends Fragment {
 
             @Override
             public void onFailure(String error) {
-                Log.e(TAG, "Volley error when loading game data: " + error);
-                linlaHeaderProgress.setVisibility(View.INVISIBLE);
-                //TODO: show "could not load message" and retry button.
+                Log.d(TAG, "Volley error when loading game data: " + error);
+                linlaHeaderProgress.setVisibility(View.GONE);
+                showSnackBar("Could not load game data", true /* retry */);
             }
         };
 
@@ -158,6 +159,21 @@ public class GamesFragment extends Fragment {
                         Utilities.formatToolbarDate(nbaGames.get(0).getDate()));
             }
         }
+    }
+
+    private void showSnackBar(String message, boolean retry) {
+        Snackbar snackbar = Snackbar.make(rootView, message,
+                Snackbar.LENGTH_INDEFINITE);
+        if (retry) {
+            snackbar.setAction("RETRY", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    loadGameData();
+                }
+            });
+        }
+        linlaHeaderProgress.setVisibility(View.GONE);
+        snackbar.show();
     }
 
     @Override
