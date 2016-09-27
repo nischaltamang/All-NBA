@@ -17,6 +17,8 @@ public class RedditAuthentication {
 
     public static final String CLIENT_ID = "XDtA2eYVKp1wWA";
     public static final String REDIRECT_URL = "http://localhost/authorize_callback";
+    public static final String REDDIT_USERNAME_KEY = "REDDIT_USERNAME";
+    public static final String REDDIT_TOKEN_KEY = "REDDIT_TOKEN";
 
     public static RedditClient redditClient;
     public static boolean isLoggedIn;

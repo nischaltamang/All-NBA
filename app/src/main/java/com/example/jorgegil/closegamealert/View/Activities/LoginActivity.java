@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
@@ -20,7 +19,6 @@ import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
 import net.dean.jraw.http.oauth.OAuthException;
 import net.dean.jraw.http.oauth.OAuthHelper;
-import net.dean.jraw.models.LoggedInAccount;
 
 import java.net.URL;
 
@@ -77,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class AuthenticateTask extends AsyncTask<String, Void, String> {
+    private class AuthenticateTask extends AsyncTask<String, Void, Void> {
         private OAuthHelper mOAuthHelper;
         private Credentials mCredentials;
 
@@ -87,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Void doInBackground(String... params) {
             try {
                 OAuthData oAuthData = mOAuthHelper.onUserChallenge(params[0], mCredentials);
                 if (oAuthData != null) {
@@ -95,10 +93,20 @@ public class LoginActivity extends AppCompatActivity {
                     RedditAuthentication.isLoggedIn = true;
                     RedditAuthentication.isAuthenticated = true;
 
-                    String refreshToken = RedditAuthentication.redditClient.getOAuthData().getRefreshToken();
-                    LoggedInAccount me = RedditAuthentication.redditClient.me();
-                    return me.getFullName();
-                    // TODO: save name and token in shared prefs.
+                    String refreshToken = RedditAuthentication.redditClient.getOAuthData()
+                            .getRefreshToken();
+                    String username = RedditAuthentication.redditClient.me().getFullName();
+                    Log.d(TAG, "Logged in as " + username);
+
+                    if (RedditAuthentication.redditClient.isAuthenticated()) {
+                        SharedPreferences preferences = getSharedPreferences(
+                                MainActivity.MY_PREFERENCES, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(RedditAuthentication.REDDIT_USERNAME_KEY, username);
+                        editor.putString(RedditAuthentication.REDDIT_TOKEN_KEY, refreshToken);
+                        editor.apply();
+                    }
+                    return null;
                 } else {
                     Log.i(TAG, "OAuthData returned null.");
                 }
@@ -106,21 +114,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, "Could not get OAuthData. ", e);
             }
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(String username) {
-            String textToToast;
-            if (username != null) {
-                textToToast = "Logged in as " + username;
-                SharedPreferences preferences = getSharedPreferences(MainActivity.MY_PREFERENCES, MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(MainActivity.REDDIT_USERNAME, username);
-                editor.apply();
-            } else {
-                textToToast = "Could not log in";
-            }
-            Toast.makeText(getApplicationContext(), textToToast, Toast.LENGTH_SHORT).show();
         }
     }
 
