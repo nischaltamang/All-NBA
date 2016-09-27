@@ -12,5 +12,3 @@
 .DS_Store
 /build
 /captures
-build.gradle
-/gradle/wrapper/gradle-wrapper.properties
