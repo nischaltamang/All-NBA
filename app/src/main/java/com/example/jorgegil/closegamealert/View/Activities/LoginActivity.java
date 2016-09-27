@@ -1,5 +1,6 @@
 package com.example.jorgegil.closegamealert.View.Activities;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
@@ -112,6 +113,10 @@ public class LoginActivity extends AppCompatActivity {
             String textToToast;
             if (username != null) {
                 textToToast = "Logged in as " + username;
+                SharedPreferences preferences = getSharedPreferences(MainActivity.MY_PREFERENCES, MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString(MainActivity.REDDIT_USERNAME, username);
+                editor.apply();
             } else {
                 textToToast = "Could not log in";
             }

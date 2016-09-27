@@ -16,6 +16,7 @@
     <string name="reddit_nba_fragment_title">/r/NBA</string>
     <string name="highlights_fragment_title">Highlights</string>
     <string name="today_string">Today</string>
+    <string name="not_logged">Not logged In</string>
 
     <!-- Strings related to Settings -->
     <string name="notifications">Notifications</string>

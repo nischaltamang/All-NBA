@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -49,9 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
     int selectedFragment;
 
-    public static final String MyPreferences = "MyPrefs";
-    public static final String firstTime = "firstTime";
-    public static final String pushCloseGameAlert = "pushCGA";
+    public static final String MY_PREFERENCES = "MyPrefs";
+    public static final String FIRST_TIME = "firstTime";
+    public static final String PUSH_CLOSE_GAME_ALERT = "pushCGA";
+    public static final String REDDIT_USERNAME = "redditUsername";
     SharedPreferences sharedPreferences;
 
     private static final int GAMES_FRAGMENT_ID = 1;
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
         setUpDrawerContent();
         setUpPreferences();
+        setNavigationHeaderContent();
         setFragment(GAMES_FRAGMENT_ID);
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.tricornBlack));
 
@@ -158,6 +162,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setNavigationHeaderContent() {
+        View headerView = navigationView.getHeaderView(0);
+        TextView redditUsername = (TextView) headerView.findViewById(R.id.redditUsername);
+        redditUsername.setText(sharedPreferences.getString(REDDIT_USERNAME,
+                getResources().getString(R.string.not_logged)));
+    }
+
     private void setFragment(int fragmentId) {
         selectedFragment = fragmentId;
         android.support.v4.app.FragmentManager fragmentManager;
@@ -203,13 +214,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpPreferences() {
-        sharedPreferences = getSharedPreferences(MyPreferences, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(MY_PREFERENCES, MODE_PRIVATE);
         // Set default preferences if not set yet
-        if (sharedPreferences.getBoolean(firstTime, true)) {
+        if (sharedPreferences.getBoolean(FIRST_TIME, true)) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(firstTime, false);
-            editor.putBoolean(pushCloseGameAlert, true);
-            editor.commit();
+            editor.putBoolean(FIRST_TIME, false);
+            editor.putBoolean(PUSH_CLOSE_GAME_ALERT, true);
+            editor.apply();
         }
     }
 
