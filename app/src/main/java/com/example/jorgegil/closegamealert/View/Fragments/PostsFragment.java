@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.VideoView;
 import com.example.jorgegil.closegamealert.General.Constants;
 import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Adapter.PostsAdapter;
+import com.example.jorgegil.closegamealert.Utils.AuthListener;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.Utils.Utilities;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
@@ -81,30 +83,47 @@ public class PostsFragment extends Fragment {
         }
 
 
-        getPosts();
+        fetchPosts();
         return rootView;
     }
 
-    // TODO: rename
-    private void getPosts() {
+    private void fetchPosts() {
         spinner.setVisibility(View.VISIBLE);
         postsListView.setVisibility(View.GONE);
 
-        new GetSubmissionListing(RedditAuthentication.redditClient, "nba", 20, Sorting.HOT).execute();
+        AuthListener listener = new AuthListener() {
+            @Override
+            public void onSuccess() {
+                fetchPosts();
+            }
+
+            @Override
+            public void onFailure() {
+                spinner.setVisibility(View.GONE);
+                showSnackBar("Could not fetch posts", true /* retry */);
+            }
+        };
+
+        new GetSubmissionListing(getActivity(), RedditAuthentication.redditClient, "nba", 20,
+                Sorting.HOT, listener).execute();
     }
 
     private class GetSubmissionListing extends AsyncTask<Void, Void, Listing<Submission>> {
+        private Context mContext;
         private RedditClient mRedditClient;
         private String mSubreddit;
         private int mLimit;
         private Sorting mSorting;
+        private AuthListener mListener;
 
-        public GetSubmissionListing(RedditClient redditClient, String subreddit, int limit,
-                                    Sorting sorting) {
+        public GetSubmissionListing(Context context, RedditClient redditClient, String subreddit,
+                                    int limit, Sorting sorting, AuthListener listener) {
+            mContext = context;
             mRedditClient = redditClient;
             mSubreddit = subreddit;
             mLimit = limit;
             mSorting = sorting;
+            mListener = listener;
         }
 
         @Override
@@ -120,9 +139,10 @@ public class PostsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Listing<Submission> submissions) {
-            if (submissions == null) {
-                // TODO: authenticate.
+            if (submissions == null || !RedditAuthentication.redditClient.isAuthenticated()) {
                 Toast.makeText(context, "Not authenticated", Toast.LENGTH_SHORT).show();
+                RedditAuthentication redditAuthentication = new RedditAuthentication();
+                redditAuthentication.updateToken(mContext, mListener);
             } else {
                 loadPosts(submissions);
             }
@@ -190,7 +210,6 @@ public class PostsFragment extends Fragment {
         }
     }
 
-
     private void playVideo(String url) {
         //TODO: handle null pointer exception
         ((MainActivity) getActivity()).getSupportActionBar().hide();
@@ -234,12 +253,26 @@ public class PostsFragment extends Fragment {
         isPreviewVisible = false;
     }
 
+    private void showSnackBar(String message, boolean retry) {
+        Snackbar snackbar = Snackbar.make(rootView, message,
+                Snackbar.LENGTH_INDEFINITE);
+        if (retry) {
+            snackbar.setAction("RETRY", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fetchPosts();
+                }
+            });
+        }
+        snackbar.show();
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
                 stopVideo();
                 spinner.setVisibility(View.VISIBLE);
-                getPosts();
+                fetchPosts();
                 Log.d("POSTS", "fragment reloaded");
                 return true;
         }

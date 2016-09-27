@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.jorgegil.closegamealert.GCM.GCMClientManager;
 import com.example.jorgegil.closegamealert.Network.NetworkManager;
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.Utils.AuthListener;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.HighlightsFragment;
@@ -72,8 +73,19 @@ public class MainActivity extends AppCompatActivity {
 
         registerGmcClient();
 
+        AuthListener listener = new AuthListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        };
         RedditAuthentication redditAuthentication = new RedditAuthentication();
-        redditAuthentication.updateToken(this);
+        redditAuthentication.updateToken(this, listener);
         NetworkManager.getInstance(this);
     }
 

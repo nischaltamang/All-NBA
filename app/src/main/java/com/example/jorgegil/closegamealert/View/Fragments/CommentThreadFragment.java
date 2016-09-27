@@ -41,7 +41,7 @@ public class CommentThreadFragment extends Fragment {
 
     private String homeTeam;
     private String awayTeam;
-    private String threadType;
+    private int threadType;
 
     Context context;
 
@@ -64,7 +64,7 @@ public class CommentThreadFragment extends Fragment {
         if (getArguments() != null) {
             homeTeam = getArguments().getString(HOME_TEAM_KEY);
             awayTeam = getArguments().getString(AWAY_TEAM_KEY);
-            threadType = getArguments().getString(THREAD_TYPE_KEY);
+            threadType = getArguments().getInt(THREAD_TYPE_KEY);
         }
         setHasOptionsMenu(true);
 
@@ -145,7 +145,7 @@ public class CommentThreadFragment extends Fragment {
             //Log.d(TAG, title);
             String flair = s.getSubmissionFlair().getText();
 
-            if (threadType.equals("LIVE")) {
+            if (threadType == LIVE_THREAD) {
                 //Log.d(TAG, "TITLE: " + title);
                 if (flair != null) {
                     if (flair.equals("Game Thread") && title.contains(nameH) && title.contains(nameA)) {
@@ -187,7 +187,7 @@ public class CommentThreadFragment extends Fragment {
         @Override
         protected Submission doInBackground(String... strings) {
             SubmissionRequest.Builder b = new SubmissionRequest.Builder(strings[0]);
-            if (threadType.equals("LIVE")) {
+            if (threadType == LIVE_THREAD) {
                 b.sort(CommentSort.NEW);
             } else {
                 b.sort(CommentSort.TOP);

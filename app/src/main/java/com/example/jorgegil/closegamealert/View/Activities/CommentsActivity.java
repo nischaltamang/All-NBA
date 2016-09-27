@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.example.jorgegil.closegamealert.Adapter.PagerAdapter;
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.View.Fragments.BoxScoreFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.CommentThreadFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;

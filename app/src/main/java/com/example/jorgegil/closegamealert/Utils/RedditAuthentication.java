@@ -29,21 +29,23 @@ public class RedditAuthentication {
         isAuthenticated = false;
     }
 
-    public void updateToken(Context context) {
+    public void updateToken(Context context, AuthListener listener) {
         if (redditClient == null) {
             redditClient = new RedditClient(UserAgent.of("android", "com.example.jorgegil96.allnba",
                     "v0.1", "jorgegil96"));
             isLoggedIn = false;
             isAuthenticated = false;
         }
-        new UserlessAuthTask(context).execute();
+        new UserlessAuthTask(context, listener).execute();
     }
 
     private class UserlessAuthTask extends AsyncTask<Void, Void, Void> {
         private Context mContext;
+        private AuthListener mListener;
 
-        public UserlessAuthTask(Context context) {
+        public UserlessAuthTask(Context context, AuthListener listener) {
             mContext = context;
+            mListener = listener;
         }
 
         @Override
@@ -66,6 +68,9 @@ public class RedditAuthentication {
             if (redditClient.isAuthenticated()) {
                 RedditAuthentication.isAuthenticated = true;
                 Toast.makeText(mContext, "Authenticated", Toast.LENGTH_SHORT).show();
+                mListener.onSuccess();
+            } else {
+                mListener.onFailure();
             }
         }
     }
