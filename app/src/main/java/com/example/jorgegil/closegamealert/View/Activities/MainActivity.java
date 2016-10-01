@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -37,8 +38,23 @@ import com.example.jorgegil.closegamealert.View.Fragments.StandingsFragment;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
+    public static final String MY_PREFERENCES = "MyPrefs";
+    public static final String FIRST_TIME = "firstTime";
+    public static final String PUSH_CLOSE_GAME_ALERT = "pushCGA";
+    public static final String REDDIT_USERNAME = "redditUsername";
+    private static final String PROJECT_NUMBER = "532852092546";
+
+    private static final String TAG_GAMES_FRAGMENT = "GAMES_FRAGMENT";
+    private static final String TAG_STANDINGS_FRAGMENT = "STANDINGS_FRAGMENT";
+    private static final String TAG_POSTS_FRAGMENT = "POSTS_FRAGMENT";
+    private static final String TAG_HIGHLIGHTS_FRAGMENT = "HIGHLIGHTS_FRAGMENT";
+
+    private static final int GAMES_FRAGMENT_ID = 1;
+    private static final int STANDINGS_FRAGMENT_ID = 2;
+    private static final int POSTS_FRAGMENT_ID = 4;
+    private static final int HIGHLIGHTS_FRAGMENT_ID = 5;
+
     private GCMClientManager pushClientManager;
-    String PROJECT_NUMBER = "532852092546";
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -50,17 +66,7 @@ public class MainActivity extends AppCompatActivity {
     PostsFragment postsFragment;
 
     int selectedFragment;
-
-    public static final String MY_PREFERENCES = "MyPrefs";
-    public static final String FIRST_TIME = "firstTime";
-    public static final String PUSH_CLOSE_GAME_ALERT = "pushCGA";
-    public static final String REDDIT_USERNAME = "redditUsername";
-    SharedPreferences sharedPreferences;
-
-    private static final int GAMES_FRAGMENT_ID = 1;
-    private static final int STANDINGS_FRAGMENT_ID = 2;
-    private static final int REDDIT_FRAGMENT_ID = 4;
-    private static final int HIGHLIGHTS_FRAGMENT_ID = 5;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,11 +100,11 @@ public class MainActivity extends AppCompatActivity {
         NetworkManager.getInstance(this);
 
         if (savedInstanceState == null) {
+            // The Activity is not being re-created so we need to add a Fragment.
             setFragment(GAMES_FRAGMENT_ID);
+
             redditAuthentication.updateToken(this, listener);
         } else {
-            Log.d(TAG, "something saved");
-            Log.d(TAG, "" + RedditAuthentication.redditClient.isAuthenticated());
             if (!RedditAuthentication.redditClient.isAuthenticated()) {
                 redditAuthentication.updateToken(this, listener);
             }
@@ -133,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpDrawerContent() {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView.setNavigationItemSelectedListener(new NavigationView
+                .OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
@@ -147,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_4:
-                        setFragment(REDDIT_FRAGMENT_ID);
+                        setFragment(POSTS_FRAGMENT_ID);
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_5:
@@ -184,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragment(int fragmentId) {
         selectedFragment = fragmentId;
-        android.support.v4.app.FragmentManager fragmentManager;
+        FragmentManager fragmentManager;
         FragmentTransaction fragmentTransaction;
 
         Bundle bundle = new Bundle();
@@ -196,34 +203,32 @@ public class MainActivity extends AppCompatActivity {
                 setTitle(R.string.games_fragment_title);
                 toolbar.setSubtitle(R.string.today_string);
                 gamesFragment = new GamesFragment();
-                fragmentTransaction.replace(R.id.fragment, gamesFragment, "GAMES_FRAGMENT");
-                fragmentTransaction.commit();
+                fragmentTransaction.replace(R.id.fragment, gamesFragment, TAG_GAMES_FRAGMENT);
                 break;
             case STANDINGS_FRAGMENT_ID:
                 setTitle(R.string.standings_fragment_title);
                 toolbar.setSubtitle("");
                 standingsFragment = new StandingsFragment();
-                fragmentTransaction.replace(R.id.fragment, standingsFragment, "STANDINGS_FRAGMENT");
-                fragmentTransaction.commit();
+                fragmentTransaction.replace(R.id.fragment, standingsFragment,
+                        TAG_STANDINGS_FRAGMENT);
                 break;
-            case REDDIT_FRAGMENT_ID:
+            case POSTS_FRAGMENT_ID:
                 toolbar.setSubtitle("");
                 setTitle(R.string.reddit_nba_fragment_title);
                 postsFragment = new PostsFragment();
                 bundle.putString("TYPE", "small");
                 postsFragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.fragment, postsFragment, "POSTS_FRAGMENT");
-                fragmentTransaction.commit();
+                fragmentTransaction.replace(R.id.fragment, postsFragment, TAG_POSTS_FRAGMENT);
                 break;
             case HIGHLIGHTS_FRAGMENT_ID:
                 toolbar.setSubtitle("");
                 setTitle(R.string.highlights_fragment_title);
                 highlightsFragment = new HighlightsFragment();
-                fragmentTransaction.replace(R.id.fragment, highlightsFragment, "HL_FRAGMENT");
-                fragmentTransaction.commit();
+                fragmentTransaction.replace(R.id.fragment, highlightsFragment,
+                        TAG_HIGHLIGHTS_FRAGMENT);
                 break;
         }
-
+        fragmentTransaction.commit();
     }
 
     private void setUpPreferences() {
@@ -244,7 +249,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String registrationId, boolean isNewRegistration) {
                 if (isNewRegistration) {
-                    StringRequest sendRegId = new StringRequest(GCM_REGISTRATION_URL + registrationId, new Response.Listener<String>() {
+                    StringRequest sendRegId = new StringRequest(
+                            GCM_REGISTRATION_URL + registrationId, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             Log.i(TAG, "Registered with GCM. " + response);
@@ -302,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                 // Exit application.
                 super.onBackPressed();
                 break;
-            case REDDIT_FRAGMENT_ID:
+            case POSTS_FRAGMENT_ID:
                 if (postsFragment.isPreviewVisible()) {
                     postsFragment.stopVideo();
                 } else {
