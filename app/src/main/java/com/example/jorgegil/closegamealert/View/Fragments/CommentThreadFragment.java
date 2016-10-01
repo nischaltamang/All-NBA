@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 import com.example.jorgegil.closegamealert.Adapter.CommentAdapter;
 import com.example.jorgegil.closegamealert.General.TeamName;
 import com.example.jorgegil.closegamealert.R;
+import com.example.jorgegil.closegamealert.Utils.AuthListener;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 
 import net.dean.jraw.http.SubmissionRequest;
@@ -75,8 +77,6 @@ public class CommentThreadFragment extends Fragment {
             mThreadType = getArguments().getInt(THREAD_TYPE_KEY);
         }
         setHasOptionsMenu(true);
-
-        mContext = getActivity();
     }
 
     @Override
@@ -95,12 +95,19 @@ public class CommentThreadFragment extends Fragment {
             ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
         }
 
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mContext = getActivity();
+
         if (mFoundThreadId) {
             fetchComments(mThreadId);
         } else {
             findGameSubmission();
         }
-        return view;
     }
 
     /**
@@ -109,7 +116,18 @@ public class CommentThreadFragment extends Fragment {
      * to this game and shows its comment tree.
      */
     private void findGameSubmission() {
-        SubmissionListingFetchListener listener =  new SubmissionListingFetchListener() {
+        AuthListener authListener = new AuthListener() {
+            @Override
+            public void onSuccess() {
+                findGameSubmission();
+            }
+
+            @Override
+            public void onFailure() {
+                //TODO: show snackbar
+            }
+        };
+        SubmissionListingFetchListener fetchListener =  new SubmissionListingFetchListener() {
             @Override
             public void onSuccess(Listing<Submission> submissions) {
                 findGameInSubmissions(submissions);
@@ -121,7 +139,8 @@ public class CommentThreadFragment extends Fragment {
                 Log.d(TAG, message);
             }
         };
-        new FetchSubmissionListing(NBA_SUBREDDIT, SEARCH_LIMIT, Sorting.NEW, listener).execute();
+        new FetchSubmissionListing(mContext, NBA_SUBREDDIT, SEARCH_LIMIT, Sorting.NEW,
+                fetchListener, authListener).execute();
     }
 
     // TODO: Move to AsyncTask.
@@ -193,8 +212,20 @@ public class CommentThreadFragment extends Fragment {
      * Starts a {@link FetchFullSubmission} task that retrieves the Submission of the given
      * submissionId. A "full" submissions is one that also contains its comment tree.
      */
-    private void fetchComments(String submissionId) {
-        FullSubmissionFetchListener listener = new FullSubmissionFetchListener() {
+    private void fetchComments(final String submissionId) {
+        AuthListener authListener = new AuthListener() {
+            @Override
+            public void onSuccess() {
+                fetchComments(submissionId);
+            }
+
+            @Override
+            public void onFailure() {
+                //TODO: show snackbar
+            }
+        };
+
+        FullSubmissionFetchListener fetchListener = new FullSubmissionFetchListener() {
             @Override
             public void onSuccess(Submission submission) {
                 loadComments(submission);
@@ -206,7 +237,7 @@ public class CommentThreadFragment extends Fragment {
                 Log.d(TAG, message);
             }
         };
-        new FetchFullSubmission(submissionId, listener).execute();
+        new FetchFullSubmission(mContext, submissionId, fetchListener, authListener).execute();
     }
 
     /**
@@ -241,17 +272,22 @@ public class CommentThreadFragment extends Fragment {
      * sorting option.
      */
     private class FetchSubmissionListing extends AsyncTask<Void, Void, Listing<Submission>> {
+        private Context mContext;
         private String mSubreddit;
         private int mLimit;
         private Sorting mSorting;
-        private SubmissionListingFetchListener mListener;
+        private SubmissionListingFetchListener mFetchListener;
+        private AuthListener mAuthListener;
 
-        public FetchSubmissionListing(String subreddit, int limit, Sorting sorting,
-                                      SubmissionListingFetchListener listener) {
+        public FetchSubmissionListing(Context context, String subreddit, int limit, Sorting sorting,
+                                      SubmissionListingFetchListener fetchListener,
+                                      AuthListener authListener) {
+            mContext = context;
             mSubreddit = subreddit;
             mLimit = limit;
             mSorting = sorting;
-            mListener = listener;
+            mFetchListener = fetchListener;
+            mAuthListener = authListener;
         }
 
         @Override
@@ -273,7 +309,7 @@ public class CommentThreadFragment extends Fragment {
                     Log.d(TAG, "Could not load submission listing");
                 }
             } else {
-                mListener.onFailure("Not authenticated");
+                mFetchListener.onFailure("Not authenticated");
             }
             return null;
         }
@@ -282,10 +318,12 @@ public class CommentThreadFragment extends Fragment {
         protected void onPostExecute(Listing<Submission> submissions) {
             mProgressBar.setVisibility(View.GONE);
             if (submissions != null) {
-                mListener.onSuccess(submissions);
+                mFetchListener.onSuccess(submissions);
                 mRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                mListener.onFailure("Could not load submission listing");
+                RedditAuthentication redditAuthentication = new RedditAuthentication();
+                redditAuthentication.updateToken(mContext, mAuthListener);
+                mFetchListener.onFailure("Could not load submission listing");
                 mRecyclerView.setVisibility(View.GONE);
             }
         }
@@ -297,12 +335,17 @@ public class CommentThreadFragment extends Fragment {
      * The sorting of the thread is determined by mThreadType (Live game or post game).
      */
     private class FetchFullSubmission extends AsyncTask<Void, Void, Submission> {
+        private Context mContext;
         private String mThreadId;
-        private FullSubmissionFetchListener mListener;
+        private FullSubmissionFetchListener mFetchListener;
+        private AuthListener mAuthListener;
 
-        public FetchFullSubmission(String threadId, FullSubmissionFetchListener listener) {
+        public FetchFullSubmission(Context context, String threadId, FullSubmissionFetchListener fetchListener,
+                                   AuthListener authListener) {
+            mContext = context;
             mThreadId = threadId;
-            mListener = listener;
+            mFetchListener = fetchListener;
+            mAuthListener = authListener;
         }
 
         @Override
@@ -332,7 +375,7 @@ public class CommentThreadFragment extends Fragment {
             try {
                 return RedditAuthentication.redditClient.getSubmission(submissionRequest);
             } catch (Exception e) {
-                Log.d(TAG, "Could not load submission");
+                Log.d(TAG, "Could not load submission. Try reauthenticating.");
             }
             return null;
         }
@@ -341,10 +384,12 @@ public class CommentThreadFragment extends Fragment {
         protected void onPostExecute(Submission submission) {
             mProgressBar.setVisibility(View.GONE);
             if (submission != null) {
-                mListener.onSuccess(submission);
+                mFetchListener.onSuccess(submission);
                 mRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                mListener.onFailure("Could not load submission");
+                RedditAuthentication redditAuthentication = new RedditAuthentication();
+                redditAuthentication.updateToken(mContext, mAuthListener);
+                mFetchListener.onFailure("Could not load submission");
                 mRecyclerView.setVisibility(View.GONE);
             }
         }

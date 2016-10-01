@@ -67,6 +67,7 @@ public class RedditAuthentication {
         protected void onPostExecute(Void aVoid) {
             if (redditClient.isAuthenticated()) {
                 RedditAuthentication.isAuthenticated = true;
+                Log.d(TAG, "context" + (mContext == null ? "null" : "not null"));
                 Toast.makeText(mContext, "Authenticated", Toast.LENGTH_SHORT).show();
                 mListener.onSuccess();
             } else {
