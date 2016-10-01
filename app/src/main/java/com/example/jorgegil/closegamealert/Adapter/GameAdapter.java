@@ -1,11 +1,10 @@
 package com.example.jorgegil.closegamealert.Adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,80 +13,105 @@ import com.example.jorgegil.closegamealert.R;
 
 import java.util.List;
 
-public class GameAdapter extends BaseAdapter {
-    private final Context context;
-    private final List<NBAGame> nbaGames;
-    private static LayoutInflater inflater = null;
+public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
+    private Context mContext;
+    private List<NBAGame> mNbaGames;
+    private OnItemClickListener mOnItemClickListener;
 
-    public GameAdapter(Context context, List<NBAGame> nbaGames) {
-        this.context = context;
-        this.nbaGames = nbaGames;
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public GameAdapter(Context context, List<NBAGame> nbaGames,
+                       OnItemClickListener onItemClickListener) {
+        mContext = context;
+        mNbaGames = nbaGames;
+        mOnItemClickListener = onItemClickListener;
     }
 
     @Override
-    public int getCount() {
-        return nbaGames.size();
+    public GameViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game,
+                parent, false);
+
+        return new GameViewHolder(view);
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
-    }
+    public void onBindViewHolder(final GameViewHolder holder, int position) {
+        NBAGame nbaGame = mNbaGames.get(position);
 
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+        int resKeyHome = mContext.getResources().getIdentifier(nbaGame.getHomeTeamAbbr()
+                .toLowerCase(), "drawable", mContext.getPackageName());
+        int resKeyAway = mContext.getResources().getIdentifier(nbaGame.getAwayTeamAbbr()
+                .toLowerCase(), "drawable", mContext.getPackageName());
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.row_game, parent, false);
-        TextView homeTeamLabel = (TextView) rowView.findViewById(R.id.homelabel);
-        TextView awayTeamLabel = (TextView) rowView.findViewById(R.id.awaylabel);
-        ImageView homeLogo = (ImageView) rowView.findViewById(R.id.homeicon);
-        ImageView awayLogo = (ImageView) rowView.findViewById(R.id.awayicon);
-        TextView homeScoreLabel = (TextView) rowView.findViewById(R.id.homescore);
-        TextView awayScoreLabel = (TextView) rowView.findViewById(R.id.awayscore);
-        TextView clockLabel = (TextView) rowView.findViewById(R.id.clock);
-        TextView periodLabel = (TextView) rowView.findViewById(R.id.period);
-        TextView extraLabel = (TextView) rowView.findViewById(R.id.extraLabel);
-        TextView finalLabel = (TextView) rowView.findViewById(R.id.extraLabel2);
-
-        NBAGame nbaGame = nbaGames.get(position);
-
-        int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeamAbbr().toLowerCase(),
-                "drawable", context.getPackageName());
-        int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeamAbbr().toLowerCase(),
-                "drawable", context.getPackageName());
-
-        homeTeamLabel.setText(nbaGame.getHomeTeamAbbr());
-        awayTeamLabel.setText(nbaGame.getAwayTeamAbbr());
-        homeLogo.setImageResource(resKeyHome);
-        awayLogo.setImageResource(resKeyAway);
-        homeScoreLabel.setText(nbaGame.getHomeTeamScore());
-        awayScoreLabel.setText(nbaGame.getAwayTeamScore());
-        clockLabel.setText(nbaGame.getGameClock());
-        periodLabel.setText(String.valueOf(nbaGame.getPeriodValue()));
+        holder.mHomeTeamLabel.setText(nbaGame.getHomeTeamAbbr());
+        holder.mAwayTeamLabel.setText(nbaGame.getAwayTeamAbbr());
+        holder.homeLogo.setImageResource(resKeyHome);
+        holder.awayLogo.setImageResource(resKeyAway);
+        holder.mHomeScoreLabel.setText(nbaGame.getHomeTeamScore());
+        holder.mAwayScoreLabel.setText(nbaGame.getAwayTeamScore());
+        holder.mClockLabel.setText(nbaGame.getGameClock());
+        holder.mPeriodLabel.setText(String.valueOf(nbaGame.getPeriodValue()));
 
         switch (nbaGame.getGameStatus()) {
             case NBAGame.PRE_GAME:
-                extraLabel.setVisibility(View.VISIBLE);
-                finalLabel.setVisibility(View.GONE);
-                extraLabel.setText(nbaGame.getPeriodStatus());
+                holder.mExtraLabel.setVisibility(View.VISIBLE);
+                holder.mFinalLabel.setVisibility(View.GONE);
+                holder.mExtraLabel.setText(nbaGame.getPeriodStatus());
                 break;
             case NBAGame.IN_GAME:
-                extraLabel.setVisibility(View.GONE);
-                finalLabel.setVisibility(View.GONE);
+                holder.mExtraLabel.setVisibility(View.GONE);
+                holder.mFinalLabel.setVisibility(View.GONE);
                 break;
             case NBAGame.POST_GAME:
-                extraLabel.setVisibility(View.GONE);
-                periodLabel.setVisibility(View.INVISIBLE);
-                clockLabel.setVisibility(View.INVISIBLE);
-                finalLabel.setVisibility(View.VISIBLE);
-                finalLabel.setText("FINAL");
+                holder.mExtraLabel.setVisibility(View.GONE);
+                holder.mPeriodLabel.setVisibility(View.INVISIBLE);
+                holder.mClockLabel.setVisibility(View.INVISIBLE);
+                holder.mFinalLabel.setVisibility(View.VISIBLE);
+                holder.mFinalLabel.setText("FINAL");
                 break;
         }
 
-        return rowView;
+        holder.mContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnItemClickListener.onItemClick(v, holder.getAdapterPosition());
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return null != mNbaGames ? mNbaGames.size() : 0;
+    }
+
+    public void swap(List<NBAGame> data) {
+        mNbaGames.clear();
+        mNbaGames.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public static class GameViewHolder extends RecyclerView.ViewHolder {
+        public View mContainer;
+        public TextView mHomeTeamLabel, mAwayTeamLabel, mHomeScoreLabel, mAwayScoreLabel,
+                mClockLabel, mPeriodLabel, mExtraLabel, mFinalLabel;
+        public ImageView homeLogo, awayLogo;
+
+        public GameViewHolder(View view) {
+            super(view);
+            mContainer = view;
+            mHomeTeamLabel = (TextView) view.findViewById(R.id.homelabel);
+            mAwayTeamLabel = (TextView) view.findViewById(R.id.awaylabel);
+            homeLogo = (ImageView) view.findViewById(R.id.homeicon);
+            awayLogo = (ImageView) view.findViewById(R.id.awayicon);
+            mHomeScoreLabel = (TextView) view.findViewById(R.id.homescore);
+            mAwayScoreLabel = (TextView) view.findViewById(R.id.awayscore);
+            mClockLabel = (TextView) view.findViewById(R.id.clock);
+            mPeriodLabel = (TextView) view.findViewById(R.id.period);
+            mExtraLabel = (TextView) view.findViewById(R.id.extraLabel);
+            mFinalLabel = (TextView) view.findViewById(R.id.extraLabel2);
+        }
     }
 }

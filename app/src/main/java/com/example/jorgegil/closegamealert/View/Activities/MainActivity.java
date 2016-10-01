@@ -105,7 +105,11 @@ public class MainActivity extends AppCompatActivity {
 
             redditAuthentication.updateToken(this, listener);
         } else {
-            if (!RedditAuthentication.redditClient.isAuthenticated()) {
+            if (RedditAuthentication.redditClient != null) {
+                if (!RedditAuthentication.redditClient.isAuthenticated()) {
+                    redditAuthentication.updateToken(this, listener);
+                }
+            } else {
                 redditAuthentication.updateToken(this, listener);
             }
         }

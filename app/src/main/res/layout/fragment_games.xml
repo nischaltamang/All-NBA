@@ -25,18 +25,9 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/games_listview"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/games_rv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="1dp"
-        android:layout_marginLeft="1dp"
-        android:paddingTop="1dp"
-        android:paddingBottom="1dp"
-        android:clipToPadding="false"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:scrollbars="none"/>
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -42,12 +45,15 @@ public class GamesFragment extends Fragment {
             "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
     public final static String GAME_ID = "com.example.jorgegil.closegamealert.GAME_ID";
 
+    private Context mContext;
     private View rootView;
-    private List<NBAGame> nbaGames;
-    private ListView listView;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private GameAdapter mGameAdapter;
     private LinearLayout linlaHeaderProgress;
     private GameDataService gameDataService;
     private Snackbar snackbar;
+    private List<NBAGame> mNbaGames;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,20 +65,27 @@ public class GamesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_games, container, false);
-        listView = (ListView) rootView.findViewById(R.id.games_listview);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.games_rv);
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.games_fragment_progress_layout);
 
-        nbaGames = new ArrayList<>();
-        loadGameData();
-
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mContext = getActivity();
+        loadGameData();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         // Register Broadcast manager to update scores automatically
-        Log.d(TAG, "Registering receiver");
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("game-data"));
     }
@@ -91,17 +104,19 @@ public class GamesFragment extends Fragment {
 
     private void loadGameData() {
         linlaHeaderProgress.setVisibility(View.VISIBLE);
-        listView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
+        Log.d(TAG, "Loading game data...");
 
         GetRequestListener listener = new GetRequestListener() {
             @Override
             public void onResult(String result) {
-                nbaGames.clear();
-                nbaGames.addAll(getGamesListFromJson(result));
-                setToolbarDate();
+                mNbaGames = new ArrayList<>();
+                mNbaGames.addAll(getGamesListFromJson(result));
                 setGameAdapter();
+                mRecyclerView.setAdapter(mGameAdapter);
+                setToolbarDate();
                 linlaHeaderProgress.setVisibility(View.GONE);
-                listView.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -113,13 +128,13 @@ public class GamesFragment extends Fragment {
         };
 
         gameDataService = new JSONGameDataService();
-        gameDataService.fetchGames(listener);
+        gameDataService.fetchGames("2016-03-01", listener);
     }
 
     private void updateGameData(String jsonString) {
-        nbaGames.clear();
-        nbaGames.addAll(getGamesListFromJson(jsonString));
-        setGameAdapter();
+        if (mGameAdapter != null) {
+            mGameAdapter.swap(getGamesListFromJson(jsonString));
+        }
     }
 
     private List<NBAGame> getGamesListFromJson(String jsonString) {
@@ -128,33 +143,24 @@ public class GamesFragment extends Fragment {
     }
 
     private void setGameAdapter() {
-        if (listView.getAdapter() == null) {
-            listView.setAdapter(new GameAdapter(getActivity(), nbaGames));
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Intent intent = new Intent(getActivity(), CommentsActivity.class);
-                    intent.putExtra(GAME_THREAD_HOME, nbaGames.get(i).getHomeTeamAbbr());
-                    intent.putExtra(GAME_THREAD_AWAY, nbaGames.get(i).getAwayTeamAbbr());
-                    intent.putExtra(GAME_ID, nbaGames.get(i).getId());
-                    startActivity(intent);
-                }
-            });
-        } else {
-            ((GameAdapter) listView.getAdapter()).notifyDataSetChanged();
-        }
-    }
-
-    private boolean isFragmentUIActive() {
-        return isAdded() && !isDetached() && !isRemoving();
+        mGameAdapter = new GameAdapter(mContext, mNbaGames, new GameAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(getActivity(), CommentsActivity.class);
+                intent.putExtra(GAME_THREAD_HOME, mNbaGames.get(position).getHomeTeamAbbr());
+                intent.putExtra(GAME_THREAD_AWAY, mNbaGames.get(position).getAwayTeamAbbr());
+                intent.putExtra(GAME_ID, mNbaGames.get(position).getId());
+                startActivity(intent);
+            }
+        });
     }
 
     private void setToolbarDate() {
-        if (nbaGames != null && nbaGames.size() > 0) {
+        if (mNbaGames != null && mNbaGames.size() > 0) {
             MainActivity mainActivity = (MainActivity) getActivity();
             if (mainActivity != null) {
                 mainActivity.setToolbarSubtitle(
-                        DateFormatUtil.formatToolbarDate(nbaGames.get(0).getDate()));
+                        DateFormatUtil.formatToolbarDate(mNbaGames.get(0).getDate()));
             }
         }
     }
@@ -191,7 +197,6 @@ public class GamesFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.d(TAG, "Unregistering receiver");
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         super.onStop();
     }
