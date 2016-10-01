@@ -128,7 +128,7 @@ public class GamesFragment extends Fragment {
         };
 
         gameDataService = new JSONGameDataService();
-        gameDataService.fetchGames("2016-03-01", listener);
+        gameDataService.fetchGames(listener);
     }
 
     private void updateGameData(String jsonString) {
