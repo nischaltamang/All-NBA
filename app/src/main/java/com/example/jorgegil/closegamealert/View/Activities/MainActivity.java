@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
         setUpDrawerContent();
         setUpPreferences();
         setNavigationHeaderContent();
-        setFragment(GAMES_FRAGMENT_ID);
+
+
         toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.tricornBlack));
 
         registerGmcClient();
@@ -88,9 +89,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        RedditAuthentication redditAuthentication = new RedditAuthentication();
-        redditAuthentication.updateToken(this, listener);
+
+        RedditAuthentication redditAuthentication = new RedditAuthentication();;
         NetworkManager.getInstance(this);
+
+        if (savedInstanceState == null) {
+            setFragment(GAMES_FRAGMENT_ID);
+            redditAuthentication.updateToken(this, listener);
+        } else {
+            Log.d(TAG, "something saved");
+            Log.d(TAG, "" + RedditAuthentication.redditClient.isAuthenticated());
+            if (!RedditAuthentication.redditClient.isAuthenticated()) {
+                redditAuthentication.updateToken(this, listener);
+            }
+        }
+
     }
 
     private void setUpToolbar(){

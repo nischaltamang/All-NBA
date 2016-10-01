@@ -3,6 +3,7 @@ package com.example.jorgegil.closegamealert.View.Fragments;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,7 +42,6 @@ public class StandingsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        context = getActivity();
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
@@ -53,13 +53,22 @@ public class StandingsFragment extends Fragment {
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
 
         tableLayout = (TableLayout) rootView.findViewById(R.id.tableLayout);
-        getStandings();
-
         return rootView;
     }
 
-    private void getStandings() {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        context = getActivity();
+        getStandings();
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    private void getStandings() {
         tableLayout.removeAllViews();
 
         linlaHeaderProgress.setVisibility(View.VISIBLE);
@@ -69,7 +78,7 @@ public class StandingsFragment extends Fragment {
         StringRequest request = new StringRequest(standingsURL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                parseStandings(response);
+                    parseStandings(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -138,6 +147,7 @@ public class StandingsFragment extends Fragment {
 
         } catch (Exception e) {
             Log.e(TAG, "Volley error: " + e.toString());
+            Log.d(TAG, "Could not parse standings");
             showSnackBar("Error parsing data", true);
         }
     }
@@ -245,6 +255,7 @@ public class StandingsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
+                dismissSnackbar();
                 getStandings();
                 return true;
         }
@@ -254,13 +265,6 @@ public class StandingsFragment extends Fragment {
     @Override
     public void onPause() {
         dismissSnackbar();
-        Log.d(TAG, "onPause");
         super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
     }
 }

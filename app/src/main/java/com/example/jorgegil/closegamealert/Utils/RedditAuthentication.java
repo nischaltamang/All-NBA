@@ -25,8 +25,6 @@ public class RedditAuthentication {
     public static boolean isAuthenticated;
 
     public RedditAuthentication() {
-        redditClient = new RedditClient(UserAgent.of("android", "com.example.jorgegil96.allnba",
-                "v0.1", "jorgegil96"));
         isLoggedIn = false;
         isAuthenticated = false;
     }
