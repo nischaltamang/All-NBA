@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.Utilities;
+import com.example.jorgegil.closegamealert.Utils.DateFormatUtil;
 
 import net.dean.jraw.models.Comment;
 import net.dean.jraw.models.CommentNode;
@@ -44,7 +44,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         Comment comment = commentNode.getComment();
         String author = comment.getAuthor();
         String body = comment.getBody();
-        String timestamp = Utilities.formatRedditDate(comment.getCreated());
+        String timestamp = DateFormatUtil.formatRedditDate(comment.getCreated());
         String score = String.valueOf(comment.getScore());
 
         holder.authorTextView.setText(author);

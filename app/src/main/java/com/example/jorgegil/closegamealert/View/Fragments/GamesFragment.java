@@ -23,7 +23,7 @@ import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Adapter.GameAdapter;
 import com.example.jorgegil.closegamealert.Service.GameDataService;
 import com.example.jorgegil.closegamealert.Service.JSONGameDataService;
-import com.example.jorgegil.closegamealert.Utils.Utilities;
+import com.example.jorgegil.closegamealert.Utils.DateFormatUtil;
 import com.example.jorgegil.closegamealert.View.Activities.CommentsActivity;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
 import com.google.gson.Gson;
@@ -154,7 +154,7 @@ public class GamesFragment extends Fragment {
             MainActivity mainActivity = (MainActivity) getActivity();
             if (mainActivity != null) {
                 mainActivity.setToolbarSubtitle(
-                        Utilities.formatToolbarDate(nbaGames.get(0).getDate()));
+                        DateFormatUtil.formatToolbarDate(nbaGames.get(0).getDate()));
             }
         }
     }

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.Utilities;
+import com.example.jorgegil.closegamealert.Utils.DateFormatUtil;
 import com.squareup.picasso.Picasso;
 
 import net.dean.jraw.models.Listing;
@@ -78,7 +78,7 @@ public class PostsAdapter extends BaseAdapter {
         }
         scoreView.setText(String.valueOf(post.getScore()));
         authorView.setText(post.getAuthor());
-        createdView.setText(Utilities.formatRedditDate(post.getCreated()));
+        createdView.setText(DateFormatUtil.formatRedditDate(post.getCreated()));
         numOfCommentsView.setText(post.getCommentCount() + " Comments");
 
         String thumbnailUrl = post.getThumbnail();

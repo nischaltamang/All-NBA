@@ -24,7 +24,7 @@ import com.example.jorgegil.closegamealert.R;
 import com.example.jorgegil.closegamealert.Adapter.PostsAdapter;
 import com.example.jorgegil.closegamealert.Utils.AuthListener;
 import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
-import com.example.jorgegil.closegamealert.Utils.Utilities;
+import com.example.jorgegil.closegamealert.Utils.DateFormatUtil;
 import com.example.jorgegil.closegamealert.View.Activities.MainActivity;
 import com.example.jorgegil.closegamealert.View.Activities.SubmissionActivity;
 
@@ -168,7 +168,7 @@ public class PostsFragment extends Fragment {
                     bundle.putString(Constants.THREAD_TITLE, post.getTitle());
                     bundle.putString(Constants.THREAD_AUTHOR, post.getAuthor());
                     bundle.putString(Constants.THREAD_TIMESTAMP,
-                            Utilities.formatRedditDate(post.getCreated()));
+                            DateFormatUtil.formatRedditDate(post.getCreated()));
                     bundle.putString(Constants.THREAD_SCORE, String.valueOf(post.getScore()));
                     bundle.putString(Constants.THREAD_DOMAIN, post.getDomain());
                     bundle.putString(Constants.THREAD_URL, post.getUrl());

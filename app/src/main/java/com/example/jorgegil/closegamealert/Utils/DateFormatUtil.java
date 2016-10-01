@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Utility methods used in various points of the application.
  */
-public final class Utilities {
+public final class DateFormatUtil {
 
     /**
      * Receives a Date object and returns a human-readable string, e.g. "5 minutes ago".
