@@ -13,7 +13,6 @@ import android.view.MenuItem;
 
 import com.example.jorgegil.closegamealert.Adapter.PagerAdapter;
 import com.example.jorgegil.closegamealert.R;
-import com.example.jorgegil.closegamealert.Utils.RedditAuthentication;
 import com.example.jorgegil.closegamealert.View.Fragments.BoxScoreFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.CommentThreadFragment;
 import com.example.jorgegil.closegamealert.View.Fragments.GamesFragment;
@@ -83,7 +82,7 @@ public class CommentsActivity extends AppCompatActivity implements TabLayout.OnT
     }
 
     private void setUpToolbar(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        toolbar = (Toolbar) findViewById(R.id.comments_toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             ActionBar ab = getSupportActionBar();
@@ -91,7 +90,6 @@ public class CommentsActivity extends AppCompatActivity implements TabLayout.OnT
                 ab.setDisplayHomeAsUpEnabled(true);
             }
         }
-
     }
 
     @Override

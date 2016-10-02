@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".View.Activities.MainActivity"
-        android:background="@color/colorWhite">
+        android:background="@color/white">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -19,7 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:fitsSystemWindows="true"
             android:background="?attr/colorPrimary"
-            style="@style/Theme.AppCompat.Light.NoActionBar"/>
+            app:theme="@style/ToolBarStyle"/>
 
         <FrameLayout
             android:id="@+id/fragment"
@@ -38,7 +38,7 @@
         app:headerLayout="@layout/nav_header"
         app:itemTextColor="#333"
         app:itemIconTint="#333"
-        android:background="@color/colorWhite"
+        android:background="@color/white"
         app:menu="@menu/navigation_drawer_items"
         />
 

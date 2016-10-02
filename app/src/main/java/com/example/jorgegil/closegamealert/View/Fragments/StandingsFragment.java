@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -216,9 +217,9 @@ public class StandingsFragment extends Fragment {
         row.addView(gbTV);
 
         if (dark)
-            row.setBackgroundColor(context.getResources().getColor(R.color.lightGray));
+            row.setBackgroundColor(ContextCompat.getColor(context, R.color.lightGray));
         else
-            row.setBackgroundColor(context.getResources().getColor(R.color.colorWhite));
+            row.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
         dark = !dark;
 
         View view = new View(context);

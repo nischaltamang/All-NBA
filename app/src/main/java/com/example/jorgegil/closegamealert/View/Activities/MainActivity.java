@@ -79,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
         setUpPreferences();
         setNavigationHeaderContent();
 
-
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.tricornBlack));
-
         registerGmcClient();
 
         AuthListener listener = new AuthListener() {

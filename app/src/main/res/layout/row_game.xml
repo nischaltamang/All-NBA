@@ -19,7 +19,7 @@
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:background="@color/colorWhite">
+            android:background="@color/white">
 
             <ImageView
                 android:id="@+id/homeicon"

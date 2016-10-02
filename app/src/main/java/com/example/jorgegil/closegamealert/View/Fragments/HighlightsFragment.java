@@ -82,7 +82,7 @@ public class HighlightsFragment extends Fragment {
         loadMore = new Button(context);
         loadMore.setText("Load More");
         loadMore.setTextColor(getResources().getColor(R.color.secondaryText));
-        loadMore.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        loadMore.setBackgroundColor(getResources().getColor(R.color.white));
         hlListView.addFooterView(loadMore);
 
         getHL(page, true);

@@ -6,12 +6,19 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@color/colorWhite</item>
-        <item name="android:textColorSecondary">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/primaryText</item>
+        <item name="android:textColorSecondary">@color/secondaryText</item>
         <!--<item name="android:windowBackground">@drawable/app_background</item>-->
         <item name="android:listViewStyle">@style/TransparentListView</item>
         <item name="android:expandableListViewStyle">@style/TransparentExpandableListView</item>
 
+    </style>
+
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/colorPrimaryLight</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="TransparentListView" parent="@android:style/Widget.ListView">
