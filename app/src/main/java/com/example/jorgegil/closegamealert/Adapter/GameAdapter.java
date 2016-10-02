@@ -53,22 +53,30 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         holder.mHomeScoreLabel.setText(nbaGame.getHomeTeamScore());
         holder.mAwayScoreLabel.setText(nbaGame.getAwayTeamScore());
         holder.mClockLabel.setText(nbaGame.getGameClock());
-        holder.mPeriodLabel.setText(String.valueOf(nbaGame.getPeriodValue()));
+        holder.mPeriodLabel.setText(String.valueOf(nbaGame.getPeriodValue())
+                + " " + nbaGame.getPeriodName());
+
+        holder.mHomeScoreLabel.setVisibility(View.GONE);
+        holder.mAwayScoreLabel.setVisibility(View.GONE);
+        holder.mClockLabel.setVisibility(View.GONE);
+        holder.mPeriodLabel.setVisibility(View.GONE);
+        holder.mFinalLabel.setVisibility(View.GONE);
+        holder.mTimeLabel.setVisibility(View.GONE);
 
         switch (nbaGame.getGameStatus()) {
             case NBAGame.PRE_GAME:
-                holder.mExtraLabel.setVisibility(View.VISIBLE);
-                holder.mFinalLabel.setVisibility(View.GONE);
-                holder.mExtraLabel.setText(nbaGame.getPeriodStatus());
+                holder.mTimeLabel.setVisibility(View.VISIBLE);
+                holder.mTimeLabel.setText(nbaGame.getPeriodStatus());
                 break;
             case NBAGame.IN_GAME:
-                holder.mExtraLabel.setVisibility(View.GONE);
-                holder.mFinalLabel.setVisibility(View.GONE);
+                holder.mHomeScoreLabel.setVisibility(View.VISIBLE);
+                holder.mAwayScoreLabel.setVisibility(View.VISIBLE);
+                holder.mClockLabel.setVisibility(View.VISIBLE);
+                holder.mPeriodLabel.setVisibility(View.VISIBLE);
                 break;
             case NBAGame.POST_GAME:
-                holder.mExtraLabel.setVisibility(View.GONE);
-                holder.mPeriodLabel.setVisibility(View.INVISIBLE);
-                holder.mClockLabel.setVisibility(View.INVISIBLE);
+                holder.mHomeScoreLabel.setVisibility(View.VISIBLE);
+                holder.mAwayScoreLabel.setVisibility(View.VISIBLE);
                 holder.mFinalLabel.setVisibility(View.VISIBLE);
                 holder.mFinalLabel.setText("FINAL");
                 break;
@@ -96,7 +104,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     public static class GameViewHolder extends RecyclerView.ViewHolder {
         public View mContainer;
         public TextView mHomeTeamLabel, mAwayTeamLabel, mHomeScoreLabel, mAwayScoreLabel,
-                mClockLabel, mPeriodLabel, mExtraLabel, mFinalLabel;
+                mClockLabel, mPeriodLabel, mTimeLabel, mFinalLabel;
         public ImageView homeLogo, awayLogo;
 
         public GameViewHolder(View view) {
@@ -110,7 +118,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
             mAwayScoreLabel = (TextView) view.findViewById(R.id.awayscore);
             mClockLabel = (TextView) view.findViewById(R.id.clock);
             mPeriodLabel = (TextView) view.findViewById(R.id.period);
-            mExtraLabel = (TextView) view.findViewById(R.id.extraLabel);
+            mTimeLabel = (TextView) view.findViewById(R.id.extraLabel);
             mFinalLabel = (TextView) view.findViewById(R.id.extraLabel2);
         }
     }

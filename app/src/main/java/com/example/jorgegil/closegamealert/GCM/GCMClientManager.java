@@ -123,6 +123,8 @@ public class GCMClientManager {
         if (registeredVersion != currentVersion) {
             Log.i(TAG, "App version changed.");
             return "";
+        } else {
+            Log.i(TAG, "Same app version");
         }
         return registrationId;
     }

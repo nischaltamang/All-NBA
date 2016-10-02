@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class GCMMessageHandler extends GcmListenerService {
+    private static final String TAG = "GCMMessageHandler";
     public static final int MESSAGE_NOTIFICATION_ID = 435345;
 
     @Override
@@ -22,13 +23,14 @@ public class GCMMessageHandler extends GcmListenerService {
             sendNewComment(data.getString("comment"));
         }
 
+        //TODO: Clean this up.
         if (data.getString("message") != null) {
             String message = data.getString("message");
             if (message.charAt(0) == '[') {
-                Log.d("GCMListener", "received JSON: " + data.getString("message"));
+                Log.d(TAG, "received JSON: " + data.getString("message"));
                 sendGameData(data.getString("message"));
             } else {
-                Log.d("GCMListener", "received notification: " + data.getString("message"));
+                Log.d(TAG, "received notification: " + data.getString("message"));
                 createNotification(message, "Touch to view more!");
             }
         }
