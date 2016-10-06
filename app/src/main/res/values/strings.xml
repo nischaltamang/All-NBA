@@ -6,6 +6,7 @@
     <!-- General -->
     <string name="rnba">/r/NBA</string>
     <string name="points">%1$s points</string>
+    <string name="noThreadFound">No thread found...</string>
 
     <!-- Strings for MainActivity -->
     <string name="action_refresh">Refresh</string>
@@ -18,68 +19,74 @@
     <string name="today_string">Today</string>
     <string name="not_logged">Not logged In</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Settings -->
+    <string name="title_activity_submission">Settings</string>
     <string name="notifications">Notifications</string>
     <string name="theme">Theme</string>
 
-
-    <string name="noThreadFound">No thread found...</string>
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+    <string-array name="pref_teams_list_titles">
+        <item>Atlanta Hawks</item>
+        <item>Brooklyn Nets</item>
+        <item>Boston Celtics</item>
+        <item>Charlotte Hornets</item>
+        <item>Chicago Bulls</item>
+        <item>Cleveland Cavaliers</item>
+        <item>Dallas Mavericks</item>
+        <item>Denver Nuggets</item>
+        <item>Detroit Pistons</item>
+        <item>Golden State Warriors</item>
+        <item>Houston Rockets</item>
+        <item>Indiana Pacers</item>
+        <item>Los Angeles Clippers</item>
+        <item>Los Angeles Lakers</item>
+        <item>Memphis Grizzlies</item>
+        <item>Miami Heat</item>
+        <item>Milwaukee Bucks</item>
+        <item>Minnesota Timberwolves</item>
+        <item>New Orleans Pelicans</item>
+        <item>New York Knicks</item>
+        <item>Oklahoma City Thunder</item>
+        <item>Orlando Magic</item>
+        <item>Philadelphia 76ers</item>
+        <item>Phoenix Suns</item>
+        <item>Portland Trail Blazers</item>
+        <item>San Antonio Spurs</item>
+        <item>Sacramento Kings</item>
+        <item>Toronto Raptors</item>
+        <item>Utah Jazz</item>
+        <item>Washington Wizards</item>
     </string-array>
-    <string-array name="pref_example_list_values">
+    <string-array name="pref_teams_list_values">
         <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
         <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
         <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
     </string-array>
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
-    <string name="title_activity_submission">SubmissionActivity</string>
 
 </resources>
