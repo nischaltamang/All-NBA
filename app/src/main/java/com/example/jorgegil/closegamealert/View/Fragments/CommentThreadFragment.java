@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,6 +55,10 @@ public class CommentThreadFragment extends Fragment {
     private static final String NBA_SUBREDDIT = "nba";
     private static final int SEARCH_LIMIT = 100;
 
+    private static final int NO_RETRY = -1;
+    private static final int RETRY_FIND_SUBMISSION = 0;
+    private static final int RETRY_FETCH_COMMENTS = 1;
+
     private String mHomeTeam;
     private String mAwayTeam;
     private String mThreadId;
@@ -62,10 +67,12 @@ public class CommentThreadFragment extends Fragment {
 
     Context mContext;
 
+    View rootView;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     CommentAdapter mCommentAdapter;
     ProgressBar mProgressBar;
+    Snackbar mSnackbar;
 
 
     @Override
@@ -82,10 +89,10 @@ public class CommentThreadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_comment_thread, container, false);
+        rootView = inflater.inflate(R.layout.fragment_comment_thread, container, false);
 
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.comment_thread_rv);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.comment_thread_rv);
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -95,7 +102,7 @@ public class CommentThreadFragment extends Fragment {
             ViewCompat.setNestedScrollingEnabled(mRecyclerView, false);
         }
 
-        return view;
+        return rootView;
     }
 
     @Override
@@ -104,10 +111,31 @@ public class CommentThreadFragment extends Fragment {
         mContext = getActivity();
 
         if (mFoundThreadId) {
-            fetchComments(mThreadId);
+            fetchComments();
         } else {
             findGameSubmission();
         }
+    }
+
+    @Override
+    public void onPause() {
+        dismissSnackbar();
+        super.onPause();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                dismissSnackbar();
+                if (mFoundThreadId) {
+                    fetchComments();
+                } else {
+                    findGameSubmission();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -124,7 +152,7 @@ public class CommentThreadFragment extends Fragment {
 
             @Override
             public void onFailure() {
-                //TODO: show snackbar
+                showSnackBar("Failed to connect to Reddit", true, RETRY_FIND_SUBMISSION);
             }
         };
         SubmissionListingFetchListener fetchListener =  new SubmissionListingFetchListener() {
@@ -135,8 +163,7 @@ public class CommentThreadFragment extends Fragment {
 
             @Override
             public void onFailure(String message) {
-                // TODO: show snackbar
-                Log.d(TAG, message);
+                showSnackBar(message, true, RETRY_FIND_SUBMISSION);
             }
         };
         new FetchSubmissionListing(mContext, NBA_SUBREDDIT, SEARCH_LIMIT, Sorting.NEW,
@@ -190,11 +217,10 @@ public class CommentThreadFragment extends Fragment {
         }
 
         if (mFoundThreadId) {
-            fetchComments(mThreadId);
+            fetchComments();
         } else {
             Log.d(TAG, "Thread not found");
-            // TODO: show snackbar and remove temporary thread.
-            fetchComments("54s74i");
+            showSnackBar("No comment thread found", true, RETRY_FIND_SUBMISSION);
         }
     }
 
@@ -212,16 +238,16 @@ public class CommentThreadFragment extends Fragment {
      * Starts a {@link FetchFullSubmission} task that retrieves the Submission of the given
      * submissionId. A "full" submissions is one that also contains its comment tree.
      */
-    private void fetchComments(final String submissionId) {
+    private void fetchComments() {
         AuthListener authListener = new AuthListener() {
             @Override
             public void onSuccess() {
-                fetchComments(submissionId);
+                fetchComments();
             }
 
             @Override
             public void onFailure() {
-                //TODO: show snackbar
+                showSnackBar("Failed to connect to Reddit", true, RETRY_FETCH_COMMENTS);
             }
         };
 
@@ -233,11 +259,10 @@ public class CommentThreadFragment extends Fragment {
 
             @Override
             public void onFailure(String message) {
-                // TODO: show snackbar.
-                Log.d(TAG, message);
+                showSnackBar(message, true, RETRY_FIND_SUBMISSION);
             }
         };
-        new FetchFullSubmission(mContext, submissionId, fetchListener, authListener).execute();
+        new FetchFullSubmission(mContext, mThreadId, fetchListener, authListener).execute();
     }
 
     /**
@@ -253,18 +278,32 @@ public class CommentThreadFragment extends Fragment {
         mRecyclerView.setAdapter(mCommentAdapter);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                if (mFoundThreadId) {
-                    fetchComments(mThreadId);
-                } else {
-                    findGameSubmission();
+    private void showSnackBar(String message, boolean retry, final int retryCode) {
+        mSnackbar = Snackbar.make(rootView, message,
+                Snackbar.LENGTH_INDEFINITE);
+        if (retry) {
+            mSnackbar.setAction("RETRY", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (retryCode) {
+                        case RETRY_FIND_SUBMISSION:
+                            findGameSubmission();
+                            break;
+                        case RETRY_FETCH_COMMENTS:
+                            fetchComments();
+                            break;
+                    }
                 }
-                return true;
+            });
         }
-        return super.onOptionsItemSelected(item);
+        mSnackbar.show();
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    private void dismissSnackbar() {
+        if (mSnackbar != null && mSnackbar.isShown()) {
+            mSnackbar.dismiss();
+        }
     }
 
     /**
@@ -306,25 +345,25 @@ public class CommentThreadFragment extends Fragment {
                 try {
                     return paginator.next(false /* forceNetwork */);
                 } catch (Exception e) {
-                    Log.d(TAG, "Could not load submission listing");
+                    Log.d(TAG, "Reddit auth error on FetchSubmissionListing.");
                 }
             } else {
-                mFetchListener.onFailure("Not authenticated");
+                mFetchListener.onFailure("Failed to connect to Reddit");
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Listing<Submission> submissions) {
-            mProgressBar.setVisibility(View.GONE);
             if (submissions != null) {
                 mFetchListener.onSuccess(submissions);
-                mRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                RedditAuthentication redditAuthentication = new RedditAuthentication();
-                redditAuthentication.updateToken(mContext, mAuthListener);
-                mFetchListener.onFailure("Could not load submission listing");
-                mRecyclerView.setVisibility(View.GONE);
+                if (!RedditAuthentication.redditClient.isAuthenticated()) {
+                    // Attempt to authenticate once.
+                    RedditAuthentication redditAuthentication = new RedditAuthentication();
+                    redditAuthentication.updateToken(mContext, mAuthListener);
+                }
+                mFetchListener.onFailure("Failed to connect to Reddit");
             }
         }
     }
@@ -340,7 +379,8 @@ public class CommentThreadFragment extends Fragment {
         private FullSubmissionFetchListener mFetchListener;
         private AuthListener mAuthListener;
 
-        public FetchFullSubmission(Context context, String threadId, FullSubmissionFetchListener fetchListener,
+        public FetchFullSubmission(Context context, String threadId,
+                                   FullSubmissionFetchListener fetchListener,
                                    AuthListener authListener) {
             mContext = context;
             mThreadId = threadId;
@@ -375,7 +415,7 @@ public class CommentThreadFragment extends Fragment {
             try {
                 return RedditAuthentication.redditClient.getSubmission(submissionRequest);
             } catch (Exception e) {
-                Log.d(TAG, "Could not load submission. Try reauthenticating.");
+                Log.d(TAG, "Could not load submission in FetchFullSubmission.");
             }
             return null;
         }
@@ -387,10 +427,12 @@ public class CommentThreadFragment extends Fragment {
                 mFetchListener.onSuccess(submission);
                 mRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                RedditAuthentication redditAuthentication = new RedditAuthentication();
-                redditAuthentication.updateToken(mContext, mAuthListener);
-                mFetchListener.onFailure("Could not load submission");
-                mRecyclerView.setVisibility(View.GONE);
+                if (!RedditAuthentication.redditClient.isAuthenticated()) {
+                    // Attempt to re-authenticate once.
+                    RedditAuthentication redditAuthentication = new RedditAuthentication();
+                    redditAuthentication.updateToken(mContext, mAuthListener);
+                }
+                mFetchListener.onFailure("Failed to connect to Reddit");
             }
         }
     }
