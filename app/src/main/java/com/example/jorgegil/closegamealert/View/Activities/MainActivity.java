@@ -2,11 +2,11 @@ package com.example.jorgegil.closegamealert.View.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -66,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
     PostsFragment postsFragment;
 
     int selectedFragment;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences myPreferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
         setUpDrawerContent();
         setUpPreferences();
-        setNavigationHeaderContent();
+        loadNavigationHeaderContent();
 
         registerGmcClient();
 
@@ -93,7 +95,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        RedditAuthentication redditAuthentication = new RedditAuthentication();;
+        RedditAuthentication redditAuthentication = new RedditAuthentication();
+
         NetworkManager.getInstance(this);
 
         if (savedInstanceState == null) {
@@ -110,10 +113,9 @@ public class MainActivity extends AppCompatActivity {
                 redditAuthentication.updateToken(this, listener);
             }
         }
-
     }
 
-    private void setUpToolbar(){
+    private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setUpNavigationView(){
+    private void setUpNavigationView() {
         if (toolbar != null) {
             drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             navigationView = (NavigationView) findViewById(R.id.navigation);
@@ -183,11 +185,67 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setNavigationHeaderContent() {
+    /**
+     * Sets the logo and username from shared preferences.
+     */
+    private void loadNavigationHeaderContent() {
         View headerView = navigationView.getHeaderView(0);
+        loadRedditUsername(headerView);
+        loadTeamLogo(headerView);
+    }
+
+    private void loadRedditUsername(View headerView) {
         TextView redditUsername = (TextView) headerView.findViewById(R.id.redditUsername);
-        redditUsername.setText(sharedPreferences.getString(REDDIT_USERNAME,
+        redditUsername.setText(myPreferences.getString(REDDIT_USERNAME,
                 getResources().getString(R.string.not_logged)));
+    }
+
+    private void loadTeamLogo(View headerView) {
+        ImageView favTeamLogo = (ImageView) headerView.findViewById(R.id.favTeamLogo);
+        favTeamLogo.setImageResource(getFavTeamLogoResource());
+    }
+
+    /**
+     * Looks for a favorite team saved in shared preferences and returns the resource id for its
+     * logo. If there is no favorite team, the app icon is returned.
+     */
+    private int getFavTeamLogoResource() {
+        String favoriteTeam = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString("teams_list", null);
+
+        int resourceId;
+        if (favoriteTeam != null && !favoriteTeam.equals("noteam")) {
+            resourceId = getResources().getIdentifier(favoriteTeam, "drawable", getPackageName());
+        } else {
+            resourceId = R.mipmap.ic_launcher;
+        }
+        return resourceId;
+    }
+
+    private void setUpPreferences() {
+        myPreferences = getSharedPreferences(MY_PREFERENCES, MODE_PRIVATE);
+        // Set default preferences if not set yet
+        if (myPreferences.getBoolean(FIRST_TIME, true)) {
+            SharedPreferences.Editor editor = myPreferences.edit();
+            editor.putBoolean(FIRST_TIME, false);
+            editor.putBoolean(PUSH_CLOSE_GAME_ALERT, true);
+            editor.apply();
+        }
+
+        // Listen for changes to update team logo.
+        mPreferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                switch (key) {
+                    case "teams_list":
+                        loadTeamLogo(navigationView.getHeaderView(0));
+                        break;
+                }
+
+            }
+        };
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(mPreferenceListener);
     }
 
     private void setFragment(int fragmentId) {
@@ -230,17 +288,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         fragmentTransaction.commit();
-    }
-
-    private void setUpPreferences() {
-        sharedPreferences = getSharedPreferences(MY_PREFERENCES, MODE_PRIVATE);
-        // Set default preferences if not set yet
-        if (sharedPreferences.getBoolean(FIRST_TIME, true)) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(FIRST_TIME, false);
-            editor.putBoolean(PUSH_CLOSE_GAME_ALERT, true);
-            editor.apply();
-        }
     }
 
     private void registerGmcClient() {
@@ -335,8 +382,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume()
-    {  // After a pause OR at startup
+    public void onResume() {  // After a pause OR at startup
         super.onResume();
     }
 
@@ -344,6 +390,4 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
-
-
 }

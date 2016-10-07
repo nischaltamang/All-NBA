@@ -5,7 +5,7 @@
         android:key="general_category">
 
         <ListPreference
-            android:defaultValue="1"
+            android:defaultValue="noteam"
             android:entries="@array/pref_teams_list_titles"
             android:entryValues="@array/pref_teams_list_values"
             android:key="teams_list"

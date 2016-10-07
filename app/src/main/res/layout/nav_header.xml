@@ -10,9 +10,10 @@ android:gravity="bottom">
 
 
     <ImageView
+        android:id="@+id/favTeamLogo"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/sas"
+        android:src="@drawable/atl"
         android:layout_marginBottom="10dp"/>
 
     <TextView
