@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/lightGray"
-    tools:context="com.example.jorgegil.closegamealert.View.Activities.SubmissionActivity">
+    tools:context="com.gmail.jorgegilcavazos.ballislife.View.Activities.SubmissionActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"

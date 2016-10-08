@@ -15,7 +15,7 @@
 
     <fragment
         android:tag=".SettingsFragment"
-        android:name="com.example.jorgegil.closegamealert.View.Fragments.SettingsFragment"
+        android:name="com.gmail.jorgegilcavazos.ballislife.View.Fragments.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
