@@ -1,13 +1,20 @@
 package com.gmail.jorgegilcavazos.ballislife.Utils;
 
+import com.gmail.jorgegilcavazos.ballislife.BuildConfig;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Calendar;
 
 /**
  * Class to test {@link DateFormatUtil}.
  */
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class DateFormatUtilTest {
 
     @Test
@@ -21,12 +28,12 @@ public class DateFormatUtilTest {
         twoDaysAgo.add(Calendar.HOUR, -60);
 
         String nowString = DateFormatUtil.formatRedditDate(now.getTime());
-        String eightyMinAgoString = DateFormatUtil.formatRedditDate(fiftyMinAgo.getTime());
+        String fiftyMinAgoString = DateFormatUtil.formatRedditDate(fiftyMinAgo.getTime());
         String fourHoursAgoString = DateFormatUtil.formatRedditDate(fourHoursAgo.getTime());
         String twoDaysAgoString = DateFormatUtil.formatRedditDate(twoDaysAgo.getTime());
 
         assertEquals(" just now ", nowString);
-        assertEquals("50 minutes ago", eightyMinAgoString);
+        assertEquals("50 minutes ago", fiftyMinAgoString);
         assertEquals("4 hours ago", fourHoursAgoString);
         assertEquals("2 days ago", twoDaysAgoString);
     }
