@@ -1,12 +1,16 @@
 package com.gmail.jorgegilcavazos.ballislife.View.Activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -36,6 +40,8 @@ import com.gmail.jorgegilcavazos.ballislife.View.Fragments.GamesFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.HighlightsFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.PostsFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.StandingsFragment;
+
+import net.dean.jraw.RedditClient;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -87,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
         AuthListener listener = new AuthListener() {
             @Override
             public void onSuccess() {
-
+                RedditAuthentication.getInstance().saveRefreshTokenInPrefs(getApplicationContext());
+                loadRedditUsername();
             }
 
             @Override
@@ -96,25 +103,29 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        RedditAuthentication redditAuthentication = new RedditAuthentication();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mUserLoginReceiver,
+                new IntentFilter("reddit-user-login"));
+
+        if (!RedditAuthentication.getInstance().getRedditClient().isAuthenticated()) {
+            RedditAuthentication.getInstance().authenticate(this, listener);
+        }
 
         NetworkManager.getInstance(this);
 
         if (savedInstanceState == null) {
-            // The Activity is not being re-created so we need to add a Fragment.
+            // The Activity is not being restored so we need to add a Fragment.
             setFragment(GAMES_FRAGMENT_ID);
-
-            redditAuthentication.updateToken(this, listener);
-        } else {
-            if (RedditAuthentication.redditClient != null) {
-                if (!RedditAuthentication.redditClient.isAuthenticated()) {
-                    redditAuthentication.updateToken(this, listener);
-                }
-            } else {
-                redditAuthentication.updateToken(this, listener);
-            }
         }
     }
+
+    private BroadcastReceiver mUserLoginReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "Received user log in intent");
+            RedditAuthentication.getInstance().saveRefreshTokenInPrefs(context);
+            loadRedditUsername();
+        }
+    };
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -190,18 +201,23 @@ public class MainActivity extends AppCompatActivity {
      * Sets the logo and username from shared preferences.
      */
     private void loadNavigationHeaderContent() {
+        loadRedditUsername();
+        loadTeamLogo();
+    }
+
+    private void loadRedditUsername() {
         View headerView = navigationView.getHeaderView(0);
-        loadRedditUsername(headerView);
-        loadTeamLogo(headerView);
-    }
-
-    private void loadRedditUsername(View headerView) {
         TextView redditUsername = (TextView) headerView.findViewById(R.id.redditUsername);
-        redditUsername.setText(myPreferences.getString(REDDIT_USERNAME,
-                getResources().getString(R.string.not_logged)));
+        RedditClient redditClient = RedditAuthentication.getInstance().getRedditClient();
+        if (redditClient.isAuthenticated() && redditClient.hasActiveUserContext()) {
+            redditUsername.setText(redditClient.getAuthenticatedUser());
+        } else {
+            redditUsername.setText(R.string.not_logged);
+        }
     }
 
-    private void loadTeamLogo(View headerView) {
+    private void loadTeamLogo() {
+        View headerView = navigationView.getHeaderView(0);
         ImageView favTeamLogo = (ImageView) headerView.findViewById(R.id.favTeamLogo);
         favTeamLogo.setImageResource(getFavTeamLogoResource());
     }
@@ -239,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 switch (key) {
                     case "teams_list":
-                        loadTeamLogo(navigationView.getHeaderView(0));
+                        loadTeamLogo();
                         break;
                 }
 

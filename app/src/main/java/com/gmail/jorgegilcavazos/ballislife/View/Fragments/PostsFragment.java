@@ -105,7 +105,8 @@ public class PostsFragment extends Fragment {
             }
         };
 
-        new GetSubmissionListing(getActivity(), RedditAuthentication.redditClient, "nba", 20,
+        new GetSubmissionListing(getActivity(),
+                RedditAuthentication.getInstance().getRedditClient(), "nba", 20,
                 Sorting.HOT, listener).execute();
     }
 
@@ -129,7 +130,7 @@ public class PostsFragment extends Fragment {
 
         @Override
         protected Listing<Submission> doInBackground(Void... params) {
-            if (RedditAuthentication.redditClient.isAuthenticated()) {
+            if (RedditAuthentication.getInstance().getRedditClient().isAuthenticated()) {
                 SubredditPaginator paginator = new SubredditPaginator(mRedditClient, mSubreddit);
                 paginator.setLimit(mLimit);
                 paginator.setSorting(mSorting);
@@ -140,10 +141,10 @@ public class PostsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Listing<Submission> submissions) {
-            if (submissions == null || !RedditAuthentication.redditClient.isAuthenticated()) {
-                Toast.makeText(context, "Not authenticated", Toast.LENGTH_SHORT).show();
-                RedditAuthentication redditAuthentication = new RedditAuthentication();
-                redditAuthentication.updateToken(mContext, mListener);
+            if (submissions == null
+                    || !RedditAuthentication.getInstance().getRedditClient().isAuthenticated()) {
+                Toast.makeText(mContext, "Not authenticated", Toast.LENGTH_SHORT).show();
+                RedditAuthentication.getInstance().authenticate(mContext, mListener);
             } else {
                 loadPosts(submissions);
             }

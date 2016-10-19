@@ -249,7 +249,7 @@ public class SubmissionActivity extends AppCompatActivity {
             b.sort(CommentSort.HOT);
             SubmissionRequest sr = b.build();
 
-            return RedditAuthentication.redditClient.getSubmission(sr);
+            return RedditAuthentication.getInstance().getRedditClient().getSubmission(sr);
         }
 
         @Override

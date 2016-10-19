@@ -6,10 +6,10 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.example.jorgegil.closegamealert"
+        applicationId "com.gmail.jorgegilcavazos.ballislife"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 2
+        versionCode 3
         versionName "0.1.0"
     }
     buildTypes {
@@ -21,6 +21,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/LICENCE.txt'
+        exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE.txt'
     }
 }

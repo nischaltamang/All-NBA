@@ -335,9 +335,10 @@ public class CommentThreadFragment extends Fragment {
 
         @Override
         protected Listing<Submission> doInBackground(Void... params) {
-            if (RedditAuthentication.redditClient.isAuthenticated()) {
+            RedditAuthentication redditAuthentication = RedditAuthentication.getInstance();
+            if (redditAuthentication.getRedditClient().isAuthenticated()) {
                 SubredditPaginator paginator = new SubredditPaginator(
-                        RedditAuthentication.redditClient, mSubreddit);
+                        redditAuthentication.getRedditClient(), mSubreddit);
                 paginator.setLimit(mLimit);
                 paginator.setSorting(mSorting);
                 try {
@@ -358,10 +359,9 @@ public class CommentThreadFragment extends Fragment {
             if (submissions != null) {
                 mFetchListener.onSuccess(submissions);
             } else {
-                if (!RedditAuthentication.redditClient.isAuthenticated()) {
+                if (!RedditAuthentication.getInstance().getRedditClient().isAuthenticated()) {
                     // Attempt to authenticate once.
-                    RedditAuthentication redditAuthentication = new RedditAuthentication();
-                    redditAuthentication.updateToken(mContext, mAuthListener);
+                    RedditAuthentication.getInstance().authenticate(mContext, mAuthListener);
                 }
                 mFetchListener.onFailure("Failed to connect to Reddit");
             }
@@ -413,7 +413,8 @@ public class CommentThreadFragment extends Fragment {
             }
             SubmissionRequest submissionRequest = builder.build();
             try {
-                return RedditAuthentication.redditClient.getSubmission(submissionRequest);
+                return RedditAuthentication.getInstance()
+                        .getRedditClient().getSubmission(submissionRequest);
             } catch (Exception e) {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "Could not load submission in FetchFullSubmission.");
@@ -429,10 +430,9 @@ public class CommentThreadFragment extends Fragment {
                 mFetchListener.onSuccess(submission);
                 mRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                if (!RedditAuthentication.redditClient.isAuthenticated()) {
+                if (!RedditAuthentication.getInstance().getRedditClient().isAuthenticated()) {
                     // Attempt to re-authenticate once.
-                    RedditAuthentication redditAuthentication = new RedditAuthentication();
-                    redditAuthentication.updateToken(mContext, mAuthListener);
+                    RedditAuthentication.getInstance().authenticate(mContext, mAuthListener);
                 }
                 mFetchListener.onFailure("Failed to connect to Reddit");
             }
