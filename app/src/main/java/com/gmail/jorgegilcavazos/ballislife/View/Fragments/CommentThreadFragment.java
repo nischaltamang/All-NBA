@@ -22,7 +22,7 @@ import com.gmail.jorgegilcavazos.ballislife.General.TeamName;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
-import com.gmail.jorgegilcavazos.ballislife.Utils.RedditAuthentication;
+import com.gmail.jorgegilcavazos.ballislife.Service.RedditAuthentication;
 
 import net.dean.jraw.http.SubmissionRequest;
 import net.dean.jraw.models.CommentNode;

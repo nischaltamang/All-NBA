@@ -1,9 +1,7 @@
 package com.gmail.jorgegilcavazos.ballislife.View.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,13 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.AuthListener;
-import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
-import com.gmail.jorgegilcavazos.ballislife.Utils.RedditAuthentication;
-
-import net.dean.jraw.http.oauth.Credentials;
-import net.dean.jraw.http.oauth.OAuthData;
-import net.dean.jraw.http.oauth.OAuthException;
-import net.dean.jraw.http.oauth.OAuthHelper;
+import com.gmail.jorgegilcavazos.ballislife.Service.RedditAuthentication;
 
 import java.net.URL;
 

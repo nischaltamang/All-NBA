@@ -35,7 +35,7 @@ import com.gmail.jorgegilcavazos.ballislife.Network.NetworkManager;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
-import com.gmail.jorgegilcavazos.ballislife.Utils.RedditAuthentication;
+import com.gmail.jorgegilcavazos.ballislife.Service.RedditAuthentication;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.GamesFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.HighlightsFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.PostsFragment;

@@ -1,9 +1,12 @@
-package com.gmail.jorgegilcavazos.ballislife.Utils;
+package com.gmail.jorgegilcavazos.ballislife.Service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.gmail.jorgegilcavazos.ballislife.Utils.AuthListener;
+import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
 
 import net.dean.jraw.RedditClient;
 import net.dean.jraw.http.UserAgent;

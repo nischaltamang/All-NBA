@@ -26,7 +26,7 @@ import com.gmail.jorgegilcavazos.ballislife.General.Streamable;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Adapter.CommentAdapter;
 import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
-import com.gmail.jorgegilcavazos.ballislife.Utils.RedditAuthentication;
+import com.gmail.jorgegilcavazos.ballislife.Service.RedditAuthentication;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
