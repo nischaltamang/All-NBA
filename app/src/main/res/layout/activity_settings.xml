@@ -11,7 +11,7 @@
         android:layout_height="?attr/actionBarSize"
         android:fitsSystemWindows="true"
         android:background="?attr/colorPrimary"
-        app:theme="@style/ToolBarStyle"/>
+        android:theme="@style/ToolBarStyle"/>
 
     <fragment
         android:tag=".SettingsFragment"

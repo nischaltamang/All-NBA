@@ -14,7 +14,9 @@
             android:id="@+id/login_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ToolBarStyle">
 
         </android.support.v7.widget.Toolbar>
 
