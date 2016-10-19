@@ -68,7 +68,6 @@ public class GamesFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.games_fragment_progress_layout);
 
         return rootView;

@@ -8,7 +8,10 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Class to test {@link DateFormatUtil}.
@@ -58,6 +61,17 @@ public class DateFormatUtilTest {
     public void testFormatToolbarDate() {
         String actual = DateFormatUtil.formatToolbarDate("20100516");
         String expected = "05/16";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testFormatToolbarDate_Today() {
+        Calendar now = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+
+        String actual = DateFormatUtil.formatToolbarDate(format.format(now.getTime()));
+        String expected = "Today";
 
         assertEquals(expected, actual);
     }

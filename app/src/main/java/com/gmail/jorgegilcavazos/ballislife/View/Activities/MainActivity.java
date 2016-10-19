@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         setUpPreferences();
         loadNavigationHeaderContent();
 
+        setTitle("Games");
+
         registerGmcClient();
 
         AuthListener listener = new AuthListener() {
