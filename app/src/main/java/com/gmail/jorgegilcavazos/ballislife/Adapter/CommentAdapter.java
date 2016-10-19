@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.DateFormatUtil;
+import com.gmail.jorgegilcavazos.ballislife.Utils.RedditUtils;
 
 import net.dean.jraw.models.Comment;
 import net.dean.jraw.models.CommentNode;
@@ -45,11 +46,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         String body = comment.getBody();
         String timestamp = DateFormatUtil.formatRedditDate(comment.getCreated());
         String score = String.valueOf(comment.getScore());
+        String flair = RedditUtils.parseRedditNBAFlair(String.valueOf(comment.getAuthorFlair()));
 
         holder.authorTextView.setText(author);
         holder.bodyTextView.setText(body);
         holder.timestampTextView.setText(timestamp);
         holder.scoreTextView.setText(mContext.getString(R.string.points, score));
+        holder.flairTextView.setText(flair);
         setBackgroundAndPadding(commentNode, holder);
     }
 
@@ -92,7 +95,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        public TextView authorTextView, scoreTextView, timestampTextView, bodyTextView;
+        public TextView authorTextView, scoreTextView, timestampTextView, bodyTextView,
+                flairTextView;
         public RelativeLayout mCommentOuterRelLayout;
         public RelativeLayout mCommentInnerRelLayout;
 
@@ -105,6 +109,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             scoreTextView = (TextView) view.findViewById(R.id.comment_score);
             timestampTextView = (TextView) view.findViewById(R.id.comment_timestamp);
             bodyTextView = (TextView) view.findViewById(R.id.comment_body);
+            flairTextView = (TextView) view.findViewById(R.id.comment_flair);
         }
     }
 }

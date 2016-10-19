@@ -23,10 +23,20 @@
             android:textSize="10dp"/>
 
         <TextView
+            android:id="@+id/comment_flair"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/comment_author"
+            android:paddingLeft="2dp"
+            android:text="Spurs"
+            android:textColor="@color/flairColor"
+            android:textSize="10dp"/>
+
+        <TextView
             android:id="@+id/comment_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/comment_author"
+            android:layout_toEndOf="@+id/comment_flair"
             android:paddingLeft="2dp"
             android:text="1000 points"
             android:textColor="@color/secondaryText"
