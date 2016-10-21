@@ -193,21 +193,20 @@ public class CommentThreadFragment extends Fragment {
         }
 
         for (Submission submission : submissions) {
-            String title = submission.getTitle();
-            // Usually in format "GAME THREAD: Cleveland Cavaliers @ San Antonio Spurs".
+            String capsTitle = submission.getTitle().toUpperCase();
+            // Usually formatted as "GAME THREAD: Cleveland Cavaliers @ San Antonio Spurs".
             if (mThreadType == LIVE_THREAD) {
-                if (title.contains("GAME THREAD") && title.contains(fullHomeTeam)
-                        && title.contains(awayFullTeam)) {
+                if (capsTitle.contains("GAME THREAD") && titleContainsTeam(capsTitle, fullHomeTeam)
+                        && titleContainsTeam(capsTitle, awayFullTeam)) {
                     mThreadId = submission.getId();
                     mFoundThreadId = true;
                     break;
                 }
             }
-            // Usually in format "POST GAME THREAD: San Antonio Spurs defeat Lakers".
+            // Usually formatted as "POST GAME THREAD: San Antonio Spurs defeat Lakers".
             if (mThreadType == POST_THREAD) {
-                String capsTitle = title.toUpperCase();
-                if (capsTitle.contains("POST GAME THREAD") && titleContainsTeam(title, fullHomeTeam)
-                        && titleContainsTeam(title, awayFullTeam)) {
+                if (capsTitle.contains("POST GAME THREAD") && titleContainsTeam(capsTitle, fullHomeTeam)
+                        && titleContainsTeam(capsTitle, awayFullTeam)) {
                     mThreadId = submission.getId();
                     mFoundThreadId = true;
                     break;
