@@ -46,7 +46,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         String body = comment.getBody();
         String timestamp = DateFormatUtil.formatRedditDate(comment.getCreated());
         String score = String.valueOf(comment.getScore());
-        String flair = RedditUtils.parseRedditNBAFlair(String.valueOf(comment.getAuthorFlair()));
+        String flair = RedditUtils.parseNbaFlair(String.valueOf(comment.getAuthorFlair()));
 
         holder.authorTextView.setText(author);
         holder.bodyTextView.setText(body);

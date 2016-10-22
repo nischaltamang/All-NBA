@@ -18,11 +18,11 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.gmail.jorgegilcavazos.ballislife.Adapter.CommentAdapter;
-import com.gmail.jorgegilcavazos.ballislife.General.TeamName;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
 import com.gmail.jorgegilcavazos.ballislife.Service.RedditAuthentication;
+import com.gmail.jorgegilcavazos.ballislife.Utils.RedditUtils;
 
 import net.dean.jraw.http.SubmissionRequest;
 import net.dean.jraw.models.CommentNode;
@@ -48,15 +48,12 @@ public class CommentThreadFragment extends Fragment {
         void onFailure(String message);
     }
 
-    public static final int LIVE_THREAD = 0;
-    public static final int POST_THREAD = 1;
     public static final String HOME_TEAM_KEY = "HOME_TEAM";
     public static final String AWAY_TEAM_KEY = "AWAY_TEAM";
     public static final String THREAD_TYPE_KEY = "THREAD_TYPE";
     private static final String NBA_SUBREDDIT = "nba";
     private static final int SEARCH_LIMIT = 100;
 
-    private static final int NO_RETRY = -1;
     private static final int RETRY_FIND_SUBMISSION = 0;
     private static final int RETRY_FETCH_COMMENTS = 1;
 
@@ -64,7 +61,7 @@ public class CommentThreadFragment extends Fragment {
     private String mAwayTeam;
     private String mThreadId;
     private boolean mFoundThreadId;
-    private int mThreadType;
+    private RedditUtils.GameThreadType mThreadType;
 
     Context mContext;
 
@@ -82,7 +79,7 @@ public class CommentThreadFragment extends Fragment {
         if (getArguments() != null) {
             mHomeTeam = getArguments().getString(HOME_TEAM_KEY);
             mAwayTeam = getArguments().getString(AWAY_TEAM_KEY);
-            mThreadType = getArguments().getInt(THREAD_TYPE_KEY);
+            mThreadType = (RedditUtils.GameThreadType) getArguments().get(THREAD_TYPE_KEY);
         }
         setHasOptionsMenu(true);
     }
@@ -159,7 +156,15 @@ public class CommentThreadFragment extends Fragment {
         SubmissionListingFetchListener fetchListener =  new SubmissionListingFetchListener() {
             @Override
             public void onSuccess(Listing<Submission> submissions) {
-                findGameInSubmissions(submissions);
+                mThreadId = RedditUtils.findNbaGameThreadId(submissions, mThreadType,
+                        mHomeTeam, mAwayTeam);
+                if (mThreadId != null) {
+                    mFoundThreadId = true;
+                    fetchComments();
+                } else {
+                    mFoundThreadId = false;
+                    showSnackBar("No comment thread found", true, RETRY_FIND_SUBMISSION);
+                }
             }
 
             @Override
@@ -169,66 +174,6 @@ public class CommentThreadFragment extends Fragment {
         };
         new FetchSubmissionListing(mContext, NBA_SUBREDDIT, SEARCH_LIMIT, Sorting.NEW,
                 fetchListener, authListener).execute();
-    }
-
-    // TODO: Move to AsyncTask.
-    /**
-     * Given a list of Reddit submissions, finds the one that belongs to this game and type.
-     */
-    private void findGameInSubmissions(Listing<Submission> submissions) {
-        String fullHomeTeam = null;
-        String awayFullTeam = null;
-
-        for (TeamName teamName : TeamName.values()) {
-            if (teamName.toString().equals(mHomeTeam)) {
-                fullHomeTeam = teamName.getTeamName();
-            }
-            if (teamName.toString().equals(mAwayTeam)) {
-                awayFullTeam = teamName.getTeamName();
-            }
-        }
-
-        if (fullHomeTeam == null || awayFullTeam == null) {
-            return;
-        }
-
-        for (Submission submission : submissions) {
-            String capsTitle = submission.getTitle().toUpperCase();
-            // Usually formatted as "GAME THREAD: Cleveland Cavaliers @ San Antonio Spurs".
-            if (mThreadType == LIVE_THREAD) {
-                if (capsTitle.contains("GAME THREAD") && titleContainsTeam(capsTitle, fullHomeTeam)
-                        && titleContainsTeam(capsTitle, awayFullTeam)) {
-                    mThreadId = submission.getId();
-                    mFoundThreadId = true;
-                    break;
-                }
-            }
-            // Usually formatted as "POST GAME THREAD: San Antonio Spurs defeat Lakers".
-            if (mThreadType == POST_THREAD) {
-                if (capsTitle.contains("POST GAME THREAD") && titleContainsTeam(capsTitle, fullHomeTeam)
-                        && titleContainsTeam(capsTitle, awayFullTeam)) {
-                    mThreadId = submission.getId();
-                    mFoundThreadId = true;
-                    break;
-                }
-            }
-        }
-
-        if (mFoundThreadId) {
-            fetchComments();
-        } else {
-            showSnackBar("No comment thread found", true, RETRY_FIND_SUBMISSION);
-        }
-    }
-
-    /**
-     * Checks that the title contains the full team name or at least the name only, e.g "Spurs".
-     */
-    private boolean titleContainsTeam(String title, String fullTeamName) {
-        String capsTitle = title.toUpperCase();
-        String capsTeam = fullTeamName.toUpperCase(); // Ex. "SAN ANTONIO SPURS".
-        String capsName = capsTeam.substring(capsTeam.lastIndexOf(" ") + 1); // Ex. "SPURS".
-        return capsTitle.contains(capsName) || capsTitle.contains(capsName);
     }
 
     /**
@@ -400,10 +345,10 @@ public class CommentThreadFragment extends Fragment {
             }
             SubmissionRequest.Builder builder = new SubmissionRequest.Builder(mThreadId);
             switch (mThreadType) {
-                case LIVE_THREAD:
+                case LIVE_GAME_THREAD:
                     builder.sort(CommentSort.NEW);
                     break;
-                case POST_THREAD:
+                case POST_GAME_THREAD:
                     builder.sort(CommentSort.TOP);
                     break;
                 default:
