@@ -54,6 +54,7 @@ public class SubmissionActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private TextView mTitleTextView;
+    private TextView mDescriptionTextView;
     private TextView mAuthorTextView;
     private TextView mTimestampTextView;
     private TextView mScoreTextView;
@@ -82,6 +83,7 @@ public class SubmissionActivity extends AppCompatActivity {
         threadUrl = extras.getString(Constants.THREAD_URL);
 
         mTitleTextView = (TextView) findViewById(R.id.submission_title);
+        mDescriptionTextView = (TextView) findViewById(R.id.submission_description);
         mAuthorTextView = (TextView) findViewById(R.id.submission_author);
         mTimestampTextView = (TextView) findViewById(R.id.submission_timestamp);
         mScoreTextView = (TextView) findViewById(R.id.submission_score);
@@ -167,6 +169,13 @@ public class SubmissionActivity extends AppCompatActivity {
             } else {
                 mSubmissionImageView.setVisibility(View.GONE);
             }
+        }
+
+        String description = extras.getString(Constants.THREAD_DESCRIPTION);
+        if (description.equals("")) {
+            mDescriptionTextView.setVisibility(View.GONE);
+        } else {
+            mDescriptionTextView.setText(description);
         }
     }
 

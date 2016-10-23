@@ -6,6 +6,7 @@ public class Constants {
 
     public static final String THREAD_ID = "THREAD_ID";
     public static final String THREAD_TITLE = "THREAD_TITLE";
+    public static final String THREAD_DESCRIPTION = "THREAD_DESCRIPTION";
     public static final String THREAD_AUTHOR = "THREAD_AUTHOR";
     public static final String THREAD_TIMESTAMP = "THREAD_TIMESTAMP";
     public static final String THREAD_SCORE = "THREAD_SCORE";

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/submission_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/submission_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/black"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"/>
+
+            <TextView
+                android:id="@+id/submission_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Joel Embiid Preseason Offense and Defense Highlights 2016/2017 - Sixers Debut! - [07:20]"
+                android:textColor="@color/primaryText"
+                android:textSize="18sp"
+                android:layout_below="@id/submission_image"
+                android:padding="3dp" />
+
+            <TextView
+                android:id="@+id/submission_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/submission_title"
+                android:padding="3dp"
+                android:text="Self post text self post text self post text self post text self post text self post text self post text self post text self post text self post text"
+                android:textColor="@color/primaryText"
+                android:textSize="12sp"/>
+
+            <RelativeLayout
+                android:id="@+id/submission_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/submission_description">
+
+                <TextView
+                    android:id="@+id/submission_author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="jorgegil96"
+                    android:textSize="10sp"
+                    android:textColor="@color/blue"
+                    android:textStyle="bold"
+                    android:layout_alignParentStart="true"/>
+
+                <TextView
+                    android:id="@+id/submission_separator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="•"
+                    android:textSize="10sp"
+                    android:layout_toEndOf="@id/submission_author"/>
+
+                <TextView
+                    android:id="@+id/submission_timestamp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="2 hours ago"
+                    android:textSize="10sp"
+                    android:layout_toEndOf="@id/submission_separator"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/submission_buttons_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/submission_description">
+
+                <ImageButton
+                    android:id="@+id/submission_save"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_bookmark_black_24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/redditActionColor"/>
+
+                <ImageButton
+                    android:id="@+id/submission_downvote"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_toStartOf="@id/submission_save"
+                    android:src="@drawable/ic_thumb_down_black_24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/redditActionColor"/>
+
+                <ImageButton
+                    android:id="@+id/submission_upvote"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_toStartOf="@id/submission_downvote"
+                    android:src="@drawable/ic_thumb_up_black_24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/redditActionColor"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/submission_comments_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/submission_buttons_group"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="5dp">
+
+                <ImageButton
+                    android:id="@+id/submission_comments_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_forum_black_12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/redditActionColor"/>
+
+                <TextView
+                    android:id="@+id/submission_num_comments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/submission_comments_icon"
+                    android:layout_alignTop="@id/submission_comments_icon"
+                    android:layout_alignBottom="@id/submission_comments_icon"
+                    android:text="528"
+                    android:textSize="12sp"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/submission_buttons_group"
+                android:layout_toEndOf="@id/submission_comments_group"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp">
+
+                <ImageButton
+                    android:id="@+id/submission_upvotes_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_thumbs_up_down_black_12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/redditActionColor"/>
+
+                <TextView
+                    android:id="@+id/submission_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/submission_upvotes_icon"
+                    android:layout_alignTop="@id/submission_upvotes_icon"
+                    android:layout_alignBottom="@id/submission_upvotes_icon"
+                    android:text="1290"
+                    android:textSize="12sp"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -166,6 +166,7 @@ public class PostsFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.THREAD_ID, post.getId());
                     bundle.putString(Constants.THREAD_TITLE, post.getTitle());
+                    bundle.putString(Constants.THREAD_DESCRIPTION, post.getSelftext());
                     bundle.putString(Constants.THREAD_AUTHOR, post.getAuthor());
                     bundle.putString(Constants.THREAD_TIMESTAMP,
                             DateFormatUtil.formatRedditDate(post.getCreated()));

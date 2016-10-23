@@ -48,113 +48,15 @@
                 android:orientation="vertical"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/submission_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="0dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:id="@+id/submission_image"
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-                            android:background="@color/black"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentStart="true"/>
-
-                        <TextView
-                            android:id="@+id/submission_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Team USA defeats Spain 82-76"
-                            android:textColor="@color/primaryText"
-                            android:textSize="18sp"
-                            android:layout_below="@id/submission_image"
-                            android:padding="3dp" />
-
-                        <TextView
-                            android:id="@+id/submission_author"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:text="jorgegil96"
-                            android:textSize="10sp"
-                            android:layout_below="@id/submission_title"
-                            android:layout_alignParentStart="true"/>
-
-                        <TextView
-                            android:id="@+id/submission_separator"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="•"
-                            android:textSize="10sp"
-                            android:layout_below="@id/submission_title"
-                            android:layout_toEndOf="@id/submission_author"/>
-
-                        <TextView
-                            android:id="@+id/submission_timestamp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:text="2 hours ago"
-                            android:textSize="10sp"
-                            android:layout_below="@id/submission_title"
-                            android:layout_toEndOf="@id/submission_separator"/>
-
-                        <TextView
-                            android:id="@+id/submission_save"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:textSize="18sp"
-                            android:background="@drawable/ic_star_black_24dp"
-                            android:layout_below="@id/submission_title"
-                            android:layout_alignParentEnd="true"/>
-
-                        <TextView
-                            android:id="@+id/submission_downvote"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:textSize="18sp"
-                            android:background="@drawable/ic_arrow_upward_black_24dp"
-                            android:layout_below="@id/submission_title"
-                            android:layout_toStartOf="@id/submission_save"/>
-
-                        <TextView
-                            android:id="@+id/submission_upvote"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:textSize="18sp"
-                            android:background="@drawable/ic_arrow_upward_black_24dp"
-                            android:layout_below="@id/submission_title"
-                            android:layout_toStartOf="@id/submission_downvote"/>
-
-                        <TextView
-                            android:id="@+id/submission_score"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:textSize="18sp"
-                            android:text="1200"
-                            android:layout_below="@id/submission_title"
-                            android:layout_toStartOf="@id/submission_upvote"/>
-
-                    </RelativeLayout>
-
-                </android.support.v7.widget.CardView>
+                <include layout="@layout/submission_header"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/submission_rv"
                     android:scrollbars="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    tools:listitem="@layout/comment_layout">
 
                 </android.support.v7.widget.RecyclerView>
 
@@ -172,6 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_input_add" />
+        android:src="@drawable/ic_mode_comment_black_24dp"
+        android:tint="@color/white"/>
 
 </android.support.design.widget.CoordinatorLayout>
