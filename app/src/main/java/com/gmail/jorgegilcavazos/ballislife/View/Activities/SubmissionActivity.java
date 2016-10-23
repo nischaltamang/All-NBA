@@ -58,6 +58,7 @@ public class SubmissionActivity extends AppCompatActivity {
     private TextView mAuthorTextView;
     private TextView mTimestampTextView;
     private TextView mScoreTextView;
+    private TextView mCommentCntTextView;
     private ImageView mSubmissionImageView;
     private VideoView mVideoView;
     private FloatingActionButton mFab;
@@ -87,6 +88,7 @@ public class SubmissionActivity extends AppCompatActivity {
         mAuthorTextView = (TextView) findViewById(R.id.submission_author);
         mTimestampTextView = (TextView) findViewById(R.id.submission_timestamp);
         mScoreTextView = (TextView) findViewById(R.id.submission_score);
+        mCommentCntTextView = (TextView) findViewById(R.id.submission_num_comments);
         mSubmissionImageView = (ImageView) findViewById(R.id.submission_image);
         mVideoView = (VideoView) findViewById(R.id.submission_video);
         mVideoView.setVisibility(View.INVISIBLE);
@@ -159,6 +161,7 @@ public class SubmissionActivity extends AppCompatActivity {
         mAuthorTextView.setText(extras.getString(Constants.THREAD_AUTHOR));
         mTimestampTextView.setText(extras.getString(Constants.THREAD_TIMESTAMP));
         mScoreTextView.setText(extras.getString(Constants.THREAD_SCORE));
+        mCommentCntTextView.setText(extras.getString(Constants.THREAD_NUM_COMMENTS));
 
         if (extras.getBoolean(Constants.THREAD_SELF)) {
             mSubmissionImageView.setVisibility(View.GONE);

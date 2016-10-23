@@ -171,6 +171,8 @@ public class PostsFragment extends Fragment {
                     bundle.putString(Constants.THREAD_TIMESTAMP,
                             DateFormatUtil.formatRedditDate(post.getCreated()));
                     bundle.putString(Constants.THREAD_SCORE, String.valueOf(post.getScore()));
+                    bundle.putString(Constants.THREAD_NUM_COMMENTS,
+                            String.valueOf(post.getCommentCount()));
                     bundle.putString(Constants.THREAD_DOMAIN, post.getDomain());
                     bundle.putString(Constants.THREAD_URL, post.getUrl());
                     if (post.getThumbnails() != null) {
