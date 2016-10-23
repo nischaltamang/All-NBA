@@ -21,6 +21,7 @@
 
     <color name="tricornBlack">#2d2d2e</color>
     <color name="tricornBlackDark">#212122</color>
+    <color name="tricornBlackLight">#2a2a2a</color>
     <color name="indigo">#3F51B5</color>
     <color name="indigoDark">#303F9F</color>
 

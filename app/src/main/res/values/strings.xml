@@ -7,6 +7,10 @@
     <string name="rnba">/r/NBA</string>
     <string name="points">%1$s points</string>
     <string name="noThreadFound">No thread found...</string>
+    <string name="no_games_scheduled">No games scheduled</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="tomorrow">Tomorrow</string>
 
     <!-- Strings for MainActivity -->
     <string name="action_refresh">Refresh</string>
@@ -23,6 +27,7 @@
     <string name="title_activity_submission">Settings</string>
     <string name="notifications">Notifications</string>
     <string name="theme">Theme</string>
+
 
     <string-array name="pref_teams_list_titles">
         <item>No team</item>

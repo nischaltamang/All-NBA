@@ -2,6 +2,8 @@ package com.gmail.jorgegilcavazos.ballislife.Utils;
 
 import android.util.Log;
 
+import com.gmail.jorgegilcavazos.ballislife.R;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -70,7 +72,7 @@ public final class DateFormatUtil {
             Date now = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
             Date date = format.parse(dateString);
-            if (areDatesSameDay(now, date)) {
+            if (isDateToday(date)) {
                 return "Today";
             }
         } catch (ParseException e) {
@@ -81,12 +83,65 @@ public final class DateFormatUtil {
         return dateString.substring(4, 6) + "/" + dateString.substring(6, 8);
     }
 
-    public static boolean areDatesSameDay(Date date1, Date date2) {
-        Calendar calendar1 = Calendar.getInstance();
-        Calendar calendar2 = Calendar.getInstance();
-        calendar1.setTime(date1);
-        calendar2.setTime(date2);
+    /**
+     * Returns a prettier date for the game date navigator, e.g. "Tuesday, October 25".
+     */
+    public static String formatNavigatorDate(Date date) {
+        if (isDateToday(date)) {
+            return "Today";
+        } else if(isDateYesterday(date)) {
+            return "Yesterday";
+        } else if(isDateTomorrow(date)) {
+            return "Tomorrow";
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d", Locale.US);
+            return format.format(date);
+        }
+
+    }
+
+    public static boolean isDateToday(Date date) {
+        Calendar calNow = Calendar.getInstance();
+        Calendar calDate = Calendar.getInstance();
+        calDate.setTime(date);
+        return areDatesEqual(calNow, calDate);
+    }
+
+    public static boolean isDateYesterday(Date date) {
+        Calendar calYesterday = Calendar.getInstance();
+        calYesterday.add(Calendar.DAY_OF_YEAR, -1);
+        Calendar calDate = Calendar.getInstance();
+        calDate.setTime(date);
+        return areDatesEqual(calYesterday, calDate);
+    }
+
+    public static boolean isDateTomorrow(Date date) {
+        Calendar calTomorrow = Calendar.getInstance();
+        calTomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        Calendar calDate = Calendar.getInstance();
+        calDate.setTime(date);
+        return areDatesEqual(calTomorrow, calDate);
+    }
+
+    public static boolean areDatesEqual(Calendar calendar1, Calendar calendar2) {
         return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR)
                 && calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    public static Date getDateFromString(String dateString, String pattern) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+            return format.parse(dateString);
+        } catch (ParseException e) {
+            if (MyDebug.LOG) {
+                Log.e(TAG, "Error parsing date: " + e.toString());
+            }
+        }
+        return null;
+    }
+
+    public static String getDashedDateString(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        return format.format(date);
     }
 }

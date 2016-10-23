@@ -2,6 +2,9 @@ package com.gmail.jorgegilcavazos.ballislife.Service;
 
 import com.gmail.jorgegilcavazos.ballislife.Network.GetRequestListener;
 import com.gmail.jorgegilcavazos.ballislife.Network.NetworkManager;
+import com.gmail.jorgegilcavazos.ballislife.Utils.DateFormatUtil;
+
+import java.util.Date;
 
 /**
  * JSON implementation of the {@link GameDataService} interface.
@@ -17,8 +20,9 @@ public class JSONGameDataService implements GameDataService {
     }
 
     @Override
-    public void fetchGames(String date, GetRequestListener listener) {
-        String url = BASE_URL + "scoreboard.php" + "?date=" + date;
+    public void fetchGames(Date date, GetRequestListener listener) {
+        String url = BASE_URL + "scoreboard.php" + "?date="
+                + DateFormatUtil.getDashedDateString(date);
         NetworkManager.getInstance().makeGetRequest(url, REQUEST_TAG, listener);
     }
 

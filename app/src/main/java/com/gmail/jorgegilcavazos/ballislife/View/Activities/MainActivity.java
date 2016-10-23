@@ -279,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
         switch (fragmentId) {
             case GAMES_FRAGMENT_ID:
                 setTitle(R.string.games_fragment_title);
-                toolbar.setSubtitle(R.string.today_string);
                 gamesFragment = new GamesFragment();
                 fragmentTransaction.replace(R.id.fragment, gamesFragment, TAG_GAMES_FRAGMENT);
                 break;

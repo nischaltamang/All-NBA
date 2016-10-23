@@ -20,7 +20,7 @@ import java.util.Locale;
 public class DateFormatUtilTest {
 
     @Test
-    public void testFormateRedditDate() {
+    public void testFormatRedditDate() {
         Calendar now = Calendar.getInstance();
         Calendar fiftyMinAgo = Calendar.getInstance();
         fiftyMinAgo.add(Calendar.MINUTE, -50);
@@ -73,5 +73,24 @@ public class DateFormatUtilTest {
         String expected = "Today";
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testFormatNavigatorDate() {
+        String date1 = DateFormatUtil.formatNavigatorDate(Calendar.getInstance().getTime());
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_YEAR, -1);
+        String date2 = DateFormatUtil.formatNavigatorDate(yesterday.getTime());
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        String date3 = DateFormatUtil.formatNavigatorDate(tomorrow.getTime());
+        Calendar someDay = Calendar.getInstance();
+        someDay.set(2016, 9, 14);
+        String date4 = DateFormatUtil.formatNavigatorDate(someDay.getTime());
+
+        assertEquals("Today", date1);
+        assertEquals("Yesterday", date2);
+        assertEquals("Tomorrow", date3);
+        assertEquals("Friday, October 14", date4);
     }
 }

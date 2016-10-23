@@ -16,7 +16,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.gmail.jorgegilcavazos.ballislife.General.NBAGame;
 import com.gmail.jorgegilcavazos.ballislife.Network.GetRequestListener;
@@ -32,6 +34,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 // TODO: Use View Holder pattern instead of list view with adapter.
@@ -46,6 +50,8 @@ public class GamesFragment extends Fragment {
 
     private Context mContext;
     private View rootView;
+    private TextView mNavigatorDate;
+    private TextView mNoGamesText;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private GameAdapter mGameAdapter;
@@ -53,6 +59,7 @@ public class GamesFragment extends Fragment {
     private GameDataService gameDataService;
     private Snackbar snackbar;
     private List<NBAGame> mNbaGames;
+    private Calendar mSelectedDate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,11 +71,38 @@ public class GamesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_games, container, false);
+        mNavigatorDate = (TextView) rootView.findViewById(R.id.navigator_text);
+        mNoGamesText = (TextView) rootView.findViewById(R.id.no_games_text);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.games_rv);
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.games_fragment_progress_layout);
+
+        ImageButton datePrevBtn = (ImageButton) rootView.findViewById(R.id.navigator_button_left);
+        datePrevBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSelectedDate == null) {
+                    mSelectedDate = Calendar.getInstance();
+                }
+                mSelectedDate.add(Calendar.DAY_OF_YEAR, -1);
+                setNavigatorDate(mSelectedDate.getTime());
+                loadGameData(mSelectedDate.getTime());
+            }
+        });
+        ImageButton dateNextBtn = (ImageButton) rootView.findViewById(R.id.navigator_button_right);
+        dateNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSelectedDate == null) {
+                    mSelectedDate = Calendar.getInstance();
+                }
+                mSelectedDate.add(Calendar.DAY_OF_YEAR, 1);
+                setNavigatorDate(mSelectedDate.getTime());
+                loadGameData(mSelectedDate.getTime());
+            }
+        });
 
         return rootView;
     }
@@ -77,7 +111,9 @@ public class GamesFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mContext = getActivity();
-        loadGameData();
+        mSelectedDate = Calendar.getInstance();
+        setNavigatorDate(mSelectedDate.getTime());
+        loadGameData(mSelectedDate.getTime());
     }
 
     @Override
@@ -92,16 +128,17 @@ public class GamesFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (isVisible()) {
+            if (isVisible() && DateFormatUtil.isDateToday(mSelectedDate.getTime())) {
                 String message = intent.getStringExtra("message");
                 updateGameData(message);
             }
         }
     };
 
-    private void loadGameData() {
+    private void loadGameData(Date date) {
         linlaHeaderProgress.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
+        mNoGamesText.setVisibility(View.GONE);
 
         GetRequestListener listener = new GetRequestListener() {
             @Override
@@ -110,9 +147,12 @@ public class GamesFragment extends Fragment {
                 mNbaGames.addAll(getGamesListFromJson(result));
                 setGameAdapter();
                 mRecyclerView.setAdapter(mGameAdapter);
-                setToolbarDate();
                 linlaHeaderProgress.setVisibility(View.GONE);
                 mRecyclerView.setVisibility(View.VISIBLE);
+
+                if (mNbaGames.size() == 0) {
+                    mNoGamesText.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -126,7 +166,7 @@ public class GamesFragment extends Fragment {
         };
 
         gameDataService = new JSONGameDataService();
-        gameDataService.fetchGames(listener);
+        gameDataService.fetchGames(date, listener);
     }
 
     private void updateGameData(String jsonString) {
@@ -153,14 +193,8 @@ public class GamesFragment extends Fragment {
         });
     }
 
-    private void setToolbarDate() {
-        if (mNbaGames != null && mNbaGames.size() > 0) {
-            MainActivity mainActivity = (MainActivity) getActivity();
-            if (mainActivity != null) {
-                mainActivity.setToolbarSubtitle(
-                        DateFormatUtil.formatToolbarDate(mNbaGames.get(0).getDate()));
-            }
-        }
+    private void setNavigatorDate(Date date) {
+        mNavigatorDate.setText(DateFormatUtil.formatNavigatorDate(date));
     }
 
     private void showSnackBar(String message, boolean retry) {
@@ -170,7 +204,8 @@ public class GamesFragment extends Fragment {
             snackbar.setAction("RETRY", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadGameData();
+                    loadGameData(mSelectedDate.getTime());
+                    setNavigatorDate(mSelectedDate.getTime());
                 }
             });
         }
@@ -203,7 +238,8 @@ public class GamesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                loadGameData();
+                loadGameData(mSelectedDate.getTime());
+                setNavigatorDate(mSelectedDate.getTime());
                 return true;
         }
         return super.onOptionsItemSelected(item);
