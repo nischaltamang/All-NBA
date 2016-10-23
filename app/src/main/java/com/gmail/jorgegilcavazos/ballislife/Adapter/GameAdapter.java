@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.gmail.jorgegilcavazos.ballislife.General.NBAGame;
 import com.gmail.jorgegilcavazos.ballislife.R;
+import com.gmail.jorgegilcavazos.ballislife.Utils.Utilities;
 
 import java.util.List;
 
@@ -53,8 +54,8 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         holder.mHomeScoreLabel.setText(nbaGame.getHomeTeamScore());
         holder.mAwayScoreLabel.setText(nbaGame.getAwayTeamScore());
         holder.mClockLabel.setText(nbaGame.getGameClock());
-        holder.mPeriodLabel.setText(String.valueOf(nbaGame.getPeriodValue())
-                + " " + nbaGame.getPeriodName());
+        holder.mPeriodLabel.setText(Utilities.getPeriodString(nbaGame.getPeriodValue(),
+                nbaGame.getPeriodName()));
 
         holder.mHomeScoreLabel.setVisibility(View.GONE);
         holder.mAwayScoreLabel.setVisibility(View.GONE);
