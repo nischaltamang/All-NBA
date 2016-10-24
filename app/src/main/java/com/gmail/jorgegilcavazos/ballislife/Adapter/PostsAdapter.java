@@ -49,13 +49,13 @@ public class PostsAdapter extends BaseAdapter {
         View rowView;
         switch (type) {
             case "small":
-                rowView = inflater.inflate(R.layout.post_layout, parent, false);
+                rowView = inflater.inflate(R.layout.post_layout_list, parent, false);
                 break;
             case "large":
                 rowView = inflater.inflate(R.layout.post_layout_large, parent, false);
                 break;
             default:
-                rowView = inflater.inflate(R.layout.post_layout, parent, false);
+                rowView = inflater.inflate(R.layout.post_layout_list, parent, false);
         }
 
         TextView scoreView = (TextView) rowView.findViewById(R.id.scoreView);
@@ -65,6 +65,7 @@ public class PostsAdapter extends BaseAdapter {
         TextView numOfCommentsView = (TextView) rowView.findViewById(R.id.numCommentsView);
         TextView linkView = (TextView) rowView.findViewById(R.id.linkView);
 
+        View thumbnailContainer = rowView.findViewById(R.id.thumbnail_container);
         ImageView thumbnail = (ImageView) rowView.findViewById(R.id.thumbnail);
 
         Submission post = postsList.get(position);
@@ -76,19 +77,19 @@ public class PostsAdapter extends BaseAdapter {
         scoreView.setText(String.valueOf(post.getScore()));
         authorView.setText(post.getAuthor());
         createdView.setText(DateFormatUtil.formatRedditDate(post.getCreated()));
-        numOfCommentsView.setText(post.getCommentCount() + " Comments");
+        numOfCommentsView.setText(String.valueOf(post.getCommentCount()));
 
         String thumbnailUrl = post.getThumbnail();
 
         if (post.isSelfPost()) {
             linkView.setText("• self." + post.getSubredditName());
-            thumbnail.setVisibility(View.GONE);
+            thumbnailContainer.setVisibility(View.GONE);
         } else {
-            linkView.setText("• link (" + post.getDomain() + ")");
+            linkView.setText("• " + post.getDomain());
             if (thumbnailUrl != null) {
                 Picasso.with(context).load(thumbnailUrl).into(thumbnail);
             } else {
-                thumbnail.setVisibility(View.GONE);
+                thumbnailContainer.setVisibility(View.GONE);
             }
         }
 

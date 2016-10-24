@@ -30,12 +30,12 @@ public final class DateFormatUtil {
         if (minutesAgo == 0) {
             postedOn = " just now ";
         } else if (minutesAgo < 60) {
-            postedOn = minutesAgo + " minutes ago";
+            postedOn = minutesAgo + " m";
         } else {
             if (hoursAgo < 49) {
-                postedOn = hoursAgo + " hours ago";
+                postedOn = hoursAgo + " hr";
             } else {
-                postedOn = daysAgo + " days ago";
+                postedOn = daysAgo + " days";
             }
         }
 

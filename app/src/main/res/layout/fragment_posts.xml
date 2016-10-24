@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +11,7 @@
         android:layout_height="fill_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <ProgressBar
             android:id="@+id/pbHeaderProgress"
@@ -23,21 +23,22 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/postsListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/postsListView"
-        android:layout_margin="5dp"
         android:clipToPadding="false"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:scrollbars="none"/>
+        android:divider="@color/gray"
+        android:dividerHeight="1dp"
+        android:scrollbars="none"
+        tools:listitem="@layout/comment_layout"/>
 
     <FrameLayout
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="#AA000000">
+        android:background="#AA000000"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/videoProgressLayout"
@@ -67,4 +68,4 @@
 
     </FrameLayout>
 
-</FrameLayout>
+</RelativeLayout>

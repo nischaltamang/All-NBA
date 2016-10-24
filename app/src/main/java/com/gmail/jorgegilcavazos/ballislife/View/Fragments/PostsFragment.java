@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,11 +75,11 @@ public class PostsFragment extends Fragment {
         switch (type) {
             case "small":
                 dpAsPixels = (int) (5 * scale + 0.5f);
-                postsListView.setDividerHeight(dpAsPixels);
+                //postsListView.setDividerHeight(dpAsPixels);
                 break;
             case "large":
                 dpAsPixels = (int) (10 * scale + 0.5f);
-                postsListView.setDividerHeight(dpAsPixels);
+                //postsListView.setDividerHeight(dpAsPixels);
                 break;
         }
 
@@ -156,12 +157,15 @@ public class PostsFragment extends Fragment {
         final String STREAMABLE_VIDEO_URL = "http://cdn.streamable.com/video/mp4/";
         final String YOUTUBE_DOMAIN = "youtube.com";
         final String SELF_POST_NBA_DOMAIN = "self.nba";
+        Log.d(TAG, "loaded");
         if (context != null) {
 
             postsListView.setAdapter(new PostsAdapter(context, posts, type));
+            Log.d(TAG, "adapter set");
             postsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d(TAG, "clicked");
                     Submission post = posts.get(position);
                     Bundle bundle = new Bundle();
                     bundle.putString(Constants.THREAD_ID, post.getId());
