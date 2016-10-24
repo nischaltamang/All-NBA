@@ -122,12 +122,12 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="5dp">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/submission_comments_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:padding="3dp"
                     android:src="@drawable/ic_forum_black_12dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:tint="@color/redditActionColor"/>
 
                 <TextView
@@ -151,12 +151,12 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="5dp">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/submission_upvotes_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    android:padding="3dp"
                     android:src="@drawable/ic_thumbs_up_down_black_12dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:tint="@color/redditActionColor"/>
 
                 <TextView
