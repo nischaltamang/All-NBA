@@ -70,20 +70,6 @@ public class PostsFragment extends Fragment {
         background = rootView.findViewById(R.id.background);
         background.setVisibility(View.GONE);
 
-        float scale = getResources().getDisplayMetrics().density;
-        int dpAsPixels;
-        switch (type) {
-            case "small":
-                dpAsPixels = (int) (5 * scale + 0.5f);
-                //postsListView.setDividerHeight(dpAsPixels);
-                break;
-            case "large":
-                dpAsPixels = (int) (10 * scale + 0.5f);
-                //postsListView.setDividerHeight(dpAsPixels);
-                break;
-        }
-
-
         fetchPosts();
         return rootView;
     }

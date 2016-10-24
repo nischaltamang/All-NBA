@@ -1,7 +1,12 @@
 package com.gmail.jorgegilcavazos.ballislife.General;
 
 public class Constants {
+    public static final String YOUTUBE_DOMAIN = "youtube.com";
+    public static final String INSTAGRAM_DOMAIN = "instagram.com";
     public static final String STREAMABLE_DOMAIN = "streamable.com";
+    public static final String IMGUR_DOMAIN = "imgur.com";
+    public static final String GIPHY_DOMAIN = "giphy.com";
+
     public static final String STREAMABLE_API_URL = "https://api.streamable.com/videos/";
 
     public static final String THREAD_ID = "THREAD_ID";

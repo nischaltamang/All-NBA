@@ -1,6 +1,7 @@
 package com.gmail.jorgegilcavazos.ballislife.Adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gmail.jorgegilcavazos.ballislife.General.Constants;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.DateFormatUtil;
 import com.squareup.picasso.Picasso;
@@ -67,12 +69,14 @@ public class PostsAdapter extends BaseAdapter {
 
         View thumbnailContainer = rowView.findViewById(R.id.thumbnail_container);
         ImageView thumbnail = (ImageView) rowView.findViewById(R.id.thumbnail);
+        ImageView thumbnailType = (ImageView) rowView.findViewById(R.id.thumbnail_content_type);
 
         Submission post = postsList.get(position);
 
         titleView.setText(post.getTitle());
         if (post.isStickied()) {
             titleView.setTextColor(ContextCompat.getColor(context, R.color.stickiedColor));
+            titleView.setTypeface(null, Typeface.BOLD);
         }
         scoreView.setText(String.valueOf(post.getScore()));
         authorView.setText(post.getAuthor());
@@ -85,9 +89,20 @@ public class PostsAdapter extends BaseAdapter {
             linkView.setText("• self." + post.getSubredditName());
             thumbnailContainer.setVisibility(View.GONE);
         } else {
-            linkView.setText("• " + post.getDomain());
+            String domain = post.getDomain();
+            linkView.setText("• " + domain);
             if (thumbnailUrl != null) {
                 Picasso.with(context).load(thumbnailUrl).into(thumbnail);
+                if (domain.equals(Constants.YOUTUBE_DOMAIN)
+                        || domain.equals(Constants.INSTAGRAM_DOMAIN)
+                        || domain.equals(Constants.STREAMABLE_DOMAIN)) {
+                    thumbnailType.setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
+                } else if (domain.equals(Constants.IMGUR_DOMAIN )
+                        || domain.equals(Constants.GIPHY_DOMAIN)) {
+                    thumbnailType.setImageResource(R.drawable.ic_gif_black_24dp);
+                } else {
+                    thumbnailType.setVisibility(View.GONE);
+                }
             } else {
                 thumbnailContainer.setVisibility(View.GONE);
             }

@@ -103,7 +103,7 @@
                 android:id="@+id/post_comments_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:padding="3dp"
+                android:padding="4dp"
                 android:src="@drawable/ic_forum_black_12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="@color/redditActionColor"/>
@@ -134,7 +134,7 @@
                 android:id="@+id/post_upvotes_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:padding="3dp"
+                android:padding="4dp"
                 android:src="@drawable/ic_thumbs_up_down_black_12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="@color/redditActionColor"/>
