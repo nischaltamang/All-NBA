@@ -1,5 +1,5 @@
 # NBA Android App
-[![Build Status](https://img.shields.io/badge/release-v0.1.0--alpha-red.svg)](LICENSE)
+[![Release status](https://img.shields.io/badge/release-v0.2.0--alpha-red.svg)](https://github.com/jorgegil96/All-NBA/releases)
 
 Android app for NBA fans. Features live scores, highlights, alerts and Reddit integration for discussions.
 
@@ -13,8 +13,12 @@ Android app for NBA fans. Features live scores, highlights, alerts and Reddit in
 * Standings and playoff bracket
 
 ## Screenshots
-<img src="art/menu.png" alt="Ready" width="300px;"/>
-<img src="art/games.png" alt="Ready" width="300px;"/>
+<img src="art/games.png" alt="Ready" width="200px;"/>
+<img src="art/game_threads.png" alt="Ready" width="200px;"/>
+<img src="art/reddit_feed.png" alt="Ready" width="200px;"/>
+<img src="art/submission.png" alt="Ready" width="200px;"/>
+
+[More screenshots](http://imgur.com/a/4h75K)
 
 ## Downloads
 
