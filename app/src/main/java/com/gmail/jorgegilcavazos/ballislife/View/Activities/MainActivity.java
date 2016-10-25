@@ -88,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
         setUpPreferences();
         loadNavigationHeaderContent();
 
-        setTitle("Games");
-
         registerGmcClient();
 
         AuthListener listener = new AuthListener() {
@@ -278,12 +276,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = fragmentManager.beginTransaction();
         switch (fragmentId) {
             case GAMES_FRAGMENT_ID:
-                setTitle(R.string.games_fragment_title);
                 gamesFragment = new GamesFragment();
                 fragmentTransaction.replace(R.id.fragment, gamesFragment, TAG_GAMES_FRAGMENT);
                 break;
             case STANDINGS_FRAGMENT_ID:
-                setTitle(R.string.standings_fragment_title);
                 toolbar.setSubtitle("");
                 standingsFragment = new StandingsFragment();
                 fragmentTransaction.replace(R.id.fragment, standingsFragment,
@@ -291,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case POSTS_FRAGMENT_ID:
                 toolbar.setSubtitle("");
-                setTitle(R.string.reddit_nba_fragment_title);
                 postsFragment = new PostsFragment();
                 bundle.putString("TYPE", "small");
                 postsFragment.setArguments(bundle);
@@ -299,13 +294,31 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case HIGHLIGHTS_FRAGMENT_ID:
                 toolbar.setSubtitle("");
-                setTitle(R.string.highlights_fragment_title);
                 highlightsFragment = new HighlightsFragment();
                 fragmentTransaction.replace(R.id.fragment, highlightsFragment,
                         TAG_HIGHLIGHTS_FRAGMENT);
                 break;
         }
         fragmentTransaction.commit();
+    }
+
+    private void setFragmentTitle() {
+        switch (selectedFragment) {
+            case GAMES_FRAGMENT_ID:
+                setTitle(R.string.games_fragment_title);
+                break;
+            case STANDINGS_FRAGMENT_ID:
+                setTitle(R.string.standings_fragment_title);
+                break;
+            case POSTS_FRAGMENT_ID:
+                setTitle(R.string.reddit_nba_fragment_title);
+                break;
+            case HIGHLIGHTS_FRAGMENT_ID:
+                setTitle(R.string.highlights_fragment_title);
+            default:
+                setTitle(R.string.games_fragment_title);
+                break;
+        }
     }
 
     private void registerGmcClient() {

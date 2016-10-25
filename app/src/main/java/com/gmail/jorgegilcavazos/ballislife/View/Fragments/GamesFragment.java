@@ -77,7 +77,10 @@ public class GamesFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.games_fragment_progress_layout);
+        linlaHeaderProgress = (LinearLayout) rootView.findViewById(
+                R.id.games_fragment_progress_layout);
+
+        getActivity().setTitle(R.string.games_fragment_title);
 
         ImageButton datePrevBtn = (ImageButton) rootView.findViewById(R.id.navigator_button_left);
         datePrevBtn.setOnClickListener(new View.OnClickListener() {

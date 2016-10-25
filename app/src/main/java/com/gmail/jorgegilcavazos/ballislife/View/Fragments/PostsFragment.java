@@ -70,6 +70,7 @@ public class PostsFragment extends Fragment {
         background = rootView.findViewById(R.id.background);
         background.setVisibility(View.GONE);
 
+        getActivity().setTitle(R.string.reddit_nba_fragment_title);
         fetchPosts();
         return rootView;
     }

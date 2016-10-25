@@ -32,4 +32,5 @@
     <color name="stickiedColor">#228822</color>
     <color name="flairColor">#009688</color>
     <color name="redditActionColor">#757575</color>
+    <color name="redditInfoColor">#A5A5A5</color>
 </resources>

@@ -55,6 +55,8 @@ public class StandingsFragment extends Fragment {
         linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
 
         tableLayout = (TableLayout) rootView.findViewById(R.id.tableLayout);
+
+        getActivity().setTitle(R.string.standings_fragment_title);
         return rootView;
     }
 

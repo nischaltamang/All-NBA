@@ -10,7 +10,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
 
         <ImageView
@@ -33,7 +33,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/thumbnail_container"
+        android:layout_toEndOf="@id/thumbnail_container"
         android:layout_centerVertical="true">
 
         <TextView
@@ -83,10 +83,9 @@
             android:id="@+id/linkView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="• streamableaaaaaaaaaa "
+            android:text="• streamable.com"
             android:textColor="@color/secondaryText"
             android:textSize="10sp"
-            android:maxLength="15"
             android:paddingBottom="2dp"
             android:paddingRight="5dp"
             android:layout_below="@+id/titleView"
@@ -106,7 +105,7 @@
                 android:padding="4dp"
                 android:src="@drawable/ic_forum_black_12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:tint="@color/redditActionColor"/>
+                android:tint="@color/redditInfoColor"/>
 
             <TextView
                 android:id="@+id/numCommentsView"
@@ -116,6 +115,7 @@
                 android:layout_alignTop="@id/post_comments_icon"
                 android:layout_alignBottom="@id/post_comments_icon"
                 android:text="528"
+                android:textColor="@color/redditInfoColor"
                 android:textSize="12sp"
                 android:gravity="center"/>
 
@@ -137,7 +137,7 @@
                 android:padding="4dp"
                 android:src="@drawable/ic_thumbs_up_down_black_12dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:tint="@color/redditActionColor"/>
+                android:tint="@color/redditInfoColor"/>
 
             <TextView
                 android:id="@+id/scoreView"
@@ -147,6 +147,7 @@
                 android:layout_alignTop="@id/post_upvotes_icon"
                 android:layout_alignBottom="@id/post_upvotes_icon"
                 android:text="1290"
+                android:textColor="@color/redditInfoColor"
                 android:textSize="12sp"
                 android:gravity="center"/>
 
