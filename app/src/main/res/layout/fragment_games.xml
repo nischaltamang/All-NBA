@@ -6,25 +6,6 @@
     android:background="@color/lightGray"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/games_fragment_progress_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <ProgressBar
-            android:id="@+id/pbHeaderProgress"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateTintMode="src_atop">
-        </ProgressBar>
-
-    </LinearLayout>
-
     <RelativeLayout
         android:id="@+id/navigator"
         android:layout_width="match_parent"
@@ -60,12 +41,18 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/games_rv"
-        android:layout_width="wrap_content"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/navigator"
-        tools:listitem="@layout/row_game"/>
+        android:layout_below="@id/navigator">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/games_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/row_game"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/no_games_text"

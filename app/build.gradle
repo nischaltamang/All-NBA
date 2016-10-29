@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 23
@@ -41,4 +42,6 @@ dependencies {
     compile 'com.android.support:customtabs:23.3.0'
     compile 'net.dean.jraw:JRAW:0.9.0'
     compile 'com.google.code.gson:gson:2.7'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }

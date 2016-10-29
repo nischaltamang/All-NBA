@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +30,6 @@ import com.gmail.jorgegilcavazos.ballislife.Service.JSONGameDataService;
 import com.gmail.jorgegilcavazos.ballislife.Utils.DateFormatUtil;
 import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
 import com.gmail.jorgegilcavazos.ballislife.View.Activities.CommentsActivity;
-import com.gmail.jorgegilcavazos.ballislife.View.Activities.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,6 +37,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 // TODO: Use View Holder pattern instead of list view with adapter.
 public class GamesFragment extends Fragment {
@@ -48,18 +52,19 @@ public class GamesFragment extends Fragment {
             "com.example.jorgegil.closegamealert.GAME_THREAD_AWAY";
     public final static String GAME_ID = "com.example.jorgegil.closegamealert.GAME_ID";
 
-    private Context mContext;
-    private View rootView;
-    private TextView mNavigatorDate;
-    private TextView mNoGamesText;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private GameAdapter mGameAdapter;
-    private LinearLayout linlaHeaderProgress;
+    @BindView(R.id.navigator_text) TextView tvNavigatorDate;
+    @BindView(R.id.no_games_text) TextView tvNoGames;
+    @BindView(R.id.games_rv) RecyclerView rvGames;
+    @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    private Context context;
+    private View view;
+    private RecyclerView.LayoutManager lmGames;
+    private GameAdapter gameAdapter;
     private GameDataService gameDataService;
     private Snackbar snackbar;
-    private List<NBAGame> mNbaGames;
-    private Calendar mSelectedDate;
+    private List<NBAGame> nbaGamesList;
+    private Calendar selectedDate;
+    private Unbinder unbinder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,53 +75,57 @@ public class GamesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_games, container, false);
-        mNavigatorDate = (TextView) rootView.findViewById(R.id.navigator_text);
-        mNoGamesText = (TextView) rootView.findViewById(R.id.no_games_text);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.games_rv);
-        mLayoutManager = new LinearLayoutManager(mContext);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        view = inflater.inflate(R.layout.fragment_games, container, false);
+        unbinder = ButterKnife.bind(this, view);
 
-        linlaHeaderProgress = (LinearLayout) rootView.findViewById(
-                R.id.games_fragment_progress_layout);
+        lmGames = new LinearLayoutManager(context);
+        rvGames.setLayoutManager(lmGames);
 
         getActivity().setTitle(R.string.games_fragment_title);
 
-        ImageButton datePrevBtn = (ImageButton) rootView.findViewById(R.id.navigator_button_left);
+        ImageButton datePrevBtn = (ImageButton) view.findViewById(R.id.navigator_button_left);
         datePrevBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSelectedDate == null) {
-                    mSelectedDate = Calendar.getInstance();
+                if (selectedDate == null) {
+                    selectedDate = Calendar.getInstance();
                 }
-                mSelectedDate.add(Calendar.DAY_OF_YEAR, -1);
-                setNavigatorDate(mSelectedDate.getTime());
-                loadGameData(mSelectedDate.getTime());
+                selectedDate.add(Calendar.DAY_OF_YEAR, -1);
+                setNavigatorDate(selectedDate.getTime());
+                loadGameData(selectedDate.getTime());
             }
         });
-        ImageButton dateNextBtn = (ImageButton) rootView.findViewById(R.id.navigator_button_right);
+        ImageButton dateNextBtn = (ImageButton) view.findViewById(R.id.navigator_button_right);
         dateNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSelectedDate == null) {
-                    mSelectedDate = Calendar.getInstance();
+                if (selectedDate == null) {
+                    selectedDate = Calendar.getInstance();
                 }
-                mSelectedDate.add(Calendar.DAY_OF_YEAR, 1);
-                setNavigatorDate(mSelectedDate.getTime());
-                loadGameData(mSelectedDate.getTime());
+                selectedDate.add(Calendar.DAY_OF_YEAR, 1);
+                setNavigatorDate(selectedDate.getTime());
+                loadGameData(selectedDate.getTime());
             }
         });
 
-        return rootView;
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadGameData(selectedDate.getTime());
+                setNavigatorDate(selectedDate.getTime());
+            }
+        });
+
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mContext = getActivity();
-        mSelectedDate = Calendar.getInstance();
-        setNavigatorDate(mSelectedDate.getTime());
-        loadGameData(mSelectedDate.getTime());
+        context = getActivity();
+        selectedDate = Calendar.getInstance();
+        setNavigatorDate(selectedDate.getTime());
+        loadGameData(selectedDate.getTime());
     }
 
     @Override
@@ -127,11 +136,17 @@ public class GamesFragment extends Fragment {
                 new IntentFilter("game-data"));
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
     // When new data is received, the JSON is parsed and the listview is notified of change.
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (isVisible() && DateFormatUtil.isDateToday(mSelectedDate.getTime())) {
+            if (isVisible() && DateFormatUtil.isDateToday(selectedDate.getTime())) {
                 String message = intent.getStringExtra("message");
                 updateGameData(message);
             }
@@ -139,22 +154,22 @@ public class GamesFragment extends Fragment {
     };
 
     private void loadGameData(Date date) {
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
-        mNoGamesText.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(true);
+        rvGames.setVisibility(View.GONE);
+        tvNoGames.setVisibility(View.GONE);
 
         GetRequestListener listener = new GetRequestListener() {
             @Override
             public void onResult(String result) {
-                mNbaGames = new ArrayList<>();
-                mNbaGames.addAll(getGamesListFromJson(result));
+                nbaGamesList = new ArrayList<>();
+                nbaGamesList.addAll(getGamesListFromJson(result));
                 setGameAdapter();
-                mRecyclerView.setAdapter(mGameAdapter);
-                linlaHeaderProgress.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.VISIBLE);
+                rvGames.setAdapter(gameAdapter);
+                rvGames.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setRefreshing(false);
 
-                if (mNbaGames.size() == 0) {
-                    mNoGamesText.setVisibility(View.VISIBLE);
+                if (nbaGamesList.size() == 0) {
+                    tvNoGames.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -163,7 +178,7 @@ public class GamesFragment extends Fragment {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "Volley error when loading game data: " + error);
                 }
-                linlaHeaderProgress.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
                 showSnackBar("Could not load game data", true /* retry */);
             }
         };
@@ -173,8 +188,8 @@ public class GamesFragment extends Fragment {
     }
 
     private void updateGameData(String jsonString) {
-        if (mGameAdapter != null) {
-            mGameAdapter.swap(getGamesListFromJson(jsonString));
+        if (gameAdapter != null) {
+            gameAdapter.swap(getGamesListFromJson(jsonString));
         }
     }
 
@@ -184,35 +199,35 @@ public class GamesFragment extends Fragment {
     }
 
     private void setGameAdapter() {
-        mGameAdapter = new GameAdapter(mContext, mNbaGames, new GameAdapter.OnItemClickListener() {
+        gameAdapter = new GameAdapter(context, nbaGamesList, new GameAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), CommentsActivity.class);
-                intent.putExtra(GAME_THREAD_HOME, mNbaGames.get(position).getHomeTeamAbbr());
-                intent.putExtra(GAME_THREAD_AWAY, mNbaGames.get(position).getAwayTeamAbbr());
-                intent.putExtra(GAME_ID, mNbaGames.get(position).getId());
+                intent.putExtra(GAME_THREAD_HOME, nbaGamesList.get(position).getHomeTeamAbbr());
+                intent.putExtra(GAME_THREAD_AWAY, nbaGamesList.get(position).getAwayTeamAbbr());
+                intent.putExtra(GAME_ID, nbaGamesList.get(position).getId());
                 startActivity(intent);
             }
         });
     }
 
     private void setNavigatorDate(Date date) {
-        mNavigatorDate.setText(DateFormatUtil.formatNavigatorDate(date));
+        tvNavigatorDate.setText(DateFormatUtil.formatNavigatorDate(date));
     }
 
     private void showSnackBar(String message, boolean retry) {
-        snackbar = Snackbar.make(rootView, message,
+        snackbar = Snackbar.make(view, message,
                 Snackbar.LENGTH_INDEFINITE);
         if (retry) {
             snackbar.setAction("RETRY", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    loadGameData(mSelectedDate.getTime());
-                    setNavigatorDate(mSelectedDate.getTime());
+                    loadGameData(selectedDate.getTime());
+                    setNavigatorDate(selectedDate.getTime());
                 }
             });
         }
-        linlaHeaderProgress.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
         snackbar.show();
     }
 
@@ -241,8 +256,8 @@ public class GamesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                loadGameData(mSelectedDate.getTime());
-                setNavigatorDate(mSelectedDate.getTime());
+                loadGameData(selectedDate.getTime());
+                setNavigatorDate(selectedDate.getTime());
                 return true;
         }
         return super.onOptionsItemSelected(item);
