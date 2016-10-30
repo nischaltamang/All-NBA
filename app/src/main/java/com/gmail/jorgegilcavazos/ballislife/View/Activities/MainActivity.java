@@ -36,7 +36,7 @@ import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.Utils.MyDebug;
 import com.gmail.jorgegilcavazos.ballislife.Service.RedditAuthentication;
-import com.gmail.jorgegilcavazos.ballislife.View.Fragments.GamesFragment;
+import com.gmail.jorgegilcavazos.ballislife.Games.GamesFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.HighlightsFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.PostsFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.StandingsFragment;
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = fragmentManager.beginTransaction();
         switch (fragmentId) {
             case GAMES_FRAGMENT_ID:
-                gamesFragment = new GamesFragment();
+                gamesFragment = GamesFragment.newInstance();
                 fragmentTransaction.replace(R.id.fragment, gamesFragment, TAG_GAMES_FRAGMENT);
                 break;
             case STANDINGS_FRAGMENT_ID:
@@ -300,25 +300,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         fragmentTransaction.commit();
-    }
-
-    private void setFragmentTitle() {
-        switch (selectedFragment) {
-            case GAMES_FRAGMENT_ID:
-                setTitle(R.string.games_fragment_title);
-                break;
-            case STANDINGS_FRAGMENT_ID:
-                setTitle(R.string.standings_fragment_title);
-                break;
-            case POSTS_FRAGMENT_ID:
-                setTitle(R.string.reddit_nba_fragment_title);
-                break;
-            case HIGHLIGHTS_FRAGMENT_ID:
-                setTitle(R.string.highlights_fragment_title);
-            default:
-                setTitle(R.string.games_fragment_title);
-                break;
-        }
     }
 
     private void registerGmcClient() {

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gmail.jorgegilcavazos.ballislife.Games.GamesFragment;
 import com.gmail.jorgegilcavazos.ballislife.General.NBAGame;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.Utils.Utilities;
@@ -17,23 +18,19 @@ import java.util.List;
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
     private Context mContext;
     private List<NBAGame> mNbaGames;
-    private OnItemClickListener mOnItemClickListener;
+    private GamesFragment.GameItemListener mGameItemListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public GameAdapter(Context context, List<NBAGame> nbaGames,
-                       OnItemClickListener onItemClickListener) {
-        mContext = context;
+    public GameAdapter(List<NBAGame> nbaGames,
+                       GamesFragment.GameItemListener gameItemListener) {
         mNbaGames = nbaGames;
-        mOnItemClickListener = onItemClickListener;
+        mGameItemListener = gameItemListener;
     }
 
     @Override
     public GameViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game,
                 parent, false);
+        mContext = parent.getContext();
 
         return new GameViewHolder(view);
     }
@@ -86,7 +83,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         holder.mContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnItemClickListener.onItemClick(v, holder.getAdapterPosition());
+                mGameItemListener.onGameClick(mNbaGames.get(holder.getAdapterPosition()));
             }
         });
     }

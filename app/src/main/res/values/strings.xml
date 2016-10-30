@@ -11,6 +11,8 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="tomorrow">Tomorrow</string>
+    <string name="retry">Retry</string>
+    <string name="failed_game_data">Could not load game data</string>
 
     <!-- Strings for MainActivity -->
     <string name="action_refresh">Refresh</string>

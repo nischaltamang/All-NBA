@@ -15,7 +15,7 @@ import com.gmail.jorgegilcavazos.ballislife.Adapter.PagerAdapter;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.BoxScoreFragment;
 import com.gmail.jorgegilcavazos.ballislife.View.Fragments.CommentThreadFragment;
-import com.gmail.jorgegilcavazos.ballislife.View.Fragments.GamesFragment;
+import com.gmail.jorgegilcavazos.ballislife.Games.GamesFragment;
 
 public class CommentsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener{
     private static final String TAG = "CommentsActivity";
