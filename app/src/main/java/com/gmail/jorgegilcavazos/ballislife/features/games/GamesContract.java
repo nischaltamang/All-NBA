@@ -5,10 +5,12 @@ import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Contract specification between the {@link GamesFragment} and the {@link GamesPresenter}.
+ */
 public interface GamesContract {
 
     interface View {
-
         void setProgressIndicator(boolean active);
 
         void setNavigatorDate(Calendar date);
@@ -27,7 +29,6 @@ public interface GamesContract {
     }
 
     interface UserActionsListener {
-
         Calendar changeNavigatorDate(Calendar calendar, int delta);
 
         void loadNavigatorDate(Calendar date);

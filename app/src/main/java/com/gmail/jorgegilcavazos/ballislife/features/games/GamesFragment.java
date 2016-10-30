@@ -35,6 +35,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * Displays a list of {@link NbaGame}s for the selected date.
+ */
 public class GamesFragment extends Fragment implements GamesContract.View {
     public final static String TAG = "GamesFragment";
 

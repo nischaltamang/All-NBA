@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Implementation of the {@link GameServiceApi} that fetches data from a private API.
+ */
 public class GameServiceApiImpl implements GameServiceApi {
     private final static String BASE_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/api/v1/";
     private final static String REQUEST_TAG = "FETCH_GAMES";
