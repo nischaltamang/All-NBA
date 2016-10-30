@@ -14,6 +14,12 @@ import com.gmail.jorgegilcavazos.ballislife.util.Utilities;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * RecyclerView Adapter used by the {@link GamesFragment} to display a list of games.
+ */
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder> {
     private Context context;
     private List<NbaGame> nbaGameList;
@@ -42,43 +48,43 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeamAbbr()
                 .toLowerCase(), "drawable", context.getPackageName());
 
-        holder.mHomeTeamLabel.setText(nbaGame.getHomeTeamAbbr());
-        holder.mAwayTeamLabel.setText(nbaGame.getAwayTeamAbbr());
-        holder.homeLogo.setImageResource(resKeyHome);
-        holder.awayLogo.setImageResource(resKeyAway);
-        holder.mHomeScoreLabel.setText(nbaGame.getHomeTeamScore());
-        holder.mAwayScoreLabel.setText(nbaGame.getAwayTeamScore());
-        holder.mClockLabel.setText(nbaGame.getGameClock());
-        holder.mPeriodLabel.setText(Utilities.getPeriodString(nbaGame.getPeriodValue(),
+        holder.tvHomeTeam.setText(nbaGame.getHomeTeamAbbr());
+        holder.tvAwayTeam.setText(nbaGame.getAwayTeamAbbr());
+        holder.ivHomeLogo.setImageResource(resKeyHome);
+        holder.ivAwayLogo.setImageResource(resKeyAway);
+        holder.tvHomeScore.setText(nbaGame.getHomeTeamScore());
+        holder.tvAwayScore.setText(nbaGame.getAwayTeamScore());
+        holder.tvClock.setText(nbaGame.getGameClock());
+        holder.tvPeriod.setText(Utilities.getPeriodString(nbaGame.getPeriodValue(),
                 nbaGame.getPeriodName()));
 
-        holder.mHomeScoreLabel.setVisibility(View.GONE);
-        holder.mAwayScoreLabel.setVisibility(View.GONE);
-        holder.mClockLabel.setVisibility(View.GONE);
-        holder.mPeriodLabel.setVisibility(View.GONE);
-        holder.mFinalLabel.setVisibility(View.GONE);
-        holder.mTimeLabel.setVisibility(View.GONE);
+        holder.tvHomeScore.setVisibility(View.GONE);
+        holder.tvAwayScore.setVisibility(View.GONE);
+        holder.tvClock.setVisibility(View.GONE);
+        holder.tvPeriod.setVisibility(View.GONE);
+        holder.tvFinal.setVisibility(View.GONE);
+        holder.tvTime.setVisibility(View.GONE);
 
         switch (nbaGame.getGameStatus()) {
             case NbaGame.PRE_GAME:
-                holder.mTimeLabel.setVisibility(View.VISIBLE);
-                holder.mTimeLabel.setText(nbaGame.getPeriodStatus());
+                holder.tvTime.setVisibility(View.VISIBLE);
+                holder.tvTime.setText(nbaGame.getPeriodStatus());
                 break;
             case NbaGame.IN_GAME:
-                holder.mHomeScoreLabel.setVisibility(View.VISIBLE);
-                holder.mAwayScoreLabel.setVisibility(View.VISIBLE);
-                holder.mClockLabel.setVisibility(View.VISIBLE);
-                holder.mPeriodLabel.setVisibility(View.VISIBLE);
+                holder.tvHomeScore.setVisibility(View.VISIBLE);
+                holder.tvAwayScore.setVisibility(View.VISIBLE);
+                holder.tvClock.setVisibility(View.VISIBLE);
+                holder.tvPeriod.setVisibility(View.VISIBLE);
                 break;
             case NbaGame.POST_GAME:
-                holder.mHomeScoreLabel.setVisibility(View.VISIBLE);
-                holder.mAwayScoreLabel.setVisibility(View.VISIBLE);
-                holder.mFinalLabel.setVisibility(View.VISIBLE);
-                holder.mFinalLabel.setText("FINAL");
+                holder.tvHomeScore.setVisibility(View.VISIBLE);
+                holder.tvAwayScore.setVisibility(View.VISIBLE);
+                holder.tvFinal.setVisibility(View.VISIBLE);
+                holder.tvFinal.setText("FINAL");
                 break;
         }
 
-        holder.mContainer.setOnClickListener(new View.OnClickListener() {
+        holder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gameItemListener.onGameClick(nbaGameList.get(holder.getAdapterPosition()));
@@ -98,24 +104,22 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     }
 
     public static class GameViewHolder extends RecyclerView.ViewHolder {
-        public View mContainer;
-        public TextView mHomeTeamLabel, mAwayTeamLabel, mHomeScoreLabel, mAwayScoreLabel,
-                mClockLabel, mPeriodLabel, mTimeLabel, mFinalLabel;
-        public ImageView homeLogo, awayLogo;
+        View container;
+        @BindView(R.id.homelabel) TextView tvHomeTeam;
+        @BindView(R.id.awaylabel) TextView tvAwayTeam;
+        @BindView(R.id.homescore) TextView tvHomeScore;
+        @BindView(R.id.awayscore) TextView tvAwayScore;
+        @BindView(R.id.clock) TextView tvClock;
+        @BindView(R.id.period) TextView tvPeriod;
+        @BindView(R.id.extraLabel) TextView tvTime;
+        @BindView(R.id.extraLabel2) TextView tvFinal;
+        @BindView(R.id.homeicon) ImageView ivHomeLogo;
+        @BindView(R.id.awayicon) ImageView ivAwayLogo;
 
         public GameViewHolder(View view) {
             super(view);
-            mContainer = view;
-            mHomeTeamLabel = (TextView) view.findViewById(R.id.homelabel);
-            mAwayTeamLabel = (TextView) view.findViewById(R.id.awaylabel);
-            homeLogo = (ImageView) view.findViewById(R.id.homeicon);
-            awayLogo = (ImageView) view.findViewById(R.id.awayicon);
-            mHomeScoreLabel = (TextView) view.findViewById(R.id.homescore);
-            mAwayScoreLabel = (TextView) view.findViewById(R.id.awayscore);
-            mClockLabel = (TextView) view.findViewById(R.id.clock);
-            mPeriodLabel = (TextView) view.findViewById(R.id.period);
-            mTimeLabel = (TextView) view.findViewById(R.id.extraLabel);
-            mFinalLabel = (TextView) view.findViewById(R.id.extraLabel2);
+            ButterKnife.bind(this, view);
+            container = view;
         }
     }
 }
