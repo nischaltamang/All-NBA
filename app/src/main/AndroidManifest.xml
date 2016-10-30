@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.gmail.jorgegilcavazos.ballislife.View.Activities.IntroActivity"
+            android:name="com.gmail.jorgegilcavazos.ballislife.features.intro.IntroActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,13 +30,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.gmail.jorgegilcavazos.ballislife.View.Activities.MainActivity"
+            android:name="com.gmail.jorgegilcavazos.ballislife.features.main.MainActivity"
             android:label="@string/app_name">
         </activity>
         <activity
-            android:name="com.gmail.jorgegilcavazos.ballislife.View.Activities.CommentsActivity"
+            android:name="com.gmail.jorgegilcavazos.ballislife.features.gamethread.CommentsActivity"
             android:label="Comments"
-            android:parentActivityName="com.gmail.jorgegilcavazos.ballislife.View.Activities.MainActivity">
+            android:parentActivityName="com.gmail.jorgegilcavazos.ballislife.features.main.MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -55,7 +55,7 @@
         </receiver>
 
         <service
-            android:name="com.gmail.jorgegilcavazos.ballislife.GCM.GCMMessageHandler"
+            android:name="com.gmail.jorgegilcavazos.ballislife.network.GCMMessageHandler"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -67,11 +67,11 @@
             android:value="87003f261e96116d27947fd20dd714ca5a34d579" />
 
         <activity
-            android:name="com.gmail.jorgegilcavazos.ballislife.View.Activities.SettingsActivity"
+            android:name="com.gmail.jorgegilcavazos.ballislife.features.settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name="com.gmail.jorgegilcavazos.ballislife.View.Activities.LoginActivity" />
+        <activity android:name="com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity" />
         <activity
-            android:name="com.gmail.jorgegilcavazos.ballislife.View.Activities.SubmissionActivity"
+            android:name="com.gmail.jorgegilcavazos.ballislife.features.submission.SubmissionActivity"
             android:label="@string/title_activity_submission"
             android:theme="@style/AppTheme" />
     </application>

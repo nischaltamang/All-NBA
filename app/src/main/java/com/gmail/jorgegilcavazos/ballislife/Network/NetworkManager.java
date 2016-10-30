@@ -1,4 +1,4 @@
-package com.gmail.jorgegilcavazos.ballislife.Network;
+package com.gmail.jorgegilcavazos.ballislife.network;
 
 import android.content.Context;
 
