@@ -43,6 +43,7 @@ public class RedditAuthentication {
     private static RedditAuthentication mInstance = null;
 
     private RedditClient mRedditClient;
+    private UserAuthTask userAuthTask;
 
     private RedditAuthentication() {
         mRedditClient = new RedditClient(UserAgent.of("android",
@@ -92,7 +93,16 @@ public class RedditAuthentication {
     public void authenticateWithUser(String url, AuthListener listener) {
         OAuthHelper oAuthHelper = mRedditClient.getOAuthHelper();
         Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
-        new UserAuthTask(oAuthHelper, credentials, url, listener).execute();
+
+        cancelUserAuthTaskIfRunning();
+        userAuthTask = new UserAuthTask(mRedditClient, oAuthHelper, credentials, url, listener);
+        userAuthTask.execute();
+    }
+
+    public void cancelUserAuthTaskIfRunning() {
+        if (userAuthTask != null) {
+            userAuthTask.cancel(true);
+        }
     }
 
     public URL getAuthorizationUrl() {
@@ -158,14 +168,19 @@ public class RedditAuthentication {
         }
     }
 
-    private class UserAuthTask extends AsyncTask<Void, Void, Void> {
+    private static class UserAuthTask extends AsyncTask<Void, Void, Void> {
+        RedditClient redditClient;
         private OAuthHelper mOAuthHelper;
         private Credentials mCredentials;
         private String mUrl;
         private AuthListener mListener;
 
-        public UserAuthTask(OAuthHelper oAuthHelper, Credentials credentials, String url,
+        public UserAuthTask(RedditClient redditClient,
+                            OAuthHelper oAuthHelper,
+                            Credentials credentials,
+                            String url,
                             AuthListener listener) {
+            this.redditClient = redditClient;
             mOAuthHelper = oAuthHelper;
             mCredentials = credentials;
             mUrl = url;
@@ -176,7 +191,7 @@ public class RedditAuthentication {
         protected Void doInBackground(Void... params) {
             try {
                 OAuthData oAuthData = mOAuthHelper.onUserChallenge(mUrl, mCredentials);
-                mRedditClient.authenticate(oAuthData);
+                redditClient.authenticate(oAuthData);
             } catch (OAuthException e) {
                 if (MyDebug.LOG) {
                     Log.e(TAG, "UserAuthTask: Could not get OAuthData. ", e);
@@ -187,10 +202,10 @@ public class RedditAuthentication {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (mRedditClient.isAuthenticated() && mRedditClient.hasActiveUserContext()) {
+            if (redditClient.isAuthenticated() && redditClient.hasActiveUserContext()) {
                 if (MyDebug.LOG) {
                     Log.i(TAG, "UserAuthTask: Logged in as " +
-                            mRedditClient.getAuthenticatedUser());
+                            redditClient.getAuthenticatedUser());
                 }
                 mListener.onSuccess();
             } else {

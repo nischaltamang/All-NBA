@@ -15,6 +15,7 @@ import android.webkit.WebViewClient;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.util.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
+import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
 
 import java.net.URL;
 
@@ -41,13 +42,20 @@ public class LoginActivity extends AppCompatActivity {
         final AuthListener authListener = new AuthListener() {
             @Override
             public void onSuccess() {
+                if (MyDebug.LOG) {
+                    Log.d(TAG, "success");
+                }
                 Intent intent = new Intent("reddit-user-login");
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                finish();
             }
 
             @Override
             public void onFailure() {
-
+                if (MyDebug.LOG) {
+                    Log.d(TAG, "failed");
+                }
+                finish();
             }
         };
 
@@ -65,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (url.contains("code=")) {
                     webView.stopLoading();
                     RedditAuthentication.getInstance().authenticateWithUser(url, authListener);
-                    finish();
+                    //TODO: show spinner
                 }
             }
         });
@@ -84,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        // TODO: Cancel async task
+        RedditAuthentication.getInstance().cancelUserAuthTaskIfRunning();
         webView.destroy();
         super.onDestroy();
     }
