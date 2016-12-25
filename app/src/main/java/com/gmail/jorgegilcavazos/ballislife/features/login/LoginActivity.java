@@ -18,8 +18,12 @@ import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
 
 import java.net.URL;
 
+import butterknife.BindView;
+
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
+
+    @BindView(R.id.login_webview) WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +37,6 @@ public class LoginActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         setTitle("Log in to Reddit");
-
 
         final AuthListener authListener = new AuthListener() {
             @Override
@@ -49,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         URL authURL = RedditAuthentication.getInstance().getAuthorizationUrl();
-        final WebView webView = (WebView) findViewById(R.id.login_webview);
+        webView = (WebView) findViewById(R.id.login_webview);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -79,4 +82,10 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        // TODO: Cancel async task
+        webView.destroy();
+        super.onDestroy();
+    }
 }

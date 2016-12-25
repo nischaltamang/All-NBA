@@ -85,6 +85,10 @@ public class RedditAuthentication {
         new ReAuthTask(credentials, refreshToken, listener).execute();
     }
 
+    /**
+     * Starts a {@link UserAuthTask} when a user logs in for the first time. Usually started by
+     * the {@link com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity}.
+     */
     public void authenticateWithUser(String url, AuthListener listener) {
         OAuthHelper oAuthHelper = mRedditClient.getOAuthHelper();
         Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
