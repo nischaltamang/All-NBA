@@ -45,6 +45,8 @@ public class RedditAuthentication {
 
     private RedditClient mRedditClient;
     private UserAuthTask userAuthTask;
+    private UserlessAuthTask userlessAuthTask;
+    private ReAuthTask reAuthTask;
 
     private RedditAuthentication() {
         mRedditClient = new RedditClient(UserAgent.of("android",
@@ -76,7 +78,15 @@ public class RedditAuthentication {
     }
 
     private void authenticateWithoutUser(AuthListener listener) {
-        new UserlessAuthTask(listener).execute();
+        cancelUserlessAuthTaskIfRunning();
+        userlessAuthTask = new UserlessAuthTask(mRedditClient, listener);
+        userlessAuthTask.execute();
+    }
+
+    public void cancelUserlessAuthTaskIfRunning() {
+        if (userlessAuthTask != null) {
+            userlessAuthTask.cancel(true);
+        }
     }
 
     private void reAuthenticate(String refreshToken, AuthListener listener) {
@@ -84,7 +94,15 @@ public class RedditAuthentication {
         helper.setRefreshToken(refreshToken);
         Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
 
-        new ReAuthTask(credentials, refreshToken, listener).execute();
+        cancelReAuthTaskIfRunning();
+        reAuthTask = new ReAuthTask(mRedditClient, credentials, refreshToken, listener);
+        reAuthTask.execute();
+    }
+
+    public void cancelReAuthTaskIfRunning() {
+        if (reAuthTask != null) {
+            reAuthTask.cancel(true);
+        }
     }
 
     /**
@@ -131,10 +149,12 @@ public class RedditAuthentication {
         }
     }
 
-    private class UserlessAuthTask extends AsyncTask<Void, Void, Void> {
+    private static class UserlessAuthTask extends AsyncTask<Void, Void, Void> {
+        private RedditClient redditClient;
         private AuthListener mListener;
 
-        public UserlessAuthTask(AuthListener listener) {
+        public UserlessAuthTask(RedditClient redditClient, AuthListener listener) {
+            this.redditClient = redditClient;
             mListener = listener;
         }
 
@@ -143,8 +163,8 @@ public class RedditAuthentication {
             Credentials credentials = Credentials.userlessApp(CLIENT_ID, UUID.randomUUID());
 
             try {
-                OAuthData oAuthData = mRedditClient.getOAuthHelper().easyAuth(credentials);
-                mRedditClient.authenticate(oAuthData);
+                OAuthData oAuthData = redditClient.getOAuthHelper().easyAuth(credentials);
+                redditClient.authenticate(oAuthData);
             } catch (Exception e) {
                 if (MyDebug.LOG) {
                     Log.e(TAG, "ReAuthTask: Could not authenticate. ", e);
@@ -155,7 +175,7 @@ public class RedditAuthentication {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (mRedditClient.isAuthenticated()) {
+            if (redditClient.isAuthenticated()) {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "UserlessAuthTask: logged in without user context");
                 }
@@ -170,7 +190,7 @@ public class RedditAuthentication {
     }
 
     private static class UserAuthTask extends AsyncTask<Void, Void, Void> {
-        RedditClient redditClient;
+        private RedditClient redditClient;
         private OAuthHelper mOAuthHelper;
         private Credentials mCredentials;
         private String mUrl;
@@ -215,12 +235,17 @@ public class RedditAuthentication {
         }
     }
 
-    private class ReAuthTask extends AsyncTask<Void, Void, Void> {
+    private static class ReAuthTask extends AsyncTask<Void, Void, Void> {
+        private RedditClient redditClient;
         private Credentials mCredentials;
         private String mRefreshToken;
         private AuthListener mListener;
 
-        public ReAuthTask(Credentials credentials, String refreshToken, AuthListener listener) {
+        public ReAuthTask(RedditClient redditClient,
+                          Credentials credentials,
+                          String refreshToken,
+                          AuthListener listener) {
+            this.redditClient = redditClient;
             mCredentials = credentials;
             mRefreshToken = refreshToken;
             mListener = listener;
@@ -228,18 +253,12 @@ public class RedditAuthentication {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d(TAG, "dibbbbbb");
-            OAuthHelper helper = mRedditClient.getOAuthHelper();
+            OAuthHelper helper = redditClient.getOAuthHelper();
             helper.setRefreshToken(mRefreshToken);
 
-            Log.d(TAG, "abc");
             try {
-                if (helper.canRefresh()) {
-                    Log.d(TAG, "canrefresh");
-                }
                 OAuthData oAuthData = helper.refreshToken(mCredentials);
-                Log.d(TAG, "deb");
-                mRedditClient.authenticate(oAuthData);
+                redditClient.authenticate(oAuthData);
             } catch (Exception e) {
                 if (MyDebug.LOG) {
                     Log.e(TAG, "ReAuthTask: Could not authenticate. ", e);
@@ -250,9 +269,9 @@ public class RedditAuthentication {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (mRedditClient.isAuthenticated() && mRedditClient.hasActiveUserContext()) {
+            if (redditClient.isAuthenticated() && redditClient.hasActiveUserContext()) {
                 if (MyDebug.LOG) {
-                    Log.i(TAG, "ReAuthTask: Logged in as " + mRedditClient.getAuthenticatedUser());
+                    Log.i(TAG, "ReAuthTask: Logged in as " + redditClient.getAuthenticatedUser());
                 }
                 mListener.onSuccess();
             } else {

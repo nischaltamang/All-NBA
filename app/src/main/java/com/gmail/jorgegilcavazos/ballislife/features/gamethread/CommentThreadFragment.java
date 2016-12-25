@@ -122,6 +122,13 @@ public class CommentThreadFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        RedditAuthentication.getInstance().cancelUserlessAuthTaskIfRunning();
+        RedditAuthentication.getInstance().cancelReAuthTaskIfRunning();
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:

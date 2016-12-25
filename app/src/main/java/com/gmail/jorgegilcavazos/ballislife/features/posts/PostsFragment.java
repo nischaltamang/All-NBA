@@ -292,4 +292,11 @@ public class PostsFragment extends Fragment {
     public void onResume() {
         super.onResume();
     }
+
+    @Override
+    public void onDestroy() {
+        RedditAuthentication.getInstance().cancelReAuthTaskIfRunning();
+        RedditAuthentication.getInstance().cancelUserlessAuthTaskIfRunning();
+        super.onDestroy();
+    }
 }

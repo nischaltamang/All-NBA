@@ -408,6 +408,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        RedditAuthentication.getInstance().cancelReAuthTaskIfRunning();
+        RedditAuthentication.getInstance().cancelUserlessAuthTaskIfRunning();
         super.onDestroy();
     }
 }
