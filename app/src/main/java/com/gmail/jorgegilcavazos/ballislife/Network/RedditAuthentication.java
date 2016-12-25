@@ -9,6 +9,7 @@ import com.gmail.jorgegilcavazos.ballislife.util.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
 
 import net.dean.jraw.RedditClient;
+import net.dean.jraw.http.NetworkException;
 import net.dean.jraw.http.UserAgent;
 import net.dean.jraw.http.oauth.Credentials;
 import net.dean.jraw.http.oauth.OAuthData;
@@ -146,7 +147,7 @@ public class RedditAuthentication {
                 mRedditClient.authenticate(oAuthData);
             } catch (Exception e) {
                 if (MyDebug.LOG) {
-                    Log.d(TAG, "Error trying to authenticate: " + e.toString());
+                    Log.e(TAG, "ReAuthTask: Could not authenticate. ", e);
                 }
             }
             return null;
@@ -192,9 +193,9 @@ public class RedditAuthentication {
             try {
                 OAuthData oAuthData = mOAuthHelper.onUserChallenge(mUrl, mCredentials);
                 redditClient.authenticate(oAuthData);
-            } catch (OAuthException e) {
+            } catch (Exception e) {
                 if (MyDebug.LOG) {
-                    Log.e(TAG, "UserAuthTask: Could not get OAuthData. ", e);
+                    Log.e(TAG, "ReAuthTask: Could not authenticate. ", e);
                 }
             }
             return null;
@@ -227,18 +228,23 @@ public class RedditAuthentication {
 
         @Override
         protected Void doInBackground(Void... params) {
+            Log.d(TAG, "dibbbbbb");
             OAuthHelper helper = mRedditClient.getOAuthHelper();
             helper.setRefreshToken(mRefreshToken);
 
+            Log.d(TAG, "abc");
             try {
+                if (helper.canRefresh()) {
+                    Log.d(TAG, "canrefresh");
+                }
                 OAuthData oAuthData = helper.refreshToken(mCredentials);
+                Log.d(TAG, "deb");
                 mRedditClient.authenticate(oAuthData);
-            } catch (OAuthException e) {
+            } catch (Exception e) {
                 if (MyDebug.LOG) {
-                    Log.e(TAG, "ReAuthTask: Could not get OAuthData. ", e);
+                    Log.e(TAG, "ReAuthTask: Could not authenticate. ", e);
                 }
             }
-
             return null;
         }
 

@@ -78,10 +78,7 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "resume");
         actionsListener.loadNavigatorDate(selectedDate);
-        actionsListener.loadGames(selectedDate, false);
-
 
         // Register Broadcast manager to update scores automatically
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
