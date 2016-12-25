@@ -25,6 +25,6 @@ public class IntroActivity extends AppCompatActivity {
                 startActivity(new Intent(IntroActivity.this, MainActivity.class));
                 finish();
             }
-        }, 3000);
+        }, 1000);
     }
 }
