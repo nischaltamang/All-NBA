@@ -64,6 +64,11 @@ public class RedditAuthentication {
         return mRedditClient;
     }
 
+    public boolean isUserLoggedIn() {
+        return mRedditClient != null && mRedditClient.isAuthenticated()
+                && mRedditClient.hasActiveUserContext();
+    }
+
     /**
      * If a refresh token is saved in shared preferences, a {@link ReAuthTask} is started, if
      * there is no token saved, a {@link UserlessAuthTask} is started.
@@ -132,7 +137,7 @@ public class RedditAuthentication {
         return oAuthHelper.getAuthorizationUrl(credentials, true, true, scopes);
     }
 
-    public String getRefreshTokenFromPrefs(Context context) {
+    private String getRefreshTokenFromPrefs(Context context) {
         SharedPreferences preferences = context
                 .getSharedPreferences(REDDIT_AUTH_PREFS, MODE_PRIVATE);
         return preferences.getString(REDDIT_TOKEN_KEY, null);
@@ -147,6 +152,14 @@ public class RedditAuthentication {
             editor.putString(REDDIT_TOKEN_KEY, refreshToken);
             editor.apply();
         }
+    }
+
+    private void clearRefreshTokenInPrefs(Context context) {
+        SharedPreferences preferences = context
+                .getSharedPreferences(REDDIT_AUTH_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.remove(REDDIT_TOKEN_KEY);
+        editor.apply();
     }
 
     private static class UserlessAuthTask extends AsyncTask<Void, Void, Void> {

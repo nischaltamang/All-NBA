@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -179,13 +180,19 @@ public class MainActivity extends AppCompatActivity {
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_7:
-                        Intent loginIntent = new Intent(getApplicationContext(),
-                                LoginActivity.class);
-                        startActivity(loginIntent);
+                        // Start LoginActivity if no user is already logged in.
+                        if (!RedditAuthentication.getInstance().isUserLoggedIn()) {
+                            Intent loginIntent = new Intent(getApplicationContext(),
+                                    LoginActivity.class);
+                            startActivity(loginIntent);
+                        } else {
+                            //TODO: open user profile here.
+                            Toast.makeText(getApplicationContext(),
+                                    "You are already logged in", Toast.LENGTH_SHORT).show();
+                        }
                         return true;
                     case R.id.navigation_item_9:
                         drawerLayout.closeDrawer(GravityCompat.START);
-                        // TODO: check if already logged in, if not, fire intent.
                         Intent settingsIntent = new Intent(getApplicationContext(),
                                 SettingsActivity.class);
                         startActivity(settingsIntent);
