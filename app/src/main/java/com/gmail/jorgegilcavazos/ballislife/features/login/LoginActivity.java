@@ -45,8 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (MyDebug.LOG) {
                     Log.d(TAG, "success");
                 }
-                Intent intent = new Intent("reddit-user-login");
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                RedditAuthentication.getInstance().saveRefreshTokenInPrefs(getApplicationContext());
                 finish();
             }
 

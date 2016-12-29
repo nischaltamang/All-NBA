@@ -29,7 +29,11 @@
     <string name="title_activity_submission">Settings</string>
     <string name="notifications">Notifications</string>
     <string name="theme">Theme</string>
-
+    <string name="reddit">Reddit</string>
+    <string name="log_out">Log out</string>
+    <string name="log_in">Log in</string>
+    <string name="click_login">Click to log in</string>
+    <string name="logged_as_user">Logged in as %1$s</string>
 
     <string-array name="pref_teams_list_titles">
         <item>No team</item>

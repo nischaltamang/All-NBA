@@ -106,9 +106,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mUserLoginReceiver,
-                new IntentFilter("reddit-user-login"));
-
         if (!RedditAuthentication.getInstance().getRedditClient().isAuthenticated()) {
             RedditAuthentication.getInstance().authenticate(this, listener);
         }
@@ -121,14 +118,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private BroadcastReceiver mUserLoginReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d(TAG, "Received user log in intent");
-            RedditAuthentication.getInstance().saveRefreshTokenInPrefs(context);
-            loadRedditUsername();
-        }
-    };
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadRedditUsername();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -215,6 +214,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadRedditUsername() {
+        if (navigationView == null) {
+            return;
+        }
+
         View headerView = navigationView.getHeaderView(0);
         TextView redditUsername = (TextView) headerView.findViewById(R.id.redditUsername);
         RedditClient redditClient = RedditAuthentication.getInstance().getRedditClient();
@@ -406,11 +409,6 @@ public class MainActivity extends AppCompatActivity {
                 navigationView.getMenu().getItem(0).setChecked(true);
                 break;
         }
-    }
-
-    @Override
-    public void onResume() {  // After a pause OR at startup
-        super.onResume();
     }
 
     @Override

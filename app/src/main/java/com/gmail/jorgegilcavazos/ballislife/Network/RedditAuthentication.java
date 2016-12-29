@@ -16,6 +16,7 @@ import net.dean.jraw.http.oauth.OAuthData;
 import net.dean.jraw.http.oauth.OAuthException;
 import net.dean.jraw.http.oauth.OAuthHelper;
 
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.UUID;
 
@@ -47,6 +48,7 @@ public class RedditAuthentication {
     private UserAuthTask userAuthTask;
     private UserlessAuthTask userlessAuthTask;
     private ReAuthTask reAuthTask;
+    private DeAuthTask deAuthTask;
 
     private RedditAuthentication() {
         mRedditClient = new RedditClient(UserAgent.of("android",
@@ -129,6 +131,23 @@ public class RedditAuthentication {
         }
     }
 
+    public void deAuthenticateUser(Context context, DeAuthTask.OnDeAuthTaskCompleted listener) {
+        cancelDeAuthTaskIfRunning();
+
+        Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
+        if (isUserLoggedIn()) {
+            deAuthTask = new DeAuthTask(mRedditClient, credentials, listener);
+            deAuthTask.execute();
+            clearRefreshTokenInPrefs(context);
+        }
+    }
+
+    private void cancelDeAuthTaskIfRunning() {
+        if (deAuthTask != null) {
+            deAuthTask.cancel(true);
+        }
+    }
+
     public URL getAuthorizationUrl() {
         OAuthHelper oAuthHelper = mRedditClient.getOAuthHelper();
         Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
@@ -154,7 +173,7 @@ public class RedditAuthentication {
         }
     }
 
-    private void clearRefreshTokenInPrefs(Context context) {
+    public void clearRefreshTokenInPrefs(Context context) {
         SharedPreferences preferences = context
                 .getSharedPreferences(REDDIT_AUTH_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -166,7 +185,7 @@ public class RedditAuthentication {
         private RedditClient redditClient;
         private AuthListener mListener;
 
-        public UserlessAuthTask(RedditClient redditClient, AuthListener listener) {
+        UserlessAuthTask(RedditClient redditClient, AuthListener listener) {
             this.redditClient = redditClient;
             mListener = listener;
         }
@@ -209,7 +228,7 @@ public class RedditAuthentication {
         private String mUrl;
         private AuthListener mListener;
 
-        public UserAuthTask(RedditClient redditClient,
+        UserAuthTask(RedditClient redditClient,
                             OAuthHelper oAuthHelper,
                             Credentials credentials,
                             String url,
@@ -254,7 +273,7 @@ public class RedditAuthentication {
         private String mRefreshToken;
         private AuthListener mListener;
 
-        public ReAuthTask(RedditClient redditClient,
+        ReAuthTask(RedditClient redditClient,
                           Credentials credentials,
                           String refreshToken,
                           AuthListener listener) {
@@ -289,6 +308,43 @@ public class RedditAuthentication {
                 mListener.onSuccess();
             } else {
                 mListener.onFailure();
+            }
+        }
+    }
+
+    public static class DeAuthTask extends AsyncTask<Void, Void, Void> {
+
+        public interface OnDeAuthTaskCompleted {
+            void onSuccess();
+        }
+
+        private final WeakReference<OnDeAuthTaskCompleted> listenerReference;
+        private RedditClient redditClient;
+        private Credentials credentials;
+
+        DeAuthTask(RedditClient redditClient,
+                          Credentials credentials,
+                          OnDeAuthTaskCompleted listener) {
+            this.redditClient = redditClient;
+            this.credentials = credentials;
+            listenerReference = new WeakReference<>(listener);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            OAuthHelper helper = redditClient.getOAuthHelper();
+            helper.revokeAccessToken(credentials);
+            redditClient.deauthenticate();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (!redditClient.isAuthenticated()) {
+                final OnDeAuthTaskCompleted listener = listenerReference.get();
+                if (listener != null) {
+                    listener.onSuccess();
+                }
             }
         }
     }

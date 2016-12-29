@@ -33,4 +33,14 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/reddit"
+        android:key="reddit_category">
+
+        <Preference
+            android:title="@string/log_out"
+            android:key="log_in_status_pref"/>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

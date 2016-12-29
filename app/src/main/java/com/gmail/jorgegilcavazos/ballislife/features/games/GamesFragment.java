@@ -160,7 +160,7 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (isVisible() && DateFormatUtil.isDateToday(selectedDate.getTime())) {
+            if (isVisible() && selectedDate != null && DateFormatUtil.isDateToday(selectedDate.getTime())) {
                 actionsListener.updateGames(intent.getStringExtra("message"));
             }
         }
