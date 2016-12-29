@@ -1,5 +1,7 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
+import android.util.Log;
+
 import com.gmail.jorgegilcavazos.ballislife.features.data.GamesRepository;
 import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
 import com.gmail.jorgegilcavazos.ballislife.util.GameUtils;

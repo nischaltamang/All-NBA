@@ -79,6 +79,7 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     public void onResume() {
         super.onResume();
         actionsListener.loadNavigatorDate(selectedDate);
+        actionsListener.loadGames(selectedDate, true);
 
         // Register Broadcast manager to update scores automatically
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
@@ -94,6 +95,7 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView");
         getActivity().setTitle(R.string.games_fragment_title);
         view = inflater.inflate(R.layout.fragment_games, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -144,6 +146,11 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     public void onStop() {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
