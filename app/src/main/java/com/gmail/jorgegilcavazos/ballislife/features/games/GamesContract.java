@@ -1,5 +1,7 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
+import com.gmail.jorgegilcavazos.ballislife.features.BasePresenter;
+import com.gmail.jorgegilcavazos.ballislife.features.BaseView;
 import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
 
 import java.util.Calendar;
@@ -10,10 +12,11 @@ import java.util.List;
  */
 public interface GamesContract {
 
-    interface View {
-        void setProgressIndicator(boolean active);
+    interface View extends BaseView<Presenter> {
 
-        void setNavigatorDate(Calendar date);
+        void setLoadingIndicator(boolean active);
+
+        void setDateNavigatorText(String dateText);
 
         void hideGames();
 
@@ -28,12 +31,13 @@ public interface GamesContract {
         void dismissSnackbar();
     }
 
-    interface UserActionsListener {
-        Calendar changeNavigatorDate(Calendar calendar, int delta);
+    interface Presenter extends BasePresenter {
 
-        void loadNavigatorDate(Calendar date);
+        void addOrSubstractDay(int delta);
 
-        void loadGames(Calendar date, boolean forceUpdate);
+        void loadDateNavigatorText();
+
+        void loadGames(boolean forceUpdate);
 
         void openGameDetails(NbaGame requestedGame);
 

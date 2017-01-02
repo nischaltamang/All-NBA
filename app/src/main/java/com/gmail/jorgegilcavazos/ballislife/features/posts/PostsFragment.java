@@ -47,6 +47,14 @@ public class PostsFragment extends Fragment {
     private View background;
     boolean isPreviewVisible;
 
+    public PostsFragment() {
+
+    }
+
+    public static PostsFragment newInstance() {
+        return new PostsFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         context = getActivity();

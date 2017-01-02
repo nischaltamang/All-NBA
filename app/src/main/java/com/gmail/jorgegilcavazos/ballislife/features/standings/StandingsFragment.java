@@ -42,6 +42,14 @@ public class StandingsFragment extends Fragment {
 
     private boolean dark;
 
+    public StandingsFragment() {
+
+    }
+
+    public static StandingsFragment newInstance() {
+        return new StandingsFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);

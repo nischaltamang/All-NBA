@@ -1,16 +1,13 @@
 package com.gmail.jorgegilcavazos.ballislife.features.main;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -31,11 +28,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.gmail.jorgegilcavazos.ballislife.features.data.source.GamesLoader;
+import com.gmail.jorgegilcavazos.ballislife.features.data.source.GamesRepository;
+import com.gmail.jorgegilcavazos.ballislife.features.data.source.remote.GamesRemoteDataSource;
+import com.gmail.jorgegilcavazos.ballislife.features.games.GamesPresenter;
 import com.gmail.jorgegilcavazos.ballislife.network.GCMClientManager;
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.settings.SettingsActivity;
 import com.gmail.jorgegilcavazos.ballislife.network.NetworkManager;
 import com.gmail.jorgegilcavazos.ballislife.R;
+import com.gmail.jorgegilcavazos.ballislife.util.ActivityUtils;
 import com.gmail.jorgegilcavazos.ballislife.util.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
@@ -52,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String MY_PREFERENCES = "MyPrefs";
     public static final String FIRST_TIME = "firstTime";
     public static final String PUSH_CLOSE_GAME_ALERT = "pushCGA";
-    public static final String REDDIT_USERNAME = "redditUsername";
     private static final String PROJECT_NUMBER = "532852092546";
+
+    private static final String SELECTED_FRAGMENT_KEY = "selected_fragment";
 
     private static final String TAG_GAMES_FRAGMENT = "GAMES_FRAGMENT";
     private static final String TAG_STANDINGS_FRAGMENT = "STANDINGS_FRAGMENT";
@@ -71,17 +74,16 @@ public class MainActivity extends AppCompatActivity {
     ActionBar actionBar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    GamesFragment gamesFragment;
-    StandingsFragment standingsFragment;
-    HighlightsFragment highlightsFragment;
-    PostsFragment postsFragment;
 
     int selectedFragment;
     private SharedPreferences myPreferences;
     private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener;
 
+    private GamesPresenter mGamesPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -112,10 +114,32 @@ public class MainActivity extends AppCompatActivity {
 
         NetworkManager.getInstance(this);
 
-        if (savedInstanceState == null) {
-            // The Activity is not being restored so we need to add a Fragment.
-            setFragment(GAMES_FRAGMENT_ID);
+        // Set default to GamesFragment.
+        selectedFragment = GAMES_FRAGMENT_ID;
+        if (savedInstanceState != null) {
+            selectedFragment = savedInstanceState.getInt(SELECTED_FRAGMENT_KEY);
         }
+
+        switch (selectedFragment) {
+            case GAMES_FRAGMENT_ID:
+                setGamesFragment();
+                break;
+            case STANDINGS_FRAGMENT_ID:
+                setStandingsFragment();
+                break;
+            case POSTS_FRAGMENT_ID:
+                setPostsFragment();
+                break;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState");
+        Log.d(TAG, "saving " + selectedFragment);
+        outState.putInt(SELECTED_FRAGMENT_KEY, selectedFragment);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -163,19 +187,18 @@ public class MainActivity extends AppCompatActivity {
                 menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
-                        setFragment(GAMES_FRAGMENT_ID);
+                        setGamesFragment();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_2:
-                        setFragment(STANDINGS_FRAGMENT_ID);
+                        setStandingsFragment();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_4:
-                        setFragment(POSTS_FRAGMENT_ID);
+                        setPostsFragment();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_5:
-                        setFragment(HIGHLIGHTS_FRAGMENT_ID);
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_7:
@@ -197,12 +220,73 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(settingsIntent);
                         return true;
                     default:
-                        setFragment(GAMES_FRAGMENT_ID);
+                        setGamesFragment();
                         drawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                 }
             }
         });
+    }
+
+    public void setGamesFragment() {
+        GamesFragment gamesFragment = null;
+        if (selectedFragment == GAMES_FRAGMENT_ID) {
+            gamesFragment = (GamesFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.fragment);
+        }
+
+        if (gamesFragment == null) {
+            gamesFragment = GamesFragment.newInstance();
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                    gamesFragment, R.id.fragment);
+        }
+
+        selectedFragment = GAMES_FRAGMENT_ID;
+
+        GamesRepository gamesRepository = GamesRepository.getInstance(
+                GamesRemoteDataSource.getInstance());
+        GamesLoader gamesLoader = new GamesLoader(getApplicationContext(), gamesRepository);
+
+        mGamesPresenter = new GamesPresenter(
+                gamesLoader,
+                getSupportLoaderManager(),
+                gamesFragment,
+                gamesRepository);
+    }
+
+    public void setStandingsFragment() {
+        StandingsFragment standingsFragment = null;
+        if (selectedFragment == STANDINGS_FRAGMENT_ID) {
+            standingsFragment = (StandingsFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.fragment);
+        }
+
+        if (standingsFragment == null) {
+            standingsFragment = StandingsFragment.newInstance();
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                    standingsFragment, R.id.fragment);
+        }
+
+        selectedFragment = STANDINGS_FRAGMENT_ID;
+    }
+
+    public void setPostsFragment() {
+        PostsFragment postsFragment = null;
+        if (selectedFragment == POSTS_FRAGMENT_ID) {
+            postsFragment = (PostsFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.fragment);
+        }
+
+        if (postsFragment == null) {
+            postsFragment = PostsFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putString("TYPE", "small");
+            postsFragment.setArguments(bundle);
+            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                    postsFragment, R.id.fragment);
+        }
+
+        selectedFragment = POSTS_FRAGMENT_ID;
     }
 
     /**
@@ -277,43 +361,6 @@ public class MainActivity extends AppCompatActivity {
                 .registerOnSharedPreferenceChangeListener(mPreferenceListener);
     }
 
-    private void setFragment(int fragmentId) {
-        selectedFragment = fragmentId;
-        FragmentManager fragmentManager;
-        FragmentTransaction fragmentTransaction;
-
-        Bundle bundle = new Bundle();
-
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        switch (fragmentId) {
-            case GAMES_FRAGMENT_ID:
-                gamesFragment = GamesFragment.newInstance();
-                fragmentTransaction.replace(R.id.fragment, gamesFragment, TAG_GAMES_FRAGMENT);
-                break;
-            case STANDINGS_FRAGMENT_ID:
-                toolbar.setSubtitle("");
-                standingsFragment = new StandingsFragment();
-                fragmentTransaction.replace(R.id.fragment, standingsFragment,
-                        TAG_STANDINGS_FRAGMENT);
-                break;
-            case POSTS_FRAGMENT_ID:
-                toolbar.setSubtitle("");
-                postsFragment = new PostsFragment();
-                bundle.putString("TYPE", "small");
-                postsFragment.setArguments(bundle);
-                fragmentTransaction.replace(R.id.fragment, postsFragment, TAG_POSTS_FRAGMENT);
-                break;
-            case HIGHLIGHTS_FRAGMENT_ID:
-                toolbar.setSubtitle("");
-                highlightsFragment = new HighlightsFragment();
-                fragmentTransaction.replace(R.id.fragment, highlightsFragment,
-                        TAG_HIGHLIGHTS_FRAGMENT);
-                break;
-        }
-        fragmentTransaction.commit();
-    }
-
     private void registerGmcClient() {
         final String GCM_REGISTRATION_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/gcm.php?shareRegId=1&regId=";
         pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
@@ -386,26 +433,9 @@ public class MainActivity extends AppCompatActivity {
                 // Exit application.
                 super.onBackPressed();
                 break;
-            case POSTS_FRAGMENT_ID:
-                if (postsFragment.isPreviewVisible()) {
-                    postsFragment.stopVideo();
-                } else {
-                    setFragment(GAMES_FRAGMENT_ID);
-                    navigationView.getMenu().getItem(0).setChecked(true);
-                }
-                break;
-            case HIGHLIGHTS_FRAGMENT_ID:
-                if (highlightsFragment.isPreviewVisible()) {
-                    highlightsFragment.stopVideo();
-                } else {
-                    // Return to games fragment.
-                    setFragment(GAMES_FRAGMENT_ID);
-                    navigationView.getMenu().getItem(0).setChecked(true);
-                }
-                break;
             default:
                 // Return to games fragment.
-                setFragment(GAMES_FRAGMENT_ID);
+                setGamesFragment();
                 navigationView.getMenu().getItem(0).setChecked(true);
                 break;
         }
