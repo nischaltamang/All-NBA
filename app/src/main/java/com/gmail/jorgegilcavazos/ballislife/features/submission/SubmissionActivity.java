@@ -221,8 +221,8 @@ public class SubmissionActivity extends AppCompatActivity {
         mVideoView.setVisibility(View.VISIBLE);
         //mVideoView.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
         //mVideoView.setZOrderOnTop(true); //HIDE
-        //background.setVisibility(View.VISIBLE);
-        //videoProgressLayout.setVisibility(View.VISIBLE);
+        //background.setVisibility(GamesView.VISIBLE);
+        //videoProgressLayout.setVisibility(GamesView.VISIBLE);
         //isPreviewVisible = true;
         Uri uri = Uri.parse(url);
 
@@ -234,7 +234,7 @@ public class SubmissionActivity extends AppCompatActivity {
             mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    //videoProgressLayout.setVisibility(View.GONE);
+                    //videoProgressLayout.setVisibility(GamesView.GONE);
                     //mVideoView.setZOrderOnTop(false); //SHOW
                     mSubmissionImageView.setVisibility(View.GONE);
                 }

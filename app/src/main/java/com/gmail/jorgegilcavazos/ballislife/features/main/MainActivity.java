@@ -28,9 +28,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.gmail.jorgegilcavazos.ballislife.features.data.source.GamesLoader;
-import com.gmail.jorgegilcavazos.ballislife.features.data.source.GamesRepository;
-import com.gmail.jorgegilcavazos.ballislife.features.data.source.remote.GamesRemoteDataSource;
 import com.gmail.jorgegilcavazos.ballislife.features.games.GamesPresenter;
 import com.gmail.jorgegilcavazos.ballislife.network.GCMClientManager;
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
@@ -42,7 +39,6 @@ import com.gmail.jorgegilcavazos.ballislife.util.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
 import com.gmail.jorgegilcavazos.ballislife.features.games.GamesFragment;
-import com.gmail.jorgegilcavazos.ballislife.features.highlights.HighlightsFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.posts.PostsFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.standings.StandingsFragment;
 
@@ -242,16 +238,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         selectedFragment = GAMES_FRAGMENT_ID;
-
-        GamesRepository gamesRepository = GamesRepository.getInstance(
-                GamesRemoteDataSource.getInstance());
-        GamesLoader gamesLoader = new GamesLoader(getApplicationContext(), gamesRepository);
-
-        mGamesPresenter = new GamesPresenter(
-                gamesLoader,
-                getSupportLoaderManager(),
-                gamesFragment,
-                gamesRepository);
     }
 
     public void setStandingsFragment() {

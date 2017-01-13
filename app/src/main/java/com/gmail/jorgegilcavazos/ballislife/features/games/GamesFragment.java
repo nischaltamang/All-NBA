@@ -1,18 +1,11 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,30 +15,26 @@ import android.widget.TextView;
 
 import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
 import com.gmail.jorgegilcavazos.ballislife.R;
-import com.gmail.jorgegilcavazos.ballislife.util.DateFormatUtil;
 import com.gmail.jorgegilcavazos.ballislife.features.gamethread.CommentsActivity;
+import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Displays a list of {@link NbaGame}s for the selected date.
  */
-public class GamesFragment extends Fragment implements GamesContract.View {
+public class GamesFragment extends MvpFragment<GamesView, GamesPresenter>
+        implements GamesView, SwipeRefreshLayout.OnRefreshListener {
     public final static String TAG = "GamesFragment";
 
     public final static String GAME_THREAD_HOME = "GAME_THREAD_HOME";
     public final static String GAME_THREAD_AWAY = "GAME_THREAD_AWAY";
     public final static String GAME_ID = "GAME_ID";
-
-    private GamesContract.Presenter mPresenter;
 
     @BindView(R.id.navigator_button_left) ImageButton btnPrevDay;
     @BindView(R.id.navigator_button_right) ImageButton btnNextDay;
@@ -53,6 +42,7 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     @BindView(R.id.no_games_text) TextView tvNoGames;
     @BindView(R.id.games_rv) RecyclerView rvGames;
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+
     private View view;
     private RecyclerView.LayoutManager lmGames;
     private GameAdapter gameAdapter;
@@ -63,6 +53,11 @@ public class GamesFragment extends Fragment implements GamesContract.View {
         // Required empty public constructor.
     }
 
+    @Override
+    public GamesPresenter createPresenter() {
+        return new GamesPresenter();
+    }
+
     public static GamesFragment newInstance() {
         return new GamesFragment();
     }
@@ -71,58 +66,41 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
-        gameAdapter = new GameAdapter(new ArrayList<NbaGame>(0), gameItemListener);
+        setRetainInstance(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
-
-        // Register Broadcast manager to update scores automatically
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter("game-data"));
-    }
-
-    @Override
-    public void setPresenter(GamesContract.Presenter presenter) {
-        mPresenter = checkNotNull(presenter);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        presenter.loadGames();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle(R.string.games_fragment_title);
         view = inflater.inflate(R.layout.fragment_games, container, false);
+
+        getActivity().setTitle(R.string.games_fragment_title);
         unbinder = ButterKnife.bind(this, view);
 
-        lmGames = new LinearLayoutManager(getContext());
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        gameAdapter = new GameAdapter(new ArrayList<NbaGame>(0), gameItemListener);
+        lmGames = new LinearLayoutManager(getActivity());
         rvGames.setLayoutManager(lmGames);
         rvGames.setAdapter(gameAdapter);
 
         btnPrevDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.addOrSubstractDay(-1);
+                presenter.addOrSubstractDay(-1);
             }
         });
 
         btnNextDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.addOrSubstractDay(1);
-            }
-        });
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mPresenter.loadGames(true);
+                presenter.addOrSubstractDay(1);
             }
         });
 
@@ -133,7 +111,7 @@ public class GamesFragment extends Fragment implements GamesContract.View {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                mPresenter.loadGames(true);
+                presenter.loadGames();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -147,13 +125,12 @@ public class GamesFragment extends Fragment implements GamesContract.View {
 
     @Override
     public void onPause() {
-        mPresenter.dismissSnackbar();
+        presenter.dismissSnackbar();
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         super.onStop();
     }
 
@@ -162,28 +139,20 @@ public class GamesFragment extends Fragment implements GamesContract.View {
         super.onDestroy();
     }
 
-    // When new data is received, the JSON is parsed and the ListView is notified of change.
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (isVisible()) {
-                mPresenter.updateGames(intent.getStringExtra("message"));
-            }
-        }
-    };
-
     private GameItemListener gameItemListener = new GameItemListener() {
         @Override
         public void onGameClick(NbaGame clickedGame) {
-            mPresenter.openGameDetails(clickedGame);
+            presenter.openGameDetails(clickedGame);
         }
     };
 
     @Override
+    public void onRefresh() {
+        presenter.loadGames();
+    }
+
+    @Override
     public void setLoadingIndicator(boolean active) {
-        if (getView() == null) {
-            return;
-        }
         swipeRefreshLayout.setRefreshing(active);
     }
 
@@ -194,9 +163,6 @@ public class GamesFragment extends Fragment implements GamesContract.View {
 
     @Override
     public void hideGames() {
-        if (getView() == null) {
-            return;
-        }
         rvGames.setVisibility(View.GONE);
     }
 
@@ -226,17 +192,14 @@ public class GamesFragment extends Fragment implements GamesContract.View {
 
     @Override
     public void showSnackbar(boolean canReload) {
-        if (getView() != null) {
-            snackbar = Snackbar.make(getView(), R.string.failed_game_data, Snackbar.LENGTH_INDEFINITE);
-            if (canReload) {
-                snackbar.setAction(R.string.retry, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //mPresenter.loadGames(selectedDate, true);
-                        mPresenter.loadGames(true);
-                    }
-                });
-            }
+        snackbar = Snackbar.make(getView(), R.string.failed_game_data, Snackbar.LENGTH_INDEFINITE);
+        if (canReload) {
+            snackbar.setAction(R.string.retry, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.loadGames();
+                }
+            });
         }
         snackbar.show();
     }

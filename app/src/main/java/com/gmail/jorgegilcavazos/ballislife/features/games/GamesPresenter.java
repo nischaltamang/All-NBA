@@ -1,140 +1,114 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 
-import com.gmail.jorgegilcavazos.ballislife.features.data.AsyncLoaderResult;
-import com.gmail.jorgegilcavazos.ballislife.features.data.source.GamesLoader;
 import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
-import com.gmail.jorgegilcavazos.ballislife.features.data.source.GamesRepository;
+import com.gmail.jorgegilcavazos.ballislife.network.NbaGamesService;
 import com.gmail.jorgegilcavazos.ballislife.util.DateFormatUtil;
 import com.gmail.jorgegilcavazos.ballislife.util.GameUtils;
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.Calendar;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GamesPresenter implements GamesContract.Presenter,
-        LoaderManager.LoaderCallbacks<AsyncLoaderResult<List<NbaGame>>> {
+public class GamesPresenter extends MvpBasePresenter<GamesView> {
 
-    private static final int GAMES_QUERY = 1;
+    private List<NbaGame> gamesList;
+    private Calendar selectedDate;
 
-    private final GamesContract.View mGamesView;
-    private final GamesRepository mGamesRepository;
-    private final GamesLoader mGamesLoader;
-    private final LoaderManager mLoaderManager;
+    private CompositeDisposable disposables;
 
-    private List<NbaGame> mCurrentGames;
-    private Calendar mSelectedDate;
-
-    public GamesPresenter(@NonNull GamesLoader gamesLoader,
-                          @NonNull LoaderManager loaderManager,
-                          @NonNull GamesContract.View gamesView,
-                          @NonNull GamesRepository gamesRepository) {
-        mGamesLoader = checkNotNull(gamesLoader);
-        mLoaderManager = checkNotNull(loaderManager);
-        mGamesView = checkNotNull(gamesView);
-        mGamesRepository = checkNotNull(gamesRepository);
-        mSelectedDate = Calendar.getInstance();
-
-        mGamesView.setPresenter(this);
+    public GamesPresenter() {
+        disposables = new CompositeDisposable();
+        selectedDate = Calendar.getInstance();
     }
 
     @Override
-    public void start() {
+    public void detachView(boolean retainInstance) {
+        super.detachView(retainInstance);
+        if (!retainInstance) {
+            disposables.clear();
+        }
+    }
+
+    public void loadGames() {
         loadDateNavigatorText();
+        getView().setLoadingIndicator(true);
+        getView().dismissSnackbar();
+        getView().hideGames();
+        getView().setNoGamesIndicator(false);
 
-        mLoaderManager.initLoader(GAMES_QUERY, null, this);
-        loadGames(true);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://phpstack-4722-10615-67130.cloudwaysapps.com/api/v1/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NbaGamesService gamesService = retrofit.create(NbaGamesService.class);
+
+        Observable<List<NbaGame>> games = gamesService.listGames(
+                DateFormatUtil.getDashedDateString(selectedDate.getTime()));
+
+        disposables.clear();
+        disposables.add(
+                games.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<NbaGame>>() {
+                    @Override
+                    public void onNext(List<NbaGame> nbaGames) {
+                        getView().setLoadingIndicator(false);
+                        gamesList = nbaGames;
+                        getView().showGames(gamesList);
+                        if (gamesList.size() == 0) {
+                            getView().setNoGamesIndicator(true);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().showSnackbar(true);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                })
+        );
     }
 
-    @Override
-    public Loader<AsyncLoaderResult<List<NbaGame>>> onCreateLoader(int id, Bundle args) {
-        mGamesView.dismissSnackbar();
-        mGamesView.hideGames();
-        mGamesView.setNoGamesIndicator(false);
-        mGamesView.setLoadingIndicator(true);
-
-        return mGamesLoader;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<AsyncLoaderResult<List<NbaGame>>> loader,
-                               AsyncLoaderResult<List<NbaGame>> data) {
-        Log.d("Presenter", "loadFinished");
-        mGamesView.setLoadingIndicator(false);
-
-        Exception exception = data.getException();
-        if (exception != null) {
-            mCurrentGames = null;
-        } else {
-            mCurrentGames = data.getData();
-        }
-
-        if (mCurrentGames == null) {
-            mGamesView.showSnackbar(true);
-        } else if (mCurrentGames.size() == 0) {
-            mGamesView.setNoGamesIndicator(true);
-        } else {
-            mGamesView.showGames(mCurrentGames);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<AsyncLoaderResult<List<NbaGame>>> loader) {
-        // TODO: what goes here?
-    }
-
-    @Override
-    public void loadGames(boolean forceUpdate) {
-        if (forceUpdate) {
-            mGamesView.dismissSnackbar();
-            mGamesView.hideGames();
-            mGamesView.setNoGamesIndicator(false);
-            mGamesView.setLoadingIndicator(true);
-
-            mGamesRepository.refreshGames();
-        }
-    }
-
-    @Override
     public void addOrSubstractDay(int delta) {
-        mGamesView.dismissSnackbar();
-        mGamesView.hideGames();
-        mGamesView.setNoGamesIndicator(false);
-        mGamesView.setLoadingIndicator(true);
-
-        mSelectedDate.add(Calendar.DAY_OF_YEAR, delta);
+        selectedDate.add(Calendar.DAY_OF_YEAR, delta);
         loadDateNavigatorText();
-
-        mGamesRepository.changeSelectedDate(mSelectedDate.getTimeInMillis());
+        loadGames();
     }
 
-    @Override
     public void loadDateNavigatorText() {
-        String dateText = DateFormatUtil.formatNavigatorDate(mSelectedDate.getTime());
-        mGamesView.setDateNavigatorText(dateText);
+        String dateText = DateFormatUtil.formatNavigatorDate(selectedDate.getTime());
+        getView().setDateNavigatorText(dateText);
     }
 
-    @Override
     public void openGameDetails(NbaGame requestedGame) {
-        mGamesView.showGameDetails(requestedGame);
+        getView().showGameDetails(requestedGame);
     }
 
-    @Override
     public void updateGames(String gameData) {
-        if (DateFormatUtil.isDateToday(mSelectedDate.getTime())) {
-            mGamesView.showGames(GameUtils.getGamesListFromJson(gameData));
+        if (DateFormatUtil.isDateToday(selectedDate.getTime())) {
+            getView().showGames(GameUtils.getGamesListFromJson(gameData));
         }
     }
 
-    @Override
     public void dismissSnackbar() {
-        mGamesView.dismissSnackbar();
+        getView().dismissSnackbar();
     }
 
 }
