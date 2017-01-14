@@ -34,13 +34,12 @@ Fix a bug, add a new feature or make the code prettier!
 1. Fork the repository
 2. Look at the list of [open issues](https://github.com/jorgegil96/All-NBA/issues), pick one or create a new one (this can be for a bug or wanted feature)
 3. Write code and document it (when necessary)
-4. Write unit tests (if possible) using Robolectric to cover your changes. [RedditUtilsTest.java example](https://github.com/jorgegil96/All-NBA/blob/master/app/src/test/java/com/gmail/jorgegilcavazos/ballislife/Utils/RedditUtilsTest.java)
+4. Write unit tests (if possible)
 5. Run ALL tests by executing `./gradlew test`
 6. Send a pull request
 
 Some resources that you might find useful:
-* [JRAW](https://github.com/thatJavaNerd/JRAW): the Java Reddit API Wrapper, used throughout the application for integrating any reddit functionalities  
-* [Robolectric](http://robolectric.org/): unit test framework  
+* [JRAW](https://github.com/thatJavaNerd/JRAW): the Java Reddit API Wrapper, used throughout the application for integrating any reddit functionalities   
 
 ### What if I don't code?  
 
