@@ -5,45 +5,40 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.gmail.jorgegilcavazos.ballislife.R;
-import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
+import com.gmail.jorgegilcavazos.ballislife.features.model.TeamRecord;
+import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
 
-public class StandingsFragment extends Fragment {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+public class StandingsFragment extends MvpFragment<StandingsView, StandingsPresenter>
+        implements StandingsView, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "StandingsFragment";
-    private static final String standingsURL = "http://stats.nba.com/stats/playoffpicture?LeagueID=00&SeasonID=22016";
 
-    private Context context;
-    private View rootView;
-    private LinearLayout linlaHeaderProgress;
-    private TableLayout tableLayout;
+    @BindView(R.id.standings_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.standings_table_layout) TableLayout tableLayout;
+
     private Snackbar snackbar;
-
-    private boolean dark;
+    private Unbinder unbinder;
 
     public StandingsFragment() {
-
+        // Required empty public constructor.
     }
 
     public static StandingsFragment newInstance() {
@@ -51,125 +46,127 @@ public class StandingsFragment extends Fragment {
     }
 
     @Override
+    public StandingsPresenter createPresenter() {
+        return new StandingsPresenter();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_standings, container, false);
-        linlaHeaderProgress = (LinearLayout) rootView.findViewById(R.id.linlaHeaderProgress);
+    public void onResume() {
+        super.onResume();
+        presenter.loadStandings();
+    }
 
-        tableLayout = (TableLayout) rootView.findViewById(R.id.tableLayout);
-
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_standings_2, container, false);
         getActivity().setTitle(R.string.standings_fragment_title);
-        return rootView;
+
+        unbinder = ButterKnife.bind(this, view);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        context = getActivity();
-        getStandings();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                presenter.loadStandings();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
-    private void getStandings() {
+    @Override
+    public void onPause() {
+        presenter.dismissSnackbar();
+        super.onPause();
+    }
+
+    @Override
+    public void onRefresh() {
+        presenter.loadStandings();
+    }
+
+    @Override
+    public void setLoadingIndicator(boolean active) {
+        swipeRefreshLayout.setRefreshing(active);
+    }
+
+    @Override
+    public void showStandings(List<TeamRecord> eastStandings, List<TeamRecord> westStandings) {
         tableLayout.removeAllViews();
 
-        linlaHeaderProgress.setVisibility(View.VISIBLE);
-        tableLayout.setVisibility(View.GONE);
+        boolean dark = true;
 
-        //Request Standings from stats.nba.com
-        StringRequest request = new StringRequest(standingsURL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                    parseStandings(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (MyDebug.LOG) {
-                    Log.e(TAG, "Volley error: " + error.toString());
-                }
-                showSnackBar("Could not load content", true /* retry */);
-            }
-        });
+        // EAST rows
+        addRow(0, "EAST", "W", "L", "%", "GB", dark);
+        for (TeamRecord tr : eastStandings) {
+            dark = !dark;
+            addRow(tr.getRecord(), tr.getTeamName(), tr.getWins(), tr.getLosses(),
+                    tr.getPercentage(), tr.getGamesBehind(), dark);
+        }
 
-        RequestQueue queue = Volley.newRequestQueue(context);
-        queue.add(request);
+        // WEST rows
+        dark = !dark;
+        addRow(0, "WEST", "W", "L", "%", "GB", dark);
+        for (TeamRecord tr : westStandings) {
+            dark = !dark;
+            addRow(tr.getRecord(), tr.getTeamName(), tr.getWins(), tr.getLosses(),
+                    tr.getPercentage(), tr.getGamesBehind(), dark);
+        }
+
     }
 
-    private void parseStandings(String jsonString) {
-        try {
-            JSONArray jsonArray = new JSONObject(jsonString).getJSONArray("resultSets");
+    @Override
+    public void hideStandings() {
+        tableLayout.removeAllViews();
+    }
 
-            JSONObject eastObj = jsonArray.getJSONObject(2);
-            JSONArray eastData = eastObj.getJSONArray("rowSet");
-
-            // Add Eastern Conference standings
-            dark = false;
-            int rank = 0;
-            addRow(0, "EASTERN", "W", "L", "%", "GB");
-            for (int i = 0; i < eastData.length(); i++) {
-                JSONArray arr = eastData.getJSONArray(i);
-                if (!arr.isNull(1)) {
-                    rank = arr.getInt(1);
-                } else {
-                    rank++;
+    @Override
+    public void showSnackbar(boolean canReload) {
+        snackbar = Snackbar.make(getView(), R.string.failed_standings_data,
+                Snackbar.LENGTH_INDEFINITE);
+        if (canReload) {
+            snackbar.setAction(R.string.retry, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.loadStandings();
                 }
-                String teamName = arr.get(2).toString();
-                String wins = arr.get(4).toString();
-                String losses = arr.get(5).toString();
-                String per = arr.get(6).toString();
-                String gb = arr.get(11).toString();
+            });
+        }
+        snackbar.show();
+    }
 
-                addRow(rank, teamName, wins, losses, per, gb);
-            }
-
-            JSONObject westObj = jsonArray.getJSONObject(3);
-            JSONArray westData = westObj.getJSONArray("rowSet");
-
-            // Add Western Conference standings
-            dark = false;
-            rank = 0;
-            addRow(0, "WESTERN", "W", "L", "%", "GB");
-            for (int i = 0; i < westData.length(); i++) {
-                JSONArray arr = westData.getJSONArray(i);
-                if (!arr.isNull(1)) {
-                    rank = arr.getInt(1);
-                } else {
-                    rank++;
-                }
-                String teamName = arr.get(2).toString();
-                String wins = arr.get(4).toString();
-                String losses = arr.get(5).toString();
-                String per = arr.get(6).toString();
-                String gb = arr.get(11).toString();
-
-                addRow(rank, teamName, wins, losses, per, gb);
-            }
-
-            linlaHeaderProgress.setVisibility(View.GONE);
-            tableLayout.setVisibility(View.VISIBLE);
-
-        } catch (Exception e) {
-            if (MyDebug.LOG) {
-                Log.e(TAG, "Volley error: " + e.toString());
-                Log.d(TAG, "Could not parse standings");
-            }
-            showSnackBar("Error parsing data", true);
+    @Override
+    public void dismissSnackbar() {
+        if (snackbar != null) {
+            snackbar.dismiss();
         }
     }
 
-    private void addRow(int rank, String text, String w, String l, String per, String gb) {
-
+    /**
+     * Adds a row to the tablelayout that contains the team standings.
+     */
+    private void addRow(int rank, String teamName, String w, String l, String per, String gb,
+                        boolean dark) {
+        Context context = getActivity();
         float scale = getResources().getDisplayMetrics().density;
         int dpAsPixels = (int) (5 * scale + 0.5f);
 
@@ -180,8 +177,10 @@ public class StandingsFragment extends Fragment {
         TextView perTV = new TextView(context);
         TextView gbTV = new TextView(context);
 
-        TableRow.LayoutParams lgParams = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.38f);
-        TableRow.LayoutParams smParams = new TableRow.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.13f);
+        TableRow.LayoutParams lgParams = new TableRow.LayoutParams(0,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0.38f);
+        TableRow.LayoutParams smParams = new TableRow.LayoutParams(0,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 0.13f);
 
         String rankText;
         if (rank == 0) {
@@ -195,10 +194,10 @@ public class StandingsFragment extends Fragment {
         } else {
             rankText = "#" + String.valueOf(rank) + "    ";
         }
-        textTV.setText(rankText + text);
+        textTV.setText(rankText + teamName);
         textTV.setLayoutParams(lgParams);
         textTV.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
-        textTV.setTextColor(context.getResources().getColor(R.color.primaryText));
+        textTV.setTextColor(ContextCompat.getColor(context, R.color.primaryText));
         textTV.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
 
         winsTV.setText(w);
@@ -235,7 +234,6 @@ public class StandingsFragment extends Fragment {
             row.setBackgroundColor(ContextCompat.getColor(context, R.color.lightGray));
         else
             row.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-        dark = !dark;
 
         View view = new View(context);
         view.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -244,43 +242,5 @@ public class StandingsFragment extends Fragment {
         tableLayout.addView(row, new TableLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-    }
-
-    private void showSnackBar(String message, boolean retry) {
-        snackbar = Snackbar.make(rootView, message,
-                Snackbar.LENGTH_INDEFINITE);
-        if (retry) {
-            snackbar.setAction("RETRY", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getStandings();
-                }
-            });
-        }
-        linlaHeaderProgress.setVisibility(View.GONE);
-        snackbar.show();
-    }
-
-    private void dismissSnackbar() {
-        if (snackbar != null && snackbar.isShown()) {
-            snackbar.dismiss();
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                dismissSnackbar();
-                getStandings();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPause() {
-        dismissSnackbar();
-        super.onPause();
     }
 }

@@ -1,4 +1,4 @@
-package com.gmail.jorgegilcavazos.ballislife.features.data;
+package com.gmail.jorgegilcavazos.ballislife.features.model;
 
 import com.google.gson.JsonObject;
 

@@ -1,6 +1,6 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
-import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
+import com.gmail.jorgegilcavazos.ballislife.features.model.NbaGame;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 import java.util.List;

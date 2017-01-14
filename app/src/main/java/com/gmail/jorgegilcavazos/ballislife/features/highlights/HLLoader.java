@@ -2,7 +2,7 @@ package com.gmail.jorgegilcavazos.ballislife.features.highlights;
 
 import android.util.Log;
 
-import com.gmail.jorgegilcavazos.ballislife.features.data.Highlight;
+import com.gmail.jorgegilcavazos.ballislife.features.model.Highlight;
 import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
 
 import org.json.JSONArray;

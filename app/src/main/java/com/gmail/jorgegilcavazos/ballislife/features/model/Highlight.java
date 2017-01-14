@@ -1,4 +1,4 @@
-package com.gmail.jorgegilcavazos.ballislife.features.data;
+package com.gmail.jorgegilcavazos.ballislife.features.model;
 
 /**
  * Created by jorgegil on 4/30/16.

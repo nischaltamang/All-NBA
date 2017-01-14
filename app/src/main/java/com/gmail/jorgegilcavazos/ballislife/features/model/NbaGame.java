@@ -1,4 +1,4 @@
-package com.gmail.jorgegilcavazos.ballislife.features.data;
+package com.gmail.jorgegilcavazos.ballislife.features.model;
 
 /**
  * Class that holds general information about a specific NBA game.

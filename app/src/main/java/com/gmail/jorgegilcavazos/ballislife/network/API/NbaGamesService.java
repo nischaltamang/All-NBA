@@ -1,13 +1,11 @@
-package com.gmail.jorgegilcavazos.ballislife.network;
+package com.gmail.jorgegilcavazos.ballislife.network.API;
 
-import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
+import com.gmail.jorgegilcavazos.ballislife.features.model.NbaGame;
 
 import java.util.List;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface NbaGamesService {

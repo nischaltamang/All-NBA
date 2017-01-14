@@ -1,9 +1,7 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
-import android.util.Log;
-
-import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
-import com.gmail.jorgegilcavazos.ballislife.network.NbaGamesService;
+import com.gmail.jorgegilcavazos.ballislife.features.model.NbaGame;
+import com.gmail.jorgegilcavazos.ballislife.network.API.NbaGamesService;
 import com.gmail.jorgegilcavazos.ballislife.util.DateFormatUtil;
 import com.gmail.jorgegilcavazos.ballislife.util.GameUtils;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -75,6 +73,7 @@ public class GamesPresenter extends MvpBasePresenter<GamesView> {
 
                     @Override
                     public void onError(Throwable e) {
+                        getView().setLoadingIndicator(false);
                         getView().showSnackbar(true);
                     }
 

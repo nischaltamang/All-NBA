@@ -2,12 +2,9 @@ package com.gmail.jorgegilcavazos.ballislife.features.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -28,7 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.gmail.jorgegilcavazos.ballislife.features.games.GamesPresenter;
+import com.gmail.jorgegilcavazos.ballislife.features.standings.StandingsFragment;
 import com.gmail.jorgegilcavazos.ballislife.network.GCMClientManager;
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.settings.SettingsActivity;
@@ -40,7 +37,6 @@ import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
 import com.gmail.jorgegilcavazos.ballislife.features.games.GamesFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.posts.PostsFragment;
-import com.gmail.jorgegilcavazos.ballislife.features.standings.StandingsFragment;
 
 import net.dean.jraw.RedditClient;
 
@@ -54,15 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String SELECTED_FRAGMENT_KEY = "selected_fragment";
 
-    private static final String TAG_GAMES_FRAGMENT = "GAMES_FRAGMENT";
-    private static final String TAG_STANDINGS_FRAGMENT = "STANDINGS_FRAGMENT";
-    private static final String TAG_POSTS_FRAGMENT = "POSTS_FRAGMENT";
-    private static final String TAG_HIGHLIGHTS_FRAGMENT = "HIGHLIGHTS_FRAGMENT";
-
     private static final int GAMES_FRAGMENT_ID = 1;
     private static final int STANDINGS_FRAGMENT_ID = 2;
     private static final int POSTS_FRAGMENT_ID = 4;
-    private static final int HIGHLIGHTS_FRAGMENT_ID = 5;
 
     private GCMClientManager pushClientManager;
 
@@ -74,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
     int selectedFragment;
     private SharedPreferences myPreferences;
     private SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener;
-
-    private GamesPresenter mGamesPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

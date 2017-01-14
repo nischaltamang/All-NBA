@@ -1,6 +1,6 @@
 package com.gmail.jorgegilcavazos.ballislife.util;
 
-import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
+import com.gmail.jorgegilcavazos.ballislife.features.model.NbaGame;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

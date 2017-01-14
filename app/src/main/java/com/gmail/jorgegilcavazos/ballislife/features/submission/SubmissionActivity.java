@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.gmail.jorgegilcavazos.ballislife.util.Constants;
-import com.gmail.jorgegilcavazos.ballislife.features.data.Streamable;
+import com.gmail.jorgegilcavazos.ballislife.features.model.Streamable;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.features.shared.CommentAdapter;
 import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;

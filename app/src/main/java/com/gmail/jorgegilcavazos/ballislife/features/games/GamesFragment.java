@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.gmail.jorgegilcavazos.ballislife.features.data.NbaGame;
+import com.gmail.jorgegilcavazos.ballislife.features.model.NbaGame;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.features.gamethread.CommentsActivity;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;

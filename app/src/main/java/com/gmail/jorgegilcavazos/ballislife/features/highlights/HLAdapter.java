@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gmail.jorgegilcavazos.ballislife.features.data.Highlight;
+import com.gmail.jorgegilcavazos.ballislife.features.model.Highlight;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.squareup.picasso.Picasso;
 
