@@ -18,11 +18,6 @@
             android:title="Standings"/>
 
         <item
-            android:id="@+id/navigation_item_3"
-            android:icon="@drawable/ic_date_range_black_24dp"
-            android:title="Schedule"/>
-
-        <item
             android:id="@+id/navigation_item_4"
             android:icon="@drawable/ic_view_list_black_24dp"
             android:title="/r/NBA"/>
