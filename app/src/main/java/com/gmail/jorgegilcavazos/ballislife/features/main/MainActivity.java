@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.gmail.jorgegilcavazos.ballislife.features.profile.ProfileActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.standings.StandingsFragment;
 import com.gmail.jorgegilcavazos.ballislife.network.GCMClientManager;
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
@@ -193,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(loginIntent);
                         } else {
                             //TODO: open user profile here.
+                            Intent profileIntent = new Intent(getApplicationContext(),
+                                    ProfileActivity.class);
+                            startActivity(profileIntent);
                             Toast.makeText(getApplicationContext(),
                                     "You are already logged in", Toast.LENGTH_SHORT).show();
                         }
