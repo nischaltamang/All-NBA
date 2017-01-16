@@ -29,8 +29,10 @@ public class ProfilePresenter extends MvpBasePresenter<ProfileView> {
 
     @Override
     public void detachView(boolean retainInstance) {
+        Log.d("presenter", "detachView");
         super.detachView(retainInstance);
         if (!retainInstance) {
+            Log.d("presenter", "clearing");
             disposables.clear();
         }
     }
@@ -104,7 +106,6 @@ public class ProfilePresenter extends MvpBasePresenter<ProfileView> {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("Presenter", "onerror");
                         if (isViewAttached()) {
                             getView().setLoadingIndicator(false);
                             getView().showSnackbar(true);
@@ -113,7 +114,9 @@ public class ProfilePresenter extends MvpBasePresenter<ProfileView> {
 
                     @Override
                     public void onComplete() {
-
+                        if (isViewAttached()) {
+                            getView().setLoadingIndicator(false);
+                        }
                     }
                 })
         );

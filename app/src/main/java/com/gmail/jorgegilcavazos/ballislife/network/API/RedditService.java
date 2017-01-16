@@ -27,10 +27,14 @@ public class RedditService {
             @Override
             public void subscribe(ObservableEmitter<LoggedInAccount> e) throws Exception {
                 try {
-                    e.onNext(redditClient.me());
-                    e.onComplete();
+                    if (!e.isDisposed()) {
+                        e.onNext(redditClient.me());
+                        e.onComplete();
+                    }
                 } catch (Exception ex) {
-                    e.onError(ex);
+                    if (!e.isDisposed()) {
+                        e.onError(ex);
+                    }
                 }
             }
         });
@@ -43,7 +47,7 @@ public class RedditService {
 
         final UserContributionPaginator paginator = new UserContributionPaginator(redditClient, where,
                 redditClient.getAuthenticatedUser());
-        paginator.setLimit(100);
+        paginator.setLimit(50);
         paginator.setSorting(Sorting.NEW);
 
         Observable<Listing<Contribution>> observable = Observable.create(
@@ -51,13 +55,15 @@ public class RedditService {
                     @Override
                     public void subscribe(ObservableEmitter<Listing<Contribution>> e) throws Exception {
                         try {
-                            Log.d("Service", "starting");
                             Listing<Contribution> contributions = paginator.next(true);
-                            e.onNext(contributions);
-                            e.onComplete();
+                            if (!e.isDisposed()) {
+                                e.onNext(contributions);
+                                e.onComplete();
+                            }
                         } catch (Exception ex) {
-                            Log.d("Service", "exception");
-                            e.onError(ex);
+                            if (!e.isDisposed()) {
+                                e.onError(ex);
+                            }
                         }
                     }
                 }
