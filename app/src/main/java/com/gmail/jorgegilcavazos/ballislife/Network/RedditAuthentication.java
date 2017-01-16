@@ -152,7 +152,7 @@ public class RedditAuthentication {
         OAuthHelper oAuthHelper = mRedditClient.getOAuthHelper();
         Credentials credentials = Credentials.installedApp(CLIENT_ID, REDIRECT_URL);
         String[] scopes = {"identity", "edit", "flair", "mysubreddits", "read", "vote",
-                "submit", "subscribe"};
+                "submit", "subscribe", "history", "save"};
         return oAuthHelper.getAuthorizationUrl(credentials, true, true, scopes);
     }
 

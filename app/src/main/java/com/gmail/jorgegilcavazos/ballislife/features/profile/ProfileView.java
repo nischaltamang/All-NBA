@@ -2,13 +2,15 @@ package com.gmail.jorgegilcavazos.ballislife.features.profile;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
-import java.util.List;
+import net.dean.jraw.models.Contribution;
+import net.dean.jraw.models.Listing;
+
 
 public interface ProfileView extends MvpView {
 
     void setLoadingIndicator(boolean active);
 
-    void showContent(List<String> contentList);
+    void showContent(Listing<Contribution> contentList);
 
     void hideContent();
 

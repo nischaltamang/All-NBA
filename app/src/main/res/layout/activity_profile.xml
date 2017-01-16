@@ -78,7 +78,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
                         android:gravity="center"
-                        android:text="Obi-Wan_Ginobili"
+                        android:text="username"
                         android:textColor="@android:color/white"
                         android:textSize="22sp" />
 
@@ -102,7 +102,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignEnd="@id/center_point"
                         android:gravity="center"
-                        android:text="POST KARMA"
+                        android:text="LINK KARMA"
                         android:textSize="13sp"
                         android:textStyle="bold"/>
 
@@ -153,141 +153,16 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.NestedScrollView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/profile_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="0dp"
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            tools:listitem="@layout/contribution_link_layout">
 
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:text="Hola"
-                        android:textSize="25sp"/>
-
-                </android.support.v7.widget.CardView>
-            </LinearLayout>
-
-        </android.support.v4.widget.NestedScrollView>
+        </android.support.v7.widget.RecyclerView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

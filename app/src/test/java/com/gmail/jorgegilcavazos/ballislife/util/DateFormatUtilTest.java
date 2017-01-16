@@ -35,8 +35,8 @@ public class DateFormatUtilTest {
         String twoDaysAgoString = DateFormatUtil.formatRedditDate(twoDaysAgo.getTime());
 
         assertEquals(" just now ", nowString);
-        assertEquals("50 m", fiftyMinAgoString);
-        assertEquals("4 hr", fourHoursAgoString);
+        assertEquals("50m", fiftyMinAgoString);
+        assertEquals("4hr", fourHoursAgoString);
         assertEquals("2 days", twoDaysAgoString);
     }
 

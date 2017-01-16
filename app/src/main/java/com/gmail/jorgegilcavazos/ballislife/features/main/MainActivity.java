@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -120,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState");
-        Log.d(TAG, "saving " + selectedFragment);
         outState.putInt(SELECTED_FRAGMENT_KEY, selectedFragment);
 
         super.onSaveInstanceState(outState);
@@ -193,12 +190,9 @@ public class MainActivity extends AppCompatActivity {
                                     LoginActivity.class);
                             startActivity(loginIntent);
                         } else {
-                            //TODO: open user profile here.
                             Intent profileIntent = new Intent(getApplicationContext(),
                                     ProfileActivity.class);
                             startActivity(profileIntent);
-                            Toast.makeText(getApplicationContext(),
-                                    "You are already logged in", Toast.LENGTH_SHORT).show();
                         }
                         return true;
                     case R.id.navigation_item_9:

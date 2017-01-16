@@ -14,6 +14,7 @@
     <string name="retry">Retry</string>
     <string name="failed_game_data">Could not load game data</string>
     <string name="failed_standings_data">Could not load standings</string>
+    <string name="failed_profile_data">Could not load user info</string>
 
     <!-- Strings for MainActivity -->
     <string name="action_refresh">Refresh</string>
