@@ -1,7 +1,5 @@
 package com.gmail.jorgegilcavazos.ballislife.features.profile;
 
-import android.util.Log;
-
 import com.gmail.jorgegilcavazos.ballislife.network.API.RedditService;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -29,10 +27,8 @@ public class ProfilePresenter extends MvpBasePresenter<ProfileView> {
 
     @Override
     public void detachView(boolean retainInstance) {
-        Log.d("presenter", "detachView");
         super.detachView(retainInstance);
         if (!retainInstance) {
-            Log.d("presenter", "clearing");
             disposables.clear();
         }
     }
@@ -97,7 +93,6 @@ public class ProfilePresenter extends MvpBasePresenter<ProfileView> {
                 .subscribeWith(new DisposableObserver<Listing<Contribution>>() {
                     @Override
                     public void onNext(Listing<Contribution> contributions) {
-                        Log.d("Presenter", "onnext");
                         if (isViewAttached()) {
                             getView().setLoadingIndicator(false);
                             getView().showContent(contributions);
