@@ -142,4 +142,9 @@ public final class DateFormatUtil {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         return format.format(date);
     }
+
+    public static String getNoDashDateString(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.US);
+        return format.format(date);
+    }
 }

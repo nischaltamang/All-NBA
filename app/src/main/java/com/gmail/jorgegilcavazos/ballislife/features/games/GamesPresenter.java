@@ -46,7 +46,7 @@ public class GamesPresenter extends MvpBasePresenter<GamesView> {
         getView().setNoGamesIndicator(false);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://phpstack-4722-10615-67130.cloudwaysapps.com/api/v1/")
+                .baseUrl("https://nba-app-ca681.firebaseio.com/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -54,7 +54,7 @@ public class GamesPresenter extends MvpBasePresenter<GamesView> {
         NbaGamesService gamesService = retrofit.create(NbaGamesService.class);
 
         Observable<List<NbaGame>> games = gamesService.listGames(
-                DateFormatUtil.getDashedDateString(selectedDate.getTime()));
+                DateFormatUtil.getNoDashDateString(selectedDate.getTime()));
 
         disposables.clear();
         disposables.add(
