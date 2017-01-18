@@ -17,11 +17,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.gmail.jorgegilcavazos.ballislife.features.model.Highlight;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.features.main.MainActivity;
@@ -114,7 +109,7 @@ public class HighlightsFragment extends Fragment {
             hlListView.setVisibility(View.GONE);
         }
 
-
+        /*
         StringRequest request = new StringRequest(url + page, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -130,6 +125,7 @@ public class HighlightsFragment extends Fragment {
         });
         RequestQueue queue = Volley.newRequestQueue(context);
         queue.add(request);
+        */
     }
 
     public void loadHL(String response, boolean newLoad) {

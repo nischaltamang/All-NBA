@@ -23,7 +23,6 @@ import com.gmail.jorgegilcavazos.ballislife.features.profile.ProfileActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.standings.StandingsFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.settings.SettingsActivity;
-import com.gmail.jorgegilcavazos.ballislife.network.NetworkManager;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.util.ActivityUtils;
 import com.gmail.jorgegilcavazos.ballislife.util.AuthListener;
@@ -84,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
         if (!RedditAuthentication.getInstance().getRedditClient().isAuthenticated()) {
             RedditAuthentication.getInstance().authenticate(this, listener);
         }
-
-        NetworkManager.getInstance(this);
 
         // Set default to GamesFragment.
         selectedFragment = GAMES_FRAGMENT_ID;
