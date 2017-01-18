@@ -76,7 +76,11 @@ public class SubmissionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_submission);
         setUpToolbar();
 
-        setTitle(getString(R.string.rnba));
+        if (Constants.NBA_MATERIAL_ENABLED) {
+            setTitle(getString(R.string.rnba));
+        } else  {
+            setTitle("");
+        }
 
         Bundle extras = getIntent().getExtras();
         threadId = extras.getString(Constants.THREAD_ID);

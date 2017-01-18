@@ -7,12 +7,10 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.view.View;
 
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
+import com.gmail.jorgegilcavazos.ballislife.util.Constants;
 import com.gmail.jorgegilcavazos.ballislife.util.TeamName;
 import com.gmail.jorgegilcavazos.ballislife.R;
 
@@ -73,10 +71,15 @@ public class SettingsFragment extends PreferenceFragment
             }
 
             abbreviation = abbreviation.toUpperCase();
-            for (TeamName teamName : TeamName.values()) {
-                if (teamName.toString().equals(abbreviation)) {
-                    return teamName.getTeamName();
+
+            if (Constants.NBA_MATERIAL_ENABLED) {
+                for (TeamName teamName : TeamName.values()) {
+                    if (teamName.toString().equals(abbreviation)) {
+                        return teamName.getTeamName();
+                    }
                 }
+            } else {
+                return abbreviation;
             }
         }
         return "No team selected";

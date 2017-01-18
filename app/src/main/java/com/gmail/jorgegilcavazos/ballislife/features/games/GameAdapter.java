@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.gmail.jorgegilcavazos.ballislife.features.model.NbaGame;
 import com.gmail.jorgegilcavazos.ballislife.R;
+import com.gmail.jorgegilcavazos.ballislife.util.Constants;
 import com.gmail.jorgegilcavazos.ballislife.util.Utilities;
 
 import java.util.List;
@@ -33,8 +34,14 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
 
     @Override
     public GameViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game,
-                parent, false);
+        View view;
+        if (Constants.NBA_MATERIAL_ENABLED) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game,
+                    parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_game_no_logos,
+                    parent, false);
+        }
         context = parent.getContext();
         return new GameViewHolder(view);
     }
@@ -43,15 +50,18 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     public void onBindViewHolder(final GameViewHolder holder, int position) {
         NbaGame nbaGame = nbaGameList.get(position);
 
-        int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeamAbbr()
-                .toLowerCase(), "drawable", context.getPackageName());
-        int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeamAbbr()
-                .toLowerCase(), "drawable", context.getPackageName());
+        if (Constants.NBA_MATERIAL_ENABLED) {
+            int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeamAbbr()
+                    .toLowerCase(), "drawable", context.getPackageName());
+            int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeamAbbr()
+                    .toLowerCase(), "drawable", context.getPackageName());
+
+            holder.ivHomeLogo.setImageResource(resKeyHome);
+            holder.ivAwayLogo.setImageResource(resKeyAway);
+        }
 
         holder.tvHomeTeam.setText(nbaGame.getHomeTeamAbbr());
         holder.tvAwayTeam.setText(nbaGame.getAwayTeamAbbr());
-        holder.ivHomeLogo.setImageResource(resKeyHome);
-        holder.ivAwayLogo.setImageResource(resKeyAway);
         holder.tvHomeScore.setText(nbaGame.getHomeTeamScore());
         holder.tvAwayScore.setText(nbaGame.getAwayTeamScore());
         holder.tvClock.setText(nbaGame.getGameClock());

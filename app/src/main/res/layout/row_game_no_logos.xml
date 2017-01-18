@@ -27,18 +27,19 @@
                 android:layout_height="60dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="5dp"
-                android:src="@mipmap/ic_launcher"
                 />
 
             <TextView
                 android:id="@+id/homelabel"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="A"
+                android:text="SAS"
                 android:textColor="@color/secondaryText"
-                android:textSize="15dp"
+                android:textSize="25sp"
                 android:textAlignment="center"
-                android:layout_below="@+id/homeicon"/>
+                android:gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
 
             <ImageView
                 android:id="@+id/awayicon"
@@ -47,19 +48,21 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="5dp"
-                android:src="@mipmap/ic_launcher"
                 />
 
             <TextView
                 android:id="@+id/awaylabel"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:text="B"
+                android:text="HOU"
                 android:textColor="@color/secondaryText"
-                android:textSize="15dp"
+                android:textSize="25sp"
                 android:textAlignment="center"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/awayicon"/>
+                android:layout_below="@+id/awayicon"
+                android:gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
 
             <TextView
                 android:id="@+id/extraLabel"

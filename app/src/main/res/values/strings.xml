@@ -39,36 +39,36 @@
 
     <string-array name="pref_teams_list_titles">
         <item>No team</item>
-        <item>Atlanta Hawks</item>
-        <item>Brooklyn Nets</item>
-        <item>Boston Celtics</item>
-        <item>Charlotte Hornets</item>
-        <item>Chicago Bulls</item>
-        <item>Cleveland Cavaliers</item>
-        <item>Dallas Mavericks</item>
-        <item>Denver Nuggets</item>
-        <item>Detroit Pistons</item>
-        <item>Golden State Warriors</item>
-        <item>Houston Rockets</item>
-        <item>Indiana Pacers</item>
-        <item>Los Angeles Clippers</item>
-        <item>Los Angeles Lakers</item>
-        <item>Memphis Grizzlies</item>
-        <item>Miami Heat</item>
-        <item>Milwaukee Bucks</item>
-        <item>Minnesota Timberwolves</item>
-        <item>New Orleans Pelicans</item>
-        <item>New York Knicks</item>
-        <item>Oklahoma City Thunder</item>
-        <item>Orlando Magic</item>
-        <item>Philadelphia 76ers</item>
-        <item>Phoenix Suns</item>
-        <item>Portland Trail Blazers</item>
-        <item>Sacramento Kings</item>
-        <item>San Antonio Spurs</item>
-        <item>Toronto Raptors</item>
+        <item>Atlanta</item>
+        <item>Brooklyn</item>
+        <item>Boston</item>
+        <item>Charlotte</item>
+        <item>Chicago </item>
+        <item>Cleveland</item>
+        <item>Dallas</item>
+        <item>Denver</item>
+        <item>Detroit</item>
+        <item>Golden State</item>
+        <item>Houston</item>
+        <item>Indiana</item>
+        <item>Los Angeles C</item>
+        <item>Los Angeles L</item>
+        <item>Memphis</item>
+        <item>Miami</item>
+        <item>Milwaukee</item>
+        <item>Minnesota</item>
+        <item>New Orleans</item>
+        <item>New York</item>
+        <item>Oklahoma City</item>
+        <item>Orlando</item>
+        <item>Philadelphia</item>
+        <item>Phoenix</item>
+        <item>Portland Trail</item>
+        <item>Sacramento</item>
+        <item>San Antonio</item>
+        <item>Toronto</item>
         <item>Utah Jazz</item>
-        <item>Washington Wizards</item>
+        <item>Washington</item>
     </string-array>
     <string-array name="pref_teams_list_values">
         <item>noteam</item>

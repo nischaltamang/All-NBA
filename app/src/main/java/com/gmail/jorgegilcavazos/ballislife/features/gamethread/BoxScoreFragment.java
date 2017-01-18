@@ -11,7 +11,6 @@ import com.gmail.jorgegilcavazos.ballislife.R;
 
 
 public class BoxScoreFragment extends Fragment {
-    private static final String NBA_BOX_SCORE_URL = "http://stats.nba.com/game/#!/";
     public static final String GAME_ID_KEY = "GAME_ID";
 
     @Override
@@ -24,7 +23,6 @@ public class BoxScoreFragment extends Fragment {
         WebView webView = (WebView) view.findViewById(R.id.webView1);
         // TODO: Fix or replace.
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(NBA_BOX_SCORE_URL + gameId);
         return view;
     }
 }

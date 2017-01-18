@@ -20,4 +20,6 @@ public class Constants {
     public static final String THREAD_URL = "THREAD_URL";
     public static final String THREAD_IMAGE = "THREAD_IMAGE";
     public static final String THREAD_SELF = "THREAD_SELF";
+
+    public static final boolean NBA_MATERIAL_ENABLED = false;
 }

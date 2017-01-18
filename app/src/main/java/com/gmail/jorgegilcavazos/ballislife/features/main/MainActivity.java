@@ -29,6 +29,7 @@ import com.gmail.jorgegilcavazos.ballislife.util.AuthListener;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
 import com.gmail.jorgegilcavazos.ballislife.features.games.GamesFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.posts.PostsFragment;
+import com.gmail.jorgegilcavazos.ballislife.util.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -272,9 +273,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadTeamLogo() {
-        View headerView = navigationView.getHeaderView(0);
-        ImageView favTeamLogo = (ImageView) headerView.findViewById(R.id.favTeamLogo);
-        favTeamLogo.setImageResource(getFavTeamLogoResource());
+        if (Constants.NBA_MATERIAL_ENABLED) {
+            View headerView = navigationView.getHeaderView(0);
+            ImageView favTeamLogo = (ImageView) headerView.findViewById(R.id.favTeamLogo);
+            favTeamLogo.setImageResource(getFavTeamLogoResource());
+        }
     }
 
     /**
