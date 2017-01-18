@@ -19,24 +19,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.gmail.jorgegilcavazos.ballislife.features.profile.ProfileActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.standings.StandingsFragment;
-import com.gmail.jorgegilcavazos.ballislife.network.GCMClientManager;
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.settings.SettingsActivity;
 import com.gmail.jorgegilcavazos.ballislife.network.NetworkManager;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.util.ActivityUtils;
 import com.gmail.jorgegilcavazos.ballislife.util.AuthListener;
-import com.gmail.jorgegilcavazos.ballislife.util.MyDebug;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
 import com.gmail.jorgegilcavazos.ballislife.features.games.GamesFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.posts.PostsFragment;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import net.dean.jraw.RedditClient;
 
@@ -45,16 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String MY_PREFERENCES = "MyPrefs";
     public static final String FIRST_TIME = "firstTime";
-    public static final String PUSH_CLOSE_GAME_ALERT = "pushCGA";
-    private static final String PROJECT_NUMBER = "532852092546";
 
     private static final String SELECTED_FRAGMENT_KEY = "selected_fragment";
 
     private static final int GAMES_FRAGMENT_ID = 1;
     private static final int STANDINGS_FRAGMENT_ID = 2;
     private static final int POSTS_FRAGMENT_ID = 4;
-
-    private GCMClientManager pushClientManager;
 
     Toolbar toolbar;
     ActionBar actionBar;
@@ -75,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
         setUpDrawerContent();
         setUpPreferences();
         loadNavigationHeaderContent();
-
-        registerGmcClient();
+        checkGooglePlayServicesAvailable();
 
         AuthListener listener = new AuthListener() {
             @Override
@@ -126,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        checkGooglePlayServicesAvailable();
         loadRedditUsername();
     }
 
@@ -312,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
         if (myPreferences.getBoolean(FIRST_TIME, true)) {
             SharedPreferences.Editor editor = myPreferences.edit();
             editor.putBoolean(FIRST_TIME, false);
-            editor.putBoolean(PUSH_CLOSE_GAME_ALERT, true);
             editor.apply();
         }
 
@@ -332,52 +322,28 @@ public class MainActivity extends AppCompatActivity {
                 .registerOnSharedPreferenceChangeListener(mPreferenceListener);
     }
 
-    private void registerGmcClient() {
-        final String GCM_REGISTRATION_URL = "http://phpstack-4722-10615-67130.cloudwaysapps.com/gcm.php?shareRegId=1&regId=";
-        pushClientManager = new GCMClientManager(this, PROJECT_NUMBER);
-        pushClientManager.registerIfNeeded(new GCMClientManager.RegistrationCompletedHandler() {
-            @Override
-            public void onSuccess(String registrationId, boolean isNewRegistration) {
-                if (isNewRegistration) {
-                    StringRequest sendRegId = new StringRequest(
-                            GCM_REGISTRATION_URL + registrationId, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            if (MyDebug.LOG) {
-                                Log.i(TAG, "Registered with GCM. " + response);
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError e) {
-                            if (MyDebug.LOG) {
-                                Log.e(TAG, "Volley error when registering with GCM. " + e.toString());
-                            }
-                        }
-                    });
-                    RequestQueue sendQueue = Volley.newRequestQueue(getApplicationContext());
-                    sendQueue.add(sendRegId);
-                }
-            }
-
-            @Override
-            public void onFailure(String ex) {
-                super.onFailure(ex);
-                if (MyDebug.LOG) {
-                    Log.e(TAG, "Failure to register with GCM. " + ex);
-                }
-                //TODO: see what's up with GCM.
-                // If there is an error registering, don't just keep trying to register.
-                // Require the user to click a button again, or perform
-                // exponential back-off when retrying.
-            }
-        });
-    }
-
     public void setToolbarSubtitle(String subtitle) {
         if (toolbar != null) {
             toolbar.setSubtitle(subtitle);
         }
+    }
+
+    public boolean checkGooglePlayServicesAvailable() {
+        final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (googleApiAvailability.isUserResolvableError(resultCode)) {
+                googleApiAvailability.getErrorDialog(this, resultCode,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i(TAG, "This device is not supported");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
