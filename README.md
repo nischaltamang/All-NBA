@@ -10,7 +10,7 @@ Android app for NBA fans. Features live scores, highlights, alerts and Reddit in
 * Push notifications when games are close/interesting
 * Push notifications when games begin/end
 * User-submitted highlight videos
-* Standings and playoff bracket
+* Standings
 
 ## Screenshots
 <img src="art/games.png" alt="Ready" width="200px;"/>
@@ -22,7 +22,7 @@ Android app for NBA fans. Features live scores, highlights, alerts and Reddit in
 
 ## Downloads
 
-A Play Store version will not be available until a stable release is out.  
+A public Play Store version will not be available until a stable release is out, but there is an alpha version published, contact me to request an invitation.
 
 Pre-release APK is available [here](https://github.com/jorgegil96/All-NBA/releases).
 
@@ -33,7 +33,7 @@ Fix a bug, add a new feature or make the code prettier!
 ### Steps to contribute:
 1. Fork the repository
 2. Look at the list of [open issues](https://github.com/jorgegil96/All-NBA/issues), pick one or create a new one (this can be for a bug or wanted feature)
-3. Write code and document it (when necessary)
+3. Write code and document it, look at the code around you and try to follow the style and conventions used. An MVP architecture is used throughout the app.
 4. Write unit tests (if possible)
 5. Run ALL tests by executing `./gradlew test`
 6. Send a pull request
