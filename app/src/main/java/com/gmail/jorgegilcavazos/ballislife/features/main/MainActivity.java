@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.jorgegilcavazos.ballislife.features.profile.ProfileActivity;
+import com.gmail.jorgegilcavazos.ballislife.features.settings.SettingsFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.standings.StandingsFragment;
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.features.settings.SettingsActivity;
@@ -32,8 +33,10 @@ import com.gmail.jorgegilcavazos.ballislife.features.posts.PostsFragment;
 import com.gmail.jorgegilcavazos.ballislife.util.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import net.dean.jraw.RedditClient;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 setPostsFragment();
                 break;
         }
+
     }
 
     @Override
@@ -304,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = myPreferences.edit();
             editor.putBoolean(FIRST_TIME, false);
             editor.apply();
+            subscribeToDefaultTopics();
         }
 
         // Listen for changes to update team logo.
@@ -320,6 +325,14 @@ public class MainActivity extends AppCompatActivity {
         };
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(mPreferenceListener);
+    }
+
+    private void subscribeToDefaultTopics() {
+        // Subscribe to all CGA topics
+        String[] topics = getResources().getStringArray(R.array.pref_cga_values);
+        for (String topic : topics) {
+            FirebaseMessaging.getInstance().subscribeToTopic(topic);
+        }
     }
 
     public void setToolbarSubtitle(String subtitle) {

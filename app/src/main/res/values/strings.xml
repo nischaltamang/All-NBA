@@ -15,6 +15,7 @@
     <string name="failed_game_data">Could not load game data</string>
     <string name="failed_standings_data">Could not load standings</string>
     <string name="failed_profile_data">Could not load user info</string>
+    <string name="mute_game">Mute this game</string>
 
     <!-- Strings for MainActivity -->
     <string name="action_refresh">Refresh</string>
@@ -36,6 +37,10 @@
     <string name="log_in">Log in</string>
     <string name="click_login">Click to log in</string>
     <string name="logged_as_user">Logged in as %1$s</string>
+    <string name="title_settings_cga">Close Game Alert</string>
+    <string name="dialog_settings_cga">Pick teams to follow</string>
+    <string name="summary_settings_cga">Receive an alert when a game is getting exciting towards the end</string>
+    <string name="key_settings_cga">pref_cga_topics</string>
 
     <string-array name="pref_teams_list_titles">
         <item>No team</item>
@@ -43,7 +48,7 @@
         <item>Brooklyn</item>
         <item>Boston</item>
         <item>Charlotte</item>
-        <item>Chicago </item>
+        <item>Chicago</item>
         <item>Cleveland</item>
         <item>Dallas</item>
         <item>Denver</item>
@@ -63,13 +68,14 @@
         <item>Orlando</item>
         <item>Philadelphia</item>
         <item>Phoenix</item>
-        <item>Portland Trail</item>
+        <item>Portland</item>
         <item>Sacramento</item>
         <item>San Antonio</item>
         <item>Toronto</item>
-        <item>Utah Jazz</item>
+        <item>Utah</item>
         <item>Washington</item>
     </string-array>
+
     <string-array name="pref_teams_list_values">
         <item>noteam</item>
         <item>atl</item>
@@ -102,6 +108,105 @@
         <item>tor</item>
         <item>uta</item>
         <item>was</item>
+    </string-array>
+
+    <string-array name="pref_cga_titles">
+        <item>Atlanta</item>
+        <item>Brooklyn</item>
+        <item>Boston</item>
+        <item>Charlotte</item>
+        <item>Chicago</item>
+        <item>Cleveland</item>
+        <item>Dallas</item>
+        <item>Denver</item>
+        <item>Detroit</item>
+        <item>Golden State</item>
+        <item>Houston</item>
+        <item>Indiana</item>
+        <item>Los Angeles C</item>
+        <item>Los Angeles L</item>
+        <item>Memphis</item>
+        <item>Miami</item>
+        <item>Milwaukee</item>
+        <item>Minnesota</item>
+        <item>New Orleans</item>
+        <item>New York</item>
+        <item>Oklahoma City</item>
+        <item>Orlando</item>
+        <item>Philadelphia</item>
+        <item>Phoenix</item>
+        <item>Portland</item>
+        <item>Sacramento</item>
+        <item>San Antonio</item>
+        <item>Toronto</item>
+        <item>Utah</item>
+        <item>Washington</item>
+    </string-array>
+
+    <string-array name="pref_cga_values">
+        <item>CGA-Atlanta</item>
+        <item>CGA-Brooklyn</item>
+        <item>CGA-Boston</item>
+        <item>CGA-Charlotte</item>
+        <item>CGA-Chicago</item>
+        <item>CGA-Cleveland</item>
+        <item>CGA-Dallas</item>
+        <item>CGA-Denver</item>
+        <item>CGA-Detroit</item>
+        <item>CGA-Golden-State</item>
+        <item>CGA-Houston</item>
+        <item>CGA-Indiana</item>
+        <item>CGA-Los-Angeles-C</item>
+        <item>CGA-Los-Angeles-L</item>
+        <item>CGA-Memphis</item>
+        <item>CGA-Miami</item>
+        <item>CGA-Milwaukee</item>
+        <item>CGA-Minnesota</item>
+        <item>CGA-New-Orleans</item>
+        <item>CGA-New-York</item>
+        <item>CGA-Oklahoma-City</item>
+        <item>CGA-Orlando</item>
+        <item>CGA-Philadelphia</item>
+        <item>CGA-Phoenix</item>
+        <item>CGA-Portland</item>
+        <item>CGA-Sacramento</item>
+        <item>CGA-San-Antonio</item>
+        <item>CGA-Toronto</item>
+        <item>CGA-Utah</item>
+        <item>CGA-Washington</item>
+    </string-array>
+
+    <string-array name="pref_cga_values_def">
+        <item>CGA-Atlanta</item>
+        <item>CGA-Brooklyn</item>
+        <item>CGA-Boston</item>
+        <item>CGA-Charlotte</item>
+        <item>CGA-Chicago</item>
+        <item>CGA-Cleveland</item>
+        <item>CGA-Dallas</item>
+        <item>CGA-Denver</item>
+        <item>CGA-Detroit</item>
+        <item>CGA-Golden-State</item>
+        <item>CGA-Houston</item>
+        <item>CGA-Indiana</item>
+        <item>CGA-Los-Angeles-C</item>
+        <item>CGA-Los-Angeles-L</item>
+        <item>CGA-Memphis</item>
+        <item>CGA-Miami</item>
+        <item>CGA-Milwaukee</item>
+        <item>CGA-Minnesota</item>
+        <item>CGA-New-Orleans</item>
+        <item>CGA-New-York</item>
+        <item>CGA-Oklahoma-City</item>
+        <item>CGA-Orlando</item>
+        <item>CGA-Philadelphia</item>
+        <item>CGA-Phoenix</item>
+        <item>CGA-Portland</item>
+        <item>CGA-Sacramento</item>
+        <item>CGA-San-Antonio</item>
+        <item>CGA-Toronto</item>
+        <item>CGA-Utah</item>
+        <item>CGA-Washington</item>
     </string-array>
 
 </resources>

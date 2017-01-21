@@ -7,16 +7,25 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.support.v4.util.ArraySet;
+import android.util.Log;
 
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
 import com.gmail.jorgegilcavazos.ballislife.util.Constants;
 import com.gmail.jorgegilcavazos.ballislife.util.TeamName;
 import com.gmail.jorgegilcavazos.ballislife.R;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.Set;
 
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener{
     private static final String TAG = "SettingsFragment";
+
+    // Should match string value in strings.xml
+    public static final String KEY_PREF_CGA_TOPICS = "pref_cga_topics";
 
     private final RedditAuthentication.DeAuthTask.OnDeAuthTaskCompleted deAuthListener =
             new RedditAuthentication.DeAuthTask.OnDeAuthTaskCompleted() {
@@ -37,6 +46,10 @@ public class SettingsFragment extends PreferenceFragment
         }
 
         initListeners();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Set<String> set = sharedPreferences.getStringSet(KEY_PREF_CGA_TOPICS, new ArraySet<String>());
+        Log.d(TAG, "set: " + set.size());
     }
 
     private void pickPreferenceObject(Preference preference) {
@@ -61,6 +74,19 @@ public class SettingsFragment extends PreferenceFragment
             case "log_out_pref":
                 preference.setTitle("Log in");
                 break;
+            case KEY_PREF_CGA_TOPICS:
+                Set<String> newTopics = sharedPreferences.getStringSet(key, null);
+                String[] availableTopics = getResources().getStringArray(R.array.pref_cga_values);
+
+                if (newTopics != null) {
+                    for (String availableTopic : availableTopics) {
+                        if (newTopics.contains(availableTopic)) {
+                            FirebaseMessaging.getInstance().subscribeToTopic(availableTopic);
+                        } else {
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic(availableTopic);
+                        }
+                    }
+                }
         }
     }
 
