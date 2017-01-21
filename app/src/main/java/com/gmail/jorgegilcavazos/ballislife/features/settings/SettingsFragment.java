@@ -7,9 +7,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.support.v4.util.ArraySet;
-import android.util.Log;
 
 import com.gmail.jorgegilcavazos.ballislife.features.login.LoginActivity;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
@@ -24,8 +21,9 @@ public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener{
     private static final String TAG = "SettingsFragment";
 
-    // Should match string value in strings.xml
+    // Should match string values in strings.xml
     public static final String KEY_PREF_CGA_TOPICS = "pref_cga_topics";
+    public static final String KEY_PREF_START_TOPICS = "pref_start_topics";
 
     private final RedditAuthentication.DeAuthTask.OnDeAuthTaskCompleted deAuthListener =
             new RedditAuthentication.DeAuthTask.OnDeAuthTaskCompleted() {
@@ -46,10 +44,6 @@ public class SettingsFragment extends PreferenceFragment
         }
 
         initListeners();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> set = sharedPreferences.getStringSet(KEY_PREF_CGA_TOPICS, new ArraySet<String>());
-        Log.d(TAG, "set: " + set.size());
     }
 
     private void pickPreferenceObject(Preference preference) {
@@ -75,18 +69,47 @@ public class SettingsFragment extends PreferenceFragment
                 preference.setTitle("Log in");
                 break;
             case KEY_PREF_CGA_TOPICS:
-                Set<String> newTopics = sharedPreferences.getStringSet(key, null);
-                String[] availableTopics = getResources().getStringArray(R.array.pref_cga_values);
+                Set<String> newCgaTopics = sharedPreferences.getStringSet(key, null);
+                String[] availableGameTopics = getResources()
+                        .getStringArray(R.array.pref_cga_values);
 
-                if (newTopics != null) {
-                    for (String availableTopic : availableTopics) {
-                        if (newTopics.contains(availableTopic)) {
-                            FirebaseMessaging.getInstance().subscribeToTopic(availableTopic);
-                        } else {
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic(availableTopic);
-                        }
-                    }
+                updateTopicSubscriptions(newCgaTopics, availableGameTopics);
+                break;
+            case KEY_PREF_START_TOPICS:
+                Set<String> newStartTopics = sharedPreferences.getStringSet(key, null);
+                String[] availableStartTopics = getResources()
+                        .getStringArray(R.array.pref_start_values);
+
+                updateTopicSubscriptions(newStartTopics, availableStartTopics);
+                break;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferenceScreen().getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
+
+        initLogInStatusText();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getPreferenceScreen().getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void updateTopicSubscriptions(Set<String> newTopics, String[] availableTopics) {
+        if (newTopics != null) {
+            for (String availableTopic : availableTopics) {
+                if (newTopics.contains(availableTopic)) {
+                    FirebaseMessaging.getInstance().subscribeToTopic(availableTopic);
+                } else {
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(availableTopic);
                 }
+            }
         }
     }
 
@@ -147,21 +170,5 @@ public class SettingsFragment extends PreferenceFragment
                 return false;
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
-
-        initLogInStatusText();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
     }
 }

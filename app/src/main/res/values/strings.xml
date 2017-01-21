@@ -37,10 +37,18 @@
     <string name="log_in">Log in</string>
     <string name="click_login">Click to log in</string>
     <string name="logged_as_user">Logged in as %1$s</string>
+
     <string name="title_settings_cga">Close Game Alert</string>
     <string name="dialog_settings_cga">Pick teams to follow</string>
     <string name="summary_settings_cga">Receive an alert when a game is getting exciting towards the end</string>
+    <!-- DO NOT TRANSLATE -->
     <string name="key_settings_cga">pref_cga_topics</string>
+
+    <string name="title_settings_start">Game Starting</string>
+    <string name="dialog_settings_start">Pick teams to receive alerts</string>
+    <string name="summary_settings_start">Receive an alert when your favorite teams are about to play</string>
+    <!-- DO NOT TRANSLATE -->
+    <string name="key_settings_start">pref_start_topics</string>
 
     <string-array name="pref_teams_list_titles">
         <item>No team</item>
@@ -76,6 +84,7 @@
         <item>Washington</item>
     </string-array>
 
+    <!-- DO NOT TRANSLATE -->
     <string-array name="pref_teams_list_values">
         <item>noteam</item>
         <item>atl</item>
@@ -143,6 +152,7 @@
         <item>Washington</item>
     </string-array>
 
+    <!-- DO NOT TRANSLATE -->
     <string-array name="pref_cga_values">
         <item>CGA-Atlanta</item>
         <item>CGA-Brooklyn</item>
@@ -176,6 +186,7 @@
         <item>CGA-Washington</item>
     </string-array>
 
+    <!-- DO NOT TRANSLATE -->
     <string-array name="pref_cga_values_def">
         <item>CGA-Atlanta</item>
         <item>CGA-Brooklyn</item>
@@ -208,5 +219,76 @@
         <item>CGA-Utah</item>
         <item>CGA-Washington</item>
     </string-array>
+
+    <!-- DO NOT TRANSLATE -->
+    <string-array name="pref_start_titles">
+        <item>Atlanta</item>
+        <item>Brooklyn</item>
+        <item>Boston</item>
+        <item>Charlotte</item>
+        <item>Chicago</item>
+        <item>Cleveland</item>
+        <item>Dallas</item>
+        <item>Denver</item>
+        <item>Detroit</item>
+        <item>Golden State</item>
+        <item>Houston</item>
+        <item>Indiana</item>
+        <item>Los Angeles C</item>
+        <item>Los Angeles L</item>
+        <item>Memphis</item>
+        <item>Miami</item>
+        <item>Milwaukee</item>
+        <item>Minnesota</item>
+        <item>New Orleans</item>
+        <item>New York</item>
+        <item>Oklahoma City</item>
+        <item>Orlando</item>
+        <item>Philadelphia</item>
+        <item>Phoenix</item>
+        <item>Portland</item>
+        <item>Sacramento</item>
+        <item>San Antonio</item>
+        <item>Toronto</item>
+        <item>Utah</item>
+        <item>Washington</item>
+    </string-array>
+
+    <!-- DO NOT TRANSLATE -->
+    <string-array name="pref_start_values">
+        <item>Start-Atlanta</item>
+        <item>Start-Brooklyn</item>
+        <item>Start-Boston</item>
+        <item>Start-Charlotte</item>
+        <item>Start-Chicago</item>
+        <item>Start-Cleveland</item>
+        <item>Start-Dallas</item>
+        <item>Start-Denver</item>
+        <item>Start-Detroit</item>
+        <item>Start-Golden-State</item>
+        <item>Start-Houston</item>
+        <item>Start-Indiana</item>
+        <item>Start-Los-Angeles-C</item>
+        <item>Start-Los-Angeles-L</item>
+        <item>Start-Memphis</item>
+        <item>Start-Miami</item>
+        <item>Start-Milwaukee</item>
+        <item>Start-Minnesota</item>
+        <item>Start-New-Orleans</item>
+        <item>Start-New-York</item>
+        <item>Start-Oklahoma-City</item>
+        <item>Start-Orlando</item>
+        <item>Start-Philadelphia</item>
+        <item>Start-Phoenix</item>
+        <item>Start-Portland</item>
+        <item>Start-Sacramento</item>
+        <item>Start-San-Antonio</item>
+        <item>Start-Toronto</item>
+        <item>Start-Utah</item>
+        <item>Start-Washington</item>
+    </string-array>
+
+    <!-- DO NOT TRANSLATE -->
+    <string-array name="pref_start_values_def" />
 
 </resources>

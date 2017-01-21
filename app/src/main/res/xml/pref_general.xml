@@ -28,11 +28,14 @@
             android:entryValues="@array/pref_cga_values"
             android:defaultValue="@array/pref_cga_values_def" />
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="game_start_switch"
-            android:summary="Receive an alert when your favorite team is about to play"
-            android:title="Game starting" />
+        <MultiSelectListPreference
+            android:title="@string/title_settings_start"
+            android:dialogTitle="@string/dialog_settings_start"
+            android:summary="@string/summary_settings_start"
+            android:key="@string/key_settings_start"
+            android:entries="@array/pref_start_titles"
+            android:entryValues="@array/pref_start_values"
+            android:defaultValue="@array/pref_start_values_def" />
 
     </PreferenceCategory>
 
