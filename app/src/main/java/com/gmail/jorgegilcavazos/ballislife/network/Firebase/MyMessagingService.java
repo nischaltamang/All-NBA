@@ -68,9 +68,7 @@ public class MyMessagingService extends FirebaseMessagingService {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
-
-
-        // TODO: set intent to execute mute service.
+        
         Intent actionIntent = new Intent(this, MuteGameService.class);
         actionIntent.putExtra("id", id);
         PendingIntent actionPendingIntent = PendingIntent.getService(this, id,
