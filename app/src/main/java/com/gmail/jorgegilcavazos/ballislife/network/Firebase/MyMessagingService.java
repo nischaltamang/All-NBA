@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.features.main.MainActivity;
@@ -23,6 +24,10 @@ public class MyMessagingService extends FirebaseMessagingService {
 
     private static final String TYPE_KEY = "type";
     private static final String CGA_TYPE = "CGA";
+    private static final String SCORES_UPDATE_TYPE = "scores";
+
+    public static final String KEY_SCORES_UPDATED = "scores_updated";
+    public static final String FILTER_SCORES_UPDATED = "com.gmail.jorgegilcavazos.ballislife.SCORES_UPDATED";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -35,6 +40,9 @@ public class MyMessagingService extends FirebaseMessagingService {
                 case CGA_TYPE:
                     onCgaMessageReceived(data);
                     break;
+                case SCORES_UPDATE_TYPE:
+                    onScoresUpdateReceived(data);
+                    break;
             }
         }
 
@@ -43,6 +51,12 @@ public class MyMessagingService extends FirebaseMessagingService {
             // Handle notification.
         }
 
+    }
+
+    private void onScoresUpdateReceived(Map<String, String> data) {
+        Intent intent = new Intent(FILTER_SCORES_UPDATED);
+        intent.putExtra(KEY_SCORES_UPDATED, data.get("body"));
+        sendBroadcast(intent);
     }
 
     private void onCgaMessageReceived(Map<String, String> data) {

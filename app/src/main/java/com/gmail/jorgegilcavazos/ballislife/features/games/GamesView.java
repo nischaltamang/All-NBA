@@ -17,6 +17,8 @@ public interface GamesView extends MvpView {
 
     void showGameDetails(NbaGame game);
 
+    void updateScores(List<NbaGame> games);
+
     void setNoGamesIndicator(boolean active);
 
     void showSnackbar(boolean canReload);

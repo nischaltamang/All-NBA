@@ -93,21 +93,29 @@ public class GamesPresenter extends MvpBasePresenter<GamesView> {
 
     public void loadDateNavigatorText() {
         String dateText = DateFormatUtil.formatNavigatorDate(selectedDate.getTime());
-        getView().setDateNavigatorText(dateText);
+        if (isViewAttached()) {
+            getView().setDateNavigatorText(dateText);
+        }
     }
 
     public void openGameDetails(NbaGame requestedGame) {
-        getView().showGameDetails(requestedGame);
+        if (isViewAttached()) {
+            getView().showGameDetails(requestedGame);
+        }
     }
 
     public void updateGames(String gameData) {
         if (DateFormatUtil.isDateToday(selectedDate.getTime())) {
-            getView().showGames(GameUtils.getGamesListFromJson(gameData));
+            if (isViewAttached()) {
+                getView().updateScores(GameUtils.getGamesListFromJson(gameData));
+            }
         }
     }
 
     public void dismissSnackbar() {
-        getView().dismissSnackbar();
+        if (isViewAttached()) {
+            getView().dismissSnackbar();
+        }
     }
 
 }

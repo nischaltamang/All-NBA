@@ -1,11 +1,15 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +20,7 @@ import android.widget.TextView;
 import com.gmail.jorgegilcavazos.ballislife.features.model.NbaGame;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.features.gamethread.CommentsActivity;
+import com.gmail.jorgegilcavazos.ballislife.network.firebase.MyMessagingService;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
@@ -73,6 +78,8 @@ public class GamesFragment extends MvpFragment<GamesView, GamesPresenter>
     public void onResume() {
         super.onResume();
         presenter.loadGames();
+        getActivity().registerReceiver(scoresUpdateReceiver,
+                new IntentFilter(MyMessagingService.FILTER_SCORES_UPDATED));
     }
 
     @Override
@@ -127,6 +134,7 @@ public class GamesFragment extends MvpFragment<GamesView, GamesPresenter>
     public void onPause() {
         presenter.dismissSnackbar();
         super.onPause();
+        getActivity().unregisterReceiver(scoresUpdateReceiver);
     }
 
     @Override
@@ -182,6 +190,12 @@ public class GamesFragment extends MvpFragment<GamesView, GamesPresenter>
     }
 
     @Override
+    public void updateScores(List<NbaGame> games) {
+        gameAdapter.updateScores(games);
+        rvGames.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void setNoGamesIndicator(boolean active) {
         if (active) {
             tvNoGames.setVisibility(View.VISIBLE);
@@ -214,4 +228,12 @@ public class GamesFragment extends MvpFragment<GamesView, GamesPresenter>
     public interface GameItemListener {
         void onGameClick(NbaGame clickedGame);
     }
+
+    private BroadcastReceiver scoresUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String gameData = intent.getStringExtra(MyMessagingService.KEY_SCORES_UPDATED);
+            presenter.updateGames(gameData);
+        }
+    };
 }

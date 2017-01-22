@@ -4,6 +4,7 @@ package com.gmail.jorgegilcavazos.ballislife.features.model;
  * Class that holds general information about a specific NBA game.
  */
 public class NbaGame {
+
     public static final String PRE_GAME = "1";
     public static final String IN_GAME = "2";
     public static final String POST_GAME = "3";
@@ -129,5 +130,97 @@ public class NbaGame {
 
     public String getAwayTeamScore() {
         return awayTeamScore;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setArena(String arena) {
+        this.arena = arena;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setPeriodValue(String periodValue) {
+        this.periodValue = periodValue;
+    }
+
+    public void setPeriodStatus(String periodStatus) {
+        this.periodStatus = periodStatus;
+    }
+
+    public void setGameStatus(String gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public void setGameClock(String gameClock) {
+        this.gameClock = gameClock;
+    }
+
+    public void setTotalPeriods(String totalPeriods) {
+        this.totalPeriods = totalPeriods;
+    }
+
+    public void setPeriodName(String periodName) {
+        this.periodName = periodName;
+    }
+
+    public void setHomeTeamId(String homeTeamId) {
+        this.homeTeamId = homeTeamId;
+    }
+
+    public void setHomeTeamKey(String homeTeamKey) {
+        this.homeTeamKey = homeTeamKey;
+    }
+
+    public void setHomeTeamCity(String homeTeamCity) {
+        this.homeTeamCity = homeTeamCity;
+    }
+
+    public void setHomeTeamAbbr(String homeTeamAbbr) {
+        this.homeTeamAbbr = homeTeamAbbr;
+    }
+
+    public void setHomeTeamNickname(String homeTeamNickname) {
+        this.homeTeamNickname = homeTeamNickname;
+    }
+
+    public void setHomeTeamScore(String homeTeamScore) {
+        this.homeTeamScore = homeTeamScore;
+    }
+
+    public void setAwayTeamId(String awayTeamId) {
+        this.awayTeamId = awayTeamId;
+    }
+
+    public void setAwayTeamKey(String awayTeamKey) {
+        this.awayTeamKey = awayTeamKey;
+    }
+
+    public void setAwayTeamCity(String awayTeamCity) {
+        this.awayTeamCity = awayTeamCity;
+    }
+
+    public void setAwayTeamAbbr(String awayTeamAbbr) {
+        this.awayTeamAbbr = awayTeamAbbr;
+    }
+
+    public void setAwayTeamNickname(String awayTeamNickname) {
+        this.awayTeamNickname = awayTeamNickname;
+    }
+
+    public void setAwayTeamScore(String awayTeamScore) {
+        this.awayTeamScore = awayTeamScore;
     }
 }

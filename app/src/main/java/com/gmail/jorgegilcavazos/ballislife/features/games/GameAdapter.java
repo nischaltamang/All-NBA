@@ -113,6 +113,30 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
         notifyDataSetChanged();
     }
 
+    public void updateScores(List<NbaGame> data) {
+        for (NbaGame newGame : data) {
+            String id = newGame.getId();
+            String homeScore = newGame.getHomeTeamScore();
+            String awayScore = newGame.getAwayTeamScore();
+            String clock = newGame.getGameClock();
+            String periodValue = newGame.getPeriodValue();
+            String periodStatus = newGame.getPeriodStatus();
+            String gameStatus = newGame.getGameStatus();
+
+            for (NbaGame oldGame : nbaGameList) {
+                if (oldGame.getId().equals(id)) {
+                    oldGame.setHomeTeamScore(homeScore);
+                    oldGame.setAwayTeamScore(awayScore);
+                    oldGame.setGameClock(clock);
+                    oldGame.setPeriodValue(periodValue);
+                    oldGame.setPeriodStatus(periodStatus);
+                    oldGame.setGameStatus(gameStatus);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public static class GameViewHolder extends RecyclerView.ViewHolder {
         View container;
         @BindView(R.id.homelabel) TextView tvHomeTeam;
