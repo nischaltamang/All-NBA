@@ -1,10 +1,22 @@
 package com.gmail.jorgegilcavazos.ballislife.util;
 
+import com.gmail.jorgegilcavazos.ballislife.features.model.GameThreadSummary;
+
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
 
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import okhttp3.ResponseBody;
+
 public final class RedditUtils {
     private final static String TAG = "RedditUtils";
+
+    public final static String LIVE_GT_TYPE = "LIVE_GAME_THREAD";
+    public final static String POST_GT_TYPE = "POST_GAME_THREAD";
 
     public enum GameThreadType {
         LIVE_GAME_THREAD, POST_GAME_THREAD
@@ -77,6 +89,56 @@ public final class RedditUtils {
                         && titleContainsTeam(capsTitle, awayTeamFullName)) {
                     return submission.getId();
                 }
+            }
+        }
+
+        return null;
+    }
+
+    public static String findGameThreadId(List<GameThreadSummary> threadList,
+                                          String type,
+                                          String homeTeamAbbr,
+                                          String awayTeamAbbr) {
+        if (threadList == null) {
+            return null;
+        }
+
+        String homeTeamFullName = null;
+        String awayTeamFullName = null;
+
+        for (TeamName teamName : TeamName.values()) {
+            if (teamName.toString().equals(homeTeamAbbr)) {
+                homeTeamFullName = teamName.getTeamName();
+            }
+            if (teamName.toString().equals(awayTeamAbbr)) {
+                awayTeamFullName = teamName.getTeamName();
+            }
+        }
+
+        if (homeTeamFullName == null || awayTeamFullName == null) {
+            return null;
+        }
+
+        for (GameThreadSummary thread : threadList) {
+            String capsTitle = thread.getTitle().toUpperCase();
+
+            // Usually formatted as "GAME THREAD: Cleveland Cavaliers @ San Antonio Spurs".
+            switch (type) {
+                case LIVE_GT_TYPE:
+                    if (capsTitle.contains("GAME THREAD") && !capsTitle.contains("POST")
+                            && titleContainsTeam(capsTitle, homeTeamFullName)
+                            && titleContainsTeam(capsTitle, awayTeamFullName)) {
+                        return thread.getId();
+                    }
+                    break;
+                case POST_GT_TYPE:
+                    if ((capsTitle.contains("POST GAME THREAD")
+                            || capsTitle.contains("POST-GAME THREAD"))
+                            && titleContainsTeam(capsTitle, homeTeamFullName)
+                            && titleContainsTeam(capsTitle, awayTeamFullName)) {
+                        return thread.getId();
+                    }
+                    break;
             }
         }
 
