@@ -39,7 +39,7 @@ public class StandingsPresenter extends MvpBasePresenter<StandingsView> {
         getView().hideStandings();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://stats.nba.com/stats/")
+                .baseUrl("https://nba-app-ca681.firebaseio.com/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
