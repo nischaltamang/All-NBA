@@ -14,12 +14,14 @@ import android.view.MenuItem;
 import com.gmail.jorgegilcavazos.ballislife.R;
 import com.gmail.jorgegilcavazos.ballislife.features.games.GamesFragment;
 
+
 public class CommentsActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener{
     private static final String TAG = "CommentsActivity";
 
     private String homeTeam;
     private String awayTeam;
     private String gameId;
+    private long date;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -35,13 +37,15 @@ public class CommentsActivity extends AppCompatActivity implements TabLayout.OnT
         homeTeam = intent.getStringExtra(GamesFragment.GAME_THREAD_HOME);
         awayTeam = intent.getStringExtra(GamesFragment.GAME_THREAD_AWAY);
         gameId = intent.getStringExtra(GamesFragment.GAME_ID);
+        date = intent.getLongExtra(GamesFragment.GAME_DATE, -1);
 
         setTitle(awayTeam + " @ " + homeTeam);
 
         Bundle bundle = new Bundle();
-        bundle.putString(CommentThreadFragment.HOME_TEAM_KEY, homeTeam);
-        bundle.putString(CommentThreadFragment.AWAY_TEAM_KEY, awayTeam);
+        bundle.putString(GameThreadFragment.HOME_TEAM_KEY, homeTeam);
+        bundle.putString(GameThreadFragment.AWAY_TEAM_KEY, awayTeam);
         bundle.putString(BoxScoreFragment.GAME_ID_KEY, gameId);
+        bundle.putLong(GameThreadFragment.GAME_DATE_KEY, date);
 
         setUpToolbar();
 

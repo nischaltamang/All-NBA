@@ -5,10 +5,14 @@ import com.gmail.jorgegilcavazos.ballislife.network.API.GameThreadFinderService;
 import com.gmail.jorgegilcavazos.ballislife.network.API.RedditGameThreadsService;
 import com.gmail.jorgegilcavazos.ballislife.network.API.RedditService;
 import com.gmail.jorgegilcavazos.ballislife.network.RedditAuthentication;
+import com.gmail.jorgegilcavazos.ballislife.util.DateFormatUtil;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import net.dean.jraw.models.CommentNode;
+
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -22,10 +26,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GameThreadPresenter extends MvpBasePresenter<GameThreadView> {
 
+    private long gameDate;
+
     private CompositeDisposable disposables;
 
-    public GameThreadPresenter() {
+    public GameThreadPresenter(long gameDate) {
         disposables = new CompositeDisposable();
+        this.gameDate = gameDate;
     }
 
     @Override
@@ -39,7 +46,6 @@ public class GameThreadPresenter extends MvpBasePresenter<GameThreadView> {
     public void loadComments(final String type,
                              final String homeTeamAbbr, final String awayTeamAbbr) {
         getView().setLoadingIndicator(true);
-        getView().setNoCommentsIndicator(false);
         getView().hideComments();
         getView().dismissSnackbar();
 
@@ -53,7 +59,8 @@ public class GameThreadPresenter extends MvpBasePresenter<GameThreadView> {
                 .create(RedditGameThreadsService.class);
 
         disposables.clear();
-        disposables.add(gameThreadsService.fetchGameThreads("20170123")
+        disposables.add(gameThreadsService.fetchGameThreads(
+                DateFormatUtil.getNoDashDateString(new Date(gameDate)))
                 .flatMap(new Function<List<GameThreadSummary>, Observable<String>>() {
                     @Override
                     public Observable<String> apply(List<GameThreadSummary> threads) throws Exception {
@@ -64,8 +71,9 @@ public class GameThreadPresenter extends MvpBasePresenter<GameThreadView> {
                 .flatMap(new Function<String, Observable<List<CommentNode>>>() {
                     @Override
                     public Observable<List<CommentNode>> apply(String threadId) throws Exception {
-                        if (threadId == null) {
-                            return null;
+                        if (threadId.equals("")) {
+                            List<CommentNode> list = new ArrayList<>();
+                            return Observable.just(list);
                         }
 
                         RedditAuthentication reddit = RedditAuthentication.getInstance();
@@ -79,10 +87,8 @@ public class GameThreadPresenter extends MvpBasePresenter<GameThreadView> {
                     @Override
                     public void onNext(List<CommentNode> commentNodes) {
                         getView().setLoadingIndicator(false);
-                        if (commentNodes == null) {
+                        if(commentNodes.size() == 0) {
                             getView().showSnackbar(true);
-                        } else if(commentNodes.size() == 0) {
-                            getView().setNoCommentsIndicator(true);
                         } else {
                             getView().showComments(commentNodes);
                         }

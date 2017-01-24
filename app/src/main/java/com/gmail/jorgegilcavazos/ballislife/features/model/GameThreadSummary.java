@@ -6,7 +6,6 @@ public class GameThreadSummary {
     private String title;
     private long created_utc;
 
-
     public String getId() {
         return id;
     }

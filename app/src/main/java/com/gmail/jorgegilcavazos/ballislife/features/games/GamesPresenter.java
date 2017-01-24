@@ -100,7 +100,7 @@ public class GamesPresenter extends MvpBasePresenter<GamesView> {
 
     public void openGameDetails(NbaGame requestedGame) {
         if (isViewAttached()) {
-            getView().showGameDetails(requestedGame);
+            getView().showGameDetails(requestedGame, selectedDate);
         }
     }
 

@@ -6,8 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.gmail.jorgegilcavazos.ballislife.util.RedditUtils;
-import com.gmail.jorgegilcavazos.ballislife.features.gamethread.BoxScoreFragment;
-import com.gmail.jorgegilcavazos.ballislife.features.gamethread.CommentThreadFragment;
 
 /**
  * Pager for the TabLayout in CommentsActivity.
@@ -26,9 +24,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: // GAME THREAD
-                bundle.putSerializable(CommentThreadFragment.THREAD_TYPE_KEY,
-                        RedditUtils.GameThreadType.LIVE_GAME_THREAD);
-                CommentThreadFragment tab1 = new CommentThreadFragment();
+                bundle.putString(GameThreadFragment.THREAD_TYPE_KEY, RedditUtils.LIVE_GT_TYPE);
+                GameThreadFragment tab1 = GameThreadFragment.newInstance();
                 tab1.setArguments(bundle);
                 return tab1;
             case 1: // BOX SCORE
@@ -36,9 +33,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 tab2.setArguments(bundle);
                 return tab2;
             case 2: // POST GAME THREAD
-                bundle.putSerializable(CommentThreadFragment.THREAD_TYPE_KEY,
-                        RedditUtils.GameThreadType.POST_GAME_THREAD);
-                CommentThreadFragment tab3 = new CommentThreadFragment();
+                bundle.putString(GameThreadFragment.THREAD_TYPE_KEY, RedditUtils.POST_GT_TYPE);
+                GameThreadFragment tab3 = GameThreadFragment.newInstance();
                 tab3.setArguments(bundle);
                 return tab3;
             default:

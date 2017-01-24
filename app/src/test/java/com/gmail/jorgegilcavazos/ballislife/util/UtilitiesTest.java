@@ -1,15 +1,8 @@
 package com.gmail.jorgegilcavazos.ballislife.util;
 
-import com.gmail.jorgegilcavazos.ballislife.BuildConfig;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
 public class UtilitiesTest {
     @Test
     public void testGetPeriodString() {

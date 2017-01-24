@@ -15,7 +15,9 @@
     <string name="failed_game_data">Could not load game data</string>
     <string name="failed_standings_data">Could not load standings</string>
     <string name="failed_profile_data">Could not load user info</string>
+    <string name="failed_comments_data">Could not load comments</string>
     <string name="mute_game">Mute this game</string>
+    <string name="no_comments_found">No comments found</string>
 
     <!-- Strings for MainActivity -->
     <string name="action_refresh">Refresh</string>

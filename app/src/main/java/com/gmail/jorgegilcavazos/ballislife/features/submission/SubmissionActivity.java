@@ -192,7 +192,7 @@ public class SubmissionActivity extends AppCompatActivity {
         for (CommentNode node : iterable) {
             commentNodes.add(node);
         }
-        mAdapter = new CommentAdapter(this, commentNodes);
+        mAdapter = new CommentAdapter(commentNodes);
         mRecyclerView.setAdapter(mAdapter);
     }
 

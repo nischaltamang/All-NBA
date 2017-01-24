@@ -1,13 +1,7 @@
 package com.gmail.jorgegilcavazos.ballislife.util;
 
-import com.gmail.jorgegilcavazos.ballislife.BuildConfig;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -15,8 +9,6 @@ import java.util.Locale;
 /**
  * Class to test {@link DateFormatUtil}.
  */
-@RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
 public class DateFormatUtilTest {
 
     @Test

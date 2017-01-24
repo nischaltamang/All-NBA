@@ -24,6 +24,7 @@ import com.gmail.jorgegilcavazos.ballislife.network.firebase.MyMessagingService;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,6 +41,7 @@ public class GamesFragment extends MvpFragment<GamesView, GamesPresenter>
     public final static String GAME_THREAD_HOME = "GAME_THREAD_HOME";
     public final static String GAME_THREAD_AWAY = "GAME_THREAD_AWAY";
     public final static String GAME_ID = "GAME_ID";
+    public final static String GAME_DATE = "GAME_DATE";
 
     @BindView(R.id.navigator_button_left) ImageButton btnPrevDay;
     @BindView(R.id.navigator_button_right) ImageButton btnNextDay;
@@ -181,11 +183,12 @@ public class GamesFragment extends MvpFragment<GamesView, GamesPresenter>
     }
 
     @Override
-    public void showGameDetails(NbaGame game) {
+    public void showGameDetails(NbaGame game, Calendar selectedDate) {
         Intent intent = new Intent(getActivity(), CommentsActivity.class);
         intent.putExtra(GAME_THREAD_HOME, game.getHomeTeamAbbr());
         intent.putExtra(GAME_THREAD_AWAY, game.getAwayTeamAbbr());
         intent.putExtra(GAME_ID, game.getId());
+        intent.putExtra(GAME_DATE, selectedDate.getTimeInMillis());
         startActivity(intent);
     }
 

@@ -10,8 +10,6 @@ public interface GameThreadView extends MvpView {
 
     void setLoadingIndicator(boolean active);
 
-    void setNoCommentsIndicator(boolean active);
-
     void showComments(List<CommentNode> comments);
 
     void hideComments();

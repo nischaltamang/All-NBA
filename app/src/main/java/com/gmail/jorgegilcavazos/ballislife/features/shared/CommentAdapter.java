@@ -21,12 +21,11 @@ import java.util.List;
  * Adapter used to hold all of the comments from a thread.
  */
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
-    Context mContext;
-    List<CommentNode> mComments;
+    Context context;
+    List<CommentNode> commentsList;
 
-    public CommentAdapter(Context context, List<CommentNode> comments) {
-        mContext = context;
-        mComments = comments;
+    public CommentAdapter(List<CommentNode> comments) {
+        commentsList = comments;
     }
 
     @Override
@@ -34,12 +33,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_layout,
                 parent, false);
 
+        context = parent.getContext();
         return new CommentViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(CommentViewHolder holder, int position) {
-        CommentNode commentNode = mComments.get(position);
+        CommentNode commentNode = commentsList.get(position);
 
         Comment comment = commentNode.getComment();
         String author = comment.getAuthor();
@@ -51,19 +51,25 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.authorTextView.setText(author);
         holder.bodyTextView.setText(body);
         holder.timestampTextView.setText(timestamp);
-        holder.scoreTextView.setText(mContext.getString(R.string.points, score));
+        holder.scoreTextView.setText(context.getString(R.string.points, score));
         holder.flairTextView.setText(flair);
         setBackgroundAndPadding(commentNode, holder);
     }
 
     @Override
     public int getItemCount() {
-        return null !=  mComments ? mComments.size() : 0;
+        return null != commentsList ? commentsList.size() : 0;
+    }
+
+    public void swap(List<CommentNode> data) {
+        commentsList.clear();
+        commentsList.addAll(data);
+        notifyDataSetChanged();
     }
 
     private void setBackgroundAndPadding(CommentNode commentNode, CommentViewHolder holder) {
         int padding_in_dp = 5;
-        final float scale = mContext.getResources().getDisplayMetrics().density;
+        final float scale = context.getResources().getDisplayMetrics().density;
         int padding_in_px = (int) (padding_in_dp * scale + 0.5F);
 
         int depth = commentNode.getDepth(); // From 1
