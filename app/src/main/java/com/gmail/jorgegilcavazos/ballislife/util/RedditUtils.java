@@ -10,10 +10,6 @@ public final class RedditUtils {
     public final static String LIVE_GT_TYPE = "LIVE_GAME_THREAD";
     public final static String POST_GT_TYPE = "POST_GAME_THREAD";
 
-    public enum GameThreadType {
-        LIVE_GAME_THREAD, POST_GAME_THREAD
-    }
-
     /**
      * Parses a given /r/NBA flair into a readable friendly string.
      * @param flair usually formatted as "Flair {cssClass='Celtics1', text='The Truth'}"
