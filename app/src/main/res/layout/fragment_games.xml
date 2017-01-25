@@ -51,7 +51,7 @@
             android:id="@+id/games_rv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/row_game"/>
+            tools:listitem="@layout/row_game_no_logos"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView

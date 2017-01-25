@@ -1,6 +1,9 @@
 package com.gmail.jorgegilcavazos.ballislife.features.games;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,15 +53,15 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.GameViewHolder
     public void onBindViewHolder(final GameViewHolder holder, int position) {
         NbaGame nbaGame = nbaGameList.get(position);
 
-        if (Constants.NBA_MATERIAL_ENABLED) {
-            int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeamAbbr()
-                    .toLowerCase(), "drawable", context.getPackageName());
-            int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeamAbbr()
-                    .toLowerCase(), "drawable", context.getPackageName());
+        int resKeyHome = context.getResources().getIdentifier(nbaGame.getHomeTeamAbbr()
+                .toLowerCase(), "color", context.getPackageName());
+        int resKeyAway = context.getResources().getIdentifier(nbaGame.getAwayTeamAbbr()
+                .toLowerCase(), "color", context.getPackageName());
 
-            holder.ivHomeLogo.setImageResource(resKeyHome);
-            holder.ivAwayLogo.setImageResource(resKeyAway);
-        }
+        ((GradientDrawable) holder.ivHomeLogo.getBackground()).setColor(
+                ContextCompat.getColor(context, resKeyHome));
+        ((GradientDrawable) holder.ivAwayLogo.getBackground()).setColor(
+                ContextCompat.getColor(context, resKeyAway));
 
         holder.tvHomeTeam.setText(nbaGame.getHomeTeamAbbr());
         holder.tvAwayTeam.setText(nbaGame.getAwayTeamAbbr());

@@ -33,4 +33,36 @@
     <color name="flairColor">#009688</color>
     <color name="redditActionColor">#757575</color>
     <color name="redditInfoColor">#A5A5A5</color>
+
+    <!-- Team colors -->
+    <color name="atl">#FF0000</color>
+    <color name="bkn">#000000</color>
+    <color name="bos">#009900</color>
+    <color name="cha">#5DBCD2</color>
+    <color name="chi">#960000</color>
+    <color name="cle">#871539</color>
+    <color name="dal">#1C5FAC</color>
+    <color name="den">#027CC5</color>
+    <color name="det">#D41E47</color>
+    <color name="gsw">#F8C536</color>
+    <color name="hou">#D20D42</color>
+    <color name="ind">#FFC324</color>
+    <color name="lac">#F6144F</color>
+    <color name="lal">#FCB827</color>
+    <color name="mem">#6189BC</color>
+    <color name="mia">#96022E</color>
+    <color name="mil">#2C5235</color>
+    <color name="min">#005084</color>
+    <color name="nop">#AB8547</color>
+    <color name="nyk">#E8631E</color>
+    <color name="okc">#0C509A</color>
+    <color name="orl">#0077BE</color>
+    <color name="phi">	#0021A4</color>
+    <color name="phx">#391366</color>
+    <color name="por">#CE2127</color>
+    <color name="sac">#502D7F</color>
+    <color name="sas">#000000</color>
+    <color name="tor">#C50030</color>
+    <color name="uta">#0B233F</color>
+    <color name="was">#E31836</color>
 </resources>
