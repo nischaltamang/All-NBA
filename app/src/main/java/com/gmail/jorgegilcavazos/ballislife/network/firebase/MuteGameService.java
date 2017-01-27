@@ -61,6 +61,6 @@ public class MuteGameService extends Service {
         editor.putStringSet(KEY_MUTE_GAMES, mutedGamesCopy);
         editor.apply();
 
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 }
